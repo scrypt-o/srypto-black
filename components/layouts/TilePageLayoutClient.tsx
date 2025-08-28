@@ -26,6 +26,7 @@ export type TilePageLayoutClientProps = {
   
   // Tile grid props
   tileConfig: TileGridLayoutProps
+  tileOrientation?: 'grid' | 'vertical'
   // Content heading below header and above tiles
   contentHeading?: string
   contentSubheading?: string
@@ -56,6 +57,7 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
     onNotificationClick,
     onUserMenuClick,
     tileConfig,
+    tileOrientation = 'grid',
     contentHeading,
     contentSubheading,
     showSidebar = true,
@@ -63,7 +65,7 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
     showMobileMenu = true,
     style = 'flat',
     motion = 'none',
-    accent = 'blue',
+    accent = 'healthcare',
   } = props
 
   const router = useRouter()
@@ -152,19 +154,26 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
           <div className="w-full max-w-7xl mx-auto">
             {/* Inline heading below AppHeader */}
             {(contentHeading || contentSubheading) && (
-              <div className="mb-4 md:mb-6">
+              <div className="mb-5 md:mb-7">
                 {contentHeading && (
-                  <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
+                  <h1
+                    className="text-3xl md:text-4xl font-extrabold tracking-tight 
+                               bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent
+                               dark:from-blue-300 dark:to-indigo-300"
+                  >
                     {contentHeading}
                   </h1>
                 )}
+                {/* Accent underline bar for a polished look */}
+                <div className="mt-2 h-1.5 w-16 rounded-full bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-indigo-300" />
                 {contentSubheading && (
-                  <p className="mt-1 text-gray-600 dark:text-gray-400">{contentSubheading}</p>
+                  <p className="mt-3 text-base text-gray-600 dark:text-gray-400">{contentSubheading}</p>
                 )}
               </div>
             )}
             <TileGridLayout 
               {...tileConfig}
+              orientation={tileOrientation}
               onTileClick={handleTileClick}
               onQuickAction={handleQuickAction}
               style={style}

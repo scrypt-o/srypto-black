@@ -22,6 +22,7 @@ export type TilePageLayoutProps = {
   
   // Tile grid props
   tileConfig: TileGridLayoutProps
+  tileOrientation?: 'grid' | 'vertical'
   // Content heading shown above tiles (below AppHeader)
   contentHeading?: string
   contentSubheading?: string

@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import * as Icons from 'lucide-react'
+import VerticalTile from './VerticalTile'
 import { useRouter } from 'next/navigation'
 import clsx from 'clsx'
 
@@ -35,6 +36,7 @@ export type TileGridLayoutProps = {
   style?: 'flat' | 'elevated' | 'glass'         // visual style (default 'flat')
   onTileClick?: (href: string, tile: Tile) => void
   onQuickAction?: (action: string) => void
+  orientation?: 'grid' | 'vertical'
 }
 
 // For backward compatibility with existing code
@@ -134,9 +136,24 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
     style = 'flat',
     onTileClick,
     onQuickAction,
+    orientation = 'grid'
   } = props
 
   const router = useRouter()
+  // Match tile icon colors to sidebar group icon colors by id
+  const groupIconColors: Record<string, string> = {
+    communications: 'text-indigo-600 dark:text-indigo-400',
+    'personal-info': 'text-emerald-600 dark:text-emerald-400',
+    prescriptions: 'text-rose-600 dark:text-rose-400',
+    medications: 'text-amber-600 dark:text-amber-400',
+    vitality: 'text-fuchsia-600 dark:text-fuchsia-400',
+    'care-network': 'text-cyan-600 dark:text-cyan-400',
+    medhist: 'text-blue-600 dark:text-blue-400',
+    'lab-results': 'text-purple-600 dark:text-purple-400',
+    location: 'text-teal-600 dark:text-teal-400',
+    deals: 'text-pink-600 dark:text-pink-400',
+    rewards: 'text-yellow-600 dark:text-yellow-400',
+  }
   const activate = (tile: Tile) => {
     if (tile.disabled) return
     if (onTileClick) return onTileClick(tile.href, tile)
@@ -144,6 +161,51 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
   }
 
   // Simple div with CSS transitions for hover effects
+
+  // Vertical orientation renders premium list-style tiles
+  if (orientation === 'vertical') {
+    return (
+      <section className="w-full">
+        {(title || subtitle || description || (quickActions && quickActions.length > 0)) && (
+          <header className="mb-4 flex items-start justify-between gap-3">
+            <div>
+              {title && <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h1>}
+              {subtitle && <p className="text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>}
+              {description && <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{description}</p>}
+            </div>
+          </header>
+        )}
+
+        <div className="flex flex-col gap-3">
+          {tiles.map((t) => (
+            <VerticalTile
+              key={t.id}
+              id={t.id}
+              title={t.title}
+              description={t.description}
+              icon={t.icon}
+              href={t.href}
+              badge={typeof t.badge === 'string' || typeof t.badge === 'number' ? t.badge : undefined}
+              disabled={t.disabled}
+              accent={
+                t.id === 'communications' ? 'indigo' :
+                t.id === 'personal-info' ? 'emerald' :
+                t.id === 'prescriptions' ? 'rose' :
+                t.id === 'medications' ? 'amber' :
+                t.id === 'vitality' ? 'fuchsia' :
+                t.id === 'care-network' ? 'cyan' :
+                t.id === 'medhist' ? 'blue' :
+                t.id === 'lab-results' ? 'purple' :
+                t.id === 'location' ? 'teal' :
+                t.id === 'deals' ? 'pink' :
+                t.id === 'rewards' ? 'yellow' : 'auto'
+              }
+            />
+          ))}
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="w-full">
@@ -241,7 +303,10 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
                   tile.color ? 'bg-white/50' : v.iconWrap
                 )}>
                   {tile.icon ? (
-                    <LucideIcon name={tile.icon} className="h-5 w-5 text-gray-700" />
+                    <LucideIcon
+                      name={tile.icon}
+                      className={clsx('h-5 w-5', groupIconColors[tile.id] ?? 'text-gray-700')}
+                    />
                   ) : null}
                 </div>
                 <div>

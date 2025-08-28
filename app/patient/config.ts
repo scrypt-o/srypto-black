@@ -2,24 +2,25 @@
 export const PatientHomeConfig = {
   // Remove grid-level header/description; we use the AppHeader instead
   title: '',
+  // One tile per top-level sidebar item (excluding Home), in exact order
   tiles: [
     {
-      id: 'medhist',
-      title: 'Medical History',
-      description: 'Allergies, conditions, immunizations',
-      icon: 'Activity',
-      href: '/patient/medhist',
-      variant: 'highlighted' as const,
-      color: 'bg-blue-50 hover:bg-blue-100 border-blue-200'
+      id: 'communications',
+      title: 'Communications',
+      description: 'Alerts, messages, notifications',
+      icon: 'MessageSquare',
+      href: '/patient/comm',
+      variant: 'default' as const,
+      color: 'bg-cyan-50 hover:bg-cyan-100 border-cyan-200'
     },
     {
-      id: 'medications',
-      title: 'Medications',
-      description: 'Active prescriptions & adherence',
-      icon: 'Pill',
-      href: '/patient/medications',
+      id: 'personal-info',
+      title: 'Personal Information',
+      description: 'Profile, contacts, documents',
+      icon: 'User',
+      href: '/patient/persinfo',
       variant: 'default' as const,
-      color: 'bg-green-50 hover:bg-green-100 border-green-200'
+      color: 'bg-gray-50 hover:bg-gray-100 border-gray-200'
     },
     {
       id: 'prescriptions',
@@ -31,13 +32,13 @@ export const PatientHomeConfig = {
       color: 'bg-purple-50 hover:bg-purple-100 border-purple-200'
     },
     {
-      id: 'persinfo',
-      title: 'Personal Info',
-      description: 'Profile, contacts, documents',
-      icon: 'User',
-      href: '/patient/persinfo',
+      id: 'medications',
+      title: 'Medications',
+      description: 'Active medications & adherence',
+      icon: 'Pill',
+      href: '/patient/medications',
       variant: 'default' as const,
-      color: 'bg-gray-50 hover:bg-gray-100 border-gray-200'
+      color: 'bg-green-50 hover:bg-green-100 border-green-200'
     },
     {
       id: 'vitality',
@@ -49,33 +50,60 @@ export const PatientHomeConfig = {
       color: 'bg-rose-50 hover:bg-rose-100 border-rose-200'
     },
     {
-      id: 'labresults',
+      id: 'care-network',
+      title: 'Care Network',
+      description: 'Caregivers and caretakers',
+      icon: 'UsersRound',
+      href: '/patient/care-network',
+      disabled: true,
+      variant: 'subtle' as const
+    },
+    {
+      id: 'medhist',
+      title: 'Medical History',
+      description: 'Allergies, conditions, immunizations',
+      icon: 'HeartPulse',
+      href: '/patient/medhist',
+      variant: 'highlighted' as const,
+      color: 'bg-blue-50 hover:bg-blue-100 border-blue-200'
+    },
+    {
+      id: 'lab-results',
       title: 'Lab Results',
       description: 'Test results & reports',
-      icon: 'TestTube',
+      icon: 'FlaskRound',
       href: '/patient/labresults',
       variant: 'default' as const,
       color: 'bg-indigo-50 hover:bg-indigo-100 border-indigo-200'
     },
     {
-      id: 'appointments',
-      title: 'Appointments',
-      description: 'Schedule & manage visits',
-      icon: 'Calendar',
-      href: '/patient/appointments',
-      variant: 'default' as const,
-      color: 'bg-amber-50 hover:bg-amber-100 border-amber-200'
+      id: 'location',
+      title: 'Location',
+      description: 'Healthcare map and services',
+      icon: 'Map',
+      href: '/patient/location',
+      disabled: true,
+      variant: 'subtle' as const
     },
     {
-      id: 'communications',
-      title: 'Messages',
-      description: 'Alerts & notifications',
-      icon: 'MessageCircle',
-      href: '/patient/comm',
-      variant: 'default' as const,
-      color: 'bg-cyan-50 hover:bg-cyan-100 border-cyan-200'
+      id: 'deals',
+      title: 'Deals',
+      description: 'Pharmacy specials',
+      icon: 'BadgePercent',
+      href: '/patient/deals',
+      disabled: true,
+      variant: 'subtle' as const
+    },
+    {
+      id: 'rewards',
+      title: 'Rewards',
+      description: 'Rewards dashboard',
+      icon: 'Trophy',
+      href: '/patient/rewards',
+      disabled: true,
+      variant: 'subtle' as const
     }
   ],
-  // Remove quick actions above the grid
+  // No quick actions on home grid
   quickActions: []
 }
