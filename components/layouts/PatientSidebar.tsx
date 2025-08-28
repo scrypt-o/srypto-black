@@ -207,18 +207,7 @@ export default function PatientSidebar({
               )}
             </div>
           ) : (
-            <Link
-              key={child.id}
-              href={child.href!}
-              aria-current={isActive(child.href) ? 'page' : undefined}
-              className={clsx(
-                'w-full inline-flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
-                isActive(child.href) ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/10'
-              )}
-            >
-              <IconByName name={String(child.icon)} className={clsx('h-4 w-4', isActive(child.href) ? 'text-blue-700 dark:text-blue-200' : 'text-gray-500 dark:text-gray-400')} />
-              <span className="text-sm truncate">{child.label}</span>
-            </Link>
+            LinkRow(child)
           )
         )}
       </div>
