@@ -111,19 +111,13 @@ export default function PatientSidebar({
   const LinkRow = (item: NavItem) => {
     const active = isActive(item.href)
     const isHome = item.id === 'home'
-    return (
-      <Link
-        key={item.id}
-        href={item.href!}
-        aria-current={active ? 'page' : undefined}
-        className={clsx(
-          'group w-full inline-flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors',
-          // Home should not show active background highlight
-          active && !isHome ? activeCls : hoverCls,
-          isCollapsed ? 'justify-center' : 'justify-start'
-        )}
-        title={isCollapsed ? item.label : undefined}
-      >
+    const rowCls = clsx(
+      'group w-full inline-flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors',
+      active && !isHome ? activeCls : hoverCls,
+      isCollapsed ? 'justify-center' : 'justify-start'
+    )
+    const content = (
+      <>
         <IconByName name={String(item.icon)} className={clsx('h-5 w-5', active && !isHome ? activeIcon : iconMuted)} />
         {!isCollapsed && (
           <span className="text-sm font-medium truncate">{item.label}</span>
@@ -133,6 +127,26 @@ export default function PatientSidebar({
             {item.badge}
           </span>
         )}
+      </>
+    )
+    // If no href, render a non-interactive row (no link)
+    if (!item.href) {
+      return (
+        <div key={item.id} className={rowCls} title={isCollapsed ? item.label : undefined}>
+          {content}
+        </div>
+      )
+    }
+    // Otherwise, render as link
+    return (
+      <Link
+        key={item.id}
+        href={item.href}
+        aria-current={active ? 'page' : undefined}
+        className={rowCls}
+        title={isCollapsed ? item.label : undefined}
+      >
+        {content}
       </Link>
     )
   }
