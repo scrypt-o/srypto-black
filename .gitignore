@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+.next/
+out/
+
+# Production
+build/
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage/
+
+# Typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Miscellaneous
+.vercel
+*.log
+
+# Logs directory
+logs/
+
+# Test results
+test-results/
+
+# Database files
+*.db
+*.sqlite
+
+# Additional build artifacts
+tsconfig.tsbuildinfo

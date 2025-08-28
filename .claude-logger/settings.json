@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [{
+      "hooks": [{
+        "type": "command", 
+        "command": ".claude-logger/capture.sh user-prompt"
+      }]
+    }],
+    "PreToolUse": [{
+      "matcher": "",
+      "hooks": [{
+        "type": "command",
+        "command": ".claude-logger/capture.sh tool-use"
+      }]
+    }],
+    "Stop": [{
+      "hooks": [{
+        "type": "command",
+        "command": ".claude-logger/capture.sh assistant-done"
+      }]
+    }]
+  }
+}

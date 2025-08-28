@@ -1,0 +1,4 @@
+{
+  "$schema": "https://schemas.claude.ai/settings.json",
+  "extends": "../.claude-logger/settings.json"
+}

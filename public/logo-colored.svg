@@ -1,0 +1,15 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="40" cy="40" r="38" fill="#10B981" stroke="#059669" stroke-width="2"/>
+  
+  <!-- S Letter -->
+  <path d="M25 28C25 28 30 22 40 22C48 22 53 26 53 32C53 37 50 40 43 42L37 44C30 46 27 49 27 54C27 60 32 64 40 64C50 64 55 58 55 58" 
+        stroke="white" 
+        stroke-width="4" 
+        stroke-linecap="round"
+        fill="none"/>
+  
+  <!-- Medical Cross (subtle) -->
+  <rect x="48" y="10" width="4" height="12" rx="2" fill="white" opacity="0.6"/>
+  <rect x="44" y="14" width="12" height="4" rx="2" fill="white" opacity="0.6"/>
+</svg>

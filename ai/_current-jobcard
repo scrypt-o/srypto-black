@@ -1,0 +1,3 @@
+NO ACTIVE JOB CARD - LAST COMPLETED: 27082025-critical-code-fixes-job-card-COMPLETED.md
+
+All critical code fixes have been completed and verified. The allergies module now has consistent sidebar navigation across all pages (list, new, detail/edit) and the infinite re-render loop has been resolved.

@@ -1,0 +1,5 @@
+chore(layouts): remove table ListViewLayout and references; standardize on card ListView
+
+- Delete components/layouts/ListViewLayout.tsx (archived copy removed)
+- Update ClientListPageChrome and ListPageLayout to require explicit children
+- No runtime behavior change for Allergies page (still using card list)
