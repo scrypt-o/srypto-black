@@ -145,6 +145,19 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
         {/* Content Area */}
         <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 md:p-6">
           <div className="w-full max-w-7xl mx-auto">
+            {/* Inline heading when header is hidden */}
+            {!showHeader && (headerTitle || headerSubtitle) && (
+              <div className="mb-4 md:mb-6">
+                {headerTitle && (
+                  <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
+                    {headerTitle}
+                  </h1>
+                )}
+                {headerSubtitle && (
+                  <p className="mt-1 text-gray-600 dark:text-gray-400">{headerSubtitle}</p>
+                )}
+              </div>
+            )}
             <TileGridLayout 
               {...tileConfig}
               onTileClick={handleTileClick}
