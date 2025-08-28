@@ -100,6 +100,21 @@ export default function PatientSidebar({
   const hoverCls = 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/10'
   const iconMuted = 'text-gray-600 dark:text-gray-400'
 
+  // Distinct icon colors for each top-level group (ids from config/patientNav.ts)
+  const groupIconColors: Record<string, string> = {
+    communications: 'text-indigo-600 dark:text-indigo-400',
+    'personal-info': 'text-emerald-600 dark:text-emerald-400',
+    prescriptions: 'text-rose-600 dark:text-rose-400',
+    medications: 'text-amber-600 dark:text-amber-400',
+    vitality: 'text-fuchsia-600 dark:text-fuchsia-400',
+    'care-network': 'text-cyan-600 dark:text-cyan-400',
+    medhist: 'text-blue-600 dark:text-blue-400',
+    'lab-results': 'text-purple-600 dark:text-purple-400',
+    location: 'text-teal-600 dark:text-teal-400',
+    deals: 'text-pink-600 dark:text-pink-400',
+    rewards: 'text-yellow-600 dark:text-yellow-400',
+  }
+
 
   const signOut = async () => {
     const supabase = createClient()
@@ -158,6 +173,7 @@ export default function PatientSidebar({
     const active = isActive(item.href)
     const isOpen = expandedState.has(item.id)
     const Chevron = isOpen ? Icons.ChevronDown : Icons.ChevronRight
+    const groupIconClass = groupIconColors[item.id] || (active ? activeIcon : iconMuted)
     return (
       <button
         type="button"
@@ -180,7 +196,7 @@ export default function PatientSidebar({
         )}
         title={isCollapsed ? item.label : undefined}
       >
-        <IconByName name={String(item.icon)} className={clsx('h-5 w-5', active ? activeIcon : iconMuted)} />
+        <IconByName name={String(item.icon)} className={clsx('h-5 w-5', groupIconClass)} />
         {!isCollapsed && (
           <>
             <span className="flex-1 text-sm font-medium text-left truncate">{item.label}</span>
