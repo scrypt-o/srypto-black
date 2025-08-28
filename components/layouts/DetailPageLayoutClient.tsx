@@ -3,10 +3,10 @@
 import * as React from 'react'
 import PatientSidebar, { type NavItem } from '@/components/nav/PatientSidebar'
 import AppHeader from './AppHeader'
+import DetailViewLayout, { type DetailViewLayoutProps } from './DetailViewLayout'
 import MobileFooter from './MobileFooter'
-// Table ListViewLayout removed; use explicit children instead
 
-export type ClientListPageChromeProps<Row> = {
+export type ClientDetailPageChromeProps = {
   sidebarItems: NavItem[]
   sidebarTitle?: string
   headerTitle?: string
@@ -19,6 +19,7 @@ export type ClientListPageChromeProps<Row> = {
   notifications?: number
   onNotificationClick?: () => void
   onUserMenuClick?: (action: string) => void
+  detailProps?: DetailViewLayoutProps
   children?: React.ReactNode
   showSidebar?: boolean
   showHeader?: boolean
@@ -28,7 +29,7 @@ export type ClientListPageChromeProps<Row> = {
   accent?: 'blue' | 'emerald' | 'healthcare'
 }
 
-export default function ClientListPageChrome<Row>(props: ClientListPageChromeProps<Row>) {
+export default function DetailPageLayoutClient(props: ClientDetailPageChromeProps) {
   const {
     sidebarItems,
     sidebarTitle = 'Patient Portal',
@@ -42,6 +43,7 @@ export default function ClientListPageChrome<Row>(props: ClientListPageChromePro
     notifications,
     onNotificationClick,
     onUserMenuClick,
+    detailProps,
     children,
     showSidebar = true,
     showHeader = true,
@@ -107,14 +109,12 @@ export default function ClientListPageChrome<Row>(props: ClientListPageChromePro
         )}
 
         <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 md:p-6">
-          <div className="w-full max-w-7xl mx-auto">
-            {children}
+          <div className="w-full max-w-4xl mx-auto">
+            {children ? children : (detailProps ? <DetailViewLayout {...detailProps} /> : null)}
           </div>
         </main>
-
         {/* Mobile bottom navigation */}
         <MobileFooter />
       </div>
     </div>
-  )
-}
+  )}
