@@ -1,8 +1,9 @@
 // Complete Patient Portal Home Configuration
 export const PatientHomeConfig = {
-  title: 'Patient Portal',
-  subtitle: 'Your Health Dashboard',
-  description: 'Access all your healthcare information, communications, and services in one secure location.',
+  // Remove grid-level header/description; we use the AppHeader instead
+  title: '',
+  subtitle: undefined,
+  description: undefined,
   tiles: [
     {
       id: 'medhist',
@@ -77,16 +78,6 @@ export const PatientHomeConfig = {
       color: 'bg-cyan-50 hover:bg-cyan-100 border-cyan-200'
     }
   ],
-  quickActions: [
-    {
-      id: 'emergency',
-      label: 'Emergency Contacts',
-      action: '/patient/persinfo/emergency'
-    },
-    {
-      id: 'scan',
-      label: 'Scan Prescription',
-      action: '/patient/presc/scan'
-    }
-  ]
+  // Remove quick actions above the grid
+  quickActions: []
 }
