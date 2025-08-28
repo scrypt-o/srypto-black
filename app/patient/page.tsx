@@ -15,6 +15,11 @@ export default async function PatientHomePage() {
       headerTitle="Home"
       contentHeading="Welcome to Scrypto"
       contentSubheading="Your medical hub"
+      headingIcons={[
+        { id: 'notifications', icon: 'Bell', href: '/patient/comm', ariaLabel: 'Notifications' },
+        { id: 'alerts', icon: 'AlertOctagon', href: '/patient/comm', ariaLabel: 'Alerts' },
+        { id: 'messages', icon: 'Mail', href: '/patient/comm', ariaLabel: 'Messages' },
+      ]}
       tileOrientation="vertical"
       tileConfig={PatientHomeConfig}
     />

@@ -26,6 +26,9 @@ export type TilePageLayoutProps = {
   // Content heading shown above tiles (below AppHeader)
   contentHeading?: string
   contentSubheading?: string
+  headingStats?: Array<{ id: string; icon?: string; label: string; value: string; href?: string; tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger' }>
+  contentNote?: string
+  headingIcons?: Array<{ id: string; icon: any; href?: string; ariaLabel?: string }>
   
   // Options to show/hide components
   showSidebar?: boolean
