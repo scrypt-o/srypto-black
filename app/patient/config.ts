@@ -2,8 +2,6 @@
 export const PatientHomeConfig = {
   // Remove grid-level header/description; we use the AppHeader instead
   title: '',
-  subtitle: undefined,
-  description: undefined,
   tiles: [
     {
       id: 'medhist',
