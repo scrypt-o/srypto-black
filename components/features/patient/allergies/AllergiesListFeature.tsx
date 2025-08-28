@@ -55,7 +55,6 @@ export default function AllergiesListFeature({
       allergen_type: item.allergen_type,
       reaction: item.reaction,
       created_at: item.created_at,
-      thirdColumn: item.created_at,
       data: item
     }))
   )
@@ -76,7 +75,6 @@ export default function AllergiesListFeature({
         allergen_type: item.allergen_type,
         reaction: item.reaction,
         created_at: item.created_at,
-        thirdColumn: item.created_at,
         data: item
       }))
     )
@@ -203,6 +201,15 @@ export default function AllergiesListFeature({
         searchPlaceholder="Search allergies..."
         pageTitle="Allergies"
         thirdColumnLabel="Date Added"
+        // New layout configuration
+        density="comfortable"
+        avatarShape="round"
+        showChevron
+        exportEnabled
+        exportFormats={["csv"]}
+        dateFormat="short"
+        titleWrap="wrap"
+        showSecondaryLine={false}
       />
       
       {/* Filter Modal */}
