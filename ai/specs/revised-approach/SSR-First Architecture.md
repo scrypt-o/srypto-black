@@ -95,7 +95,7 @@ export default function EntityListView({ initialData, initialState }) {
 
 ### 3. Layout Components (Client)
 ```typescript
-// components/layouts/ListPageLayout.tsx (server) composes a client header/sidebar where needed
+// components/layouts/ListPageLayout.tsx (server) + ListPageLayoutClient.tsx (client)
 'use client'
 
 export default function ListPageLayoutClient({ children, sidebarItems, headerTitle }) {

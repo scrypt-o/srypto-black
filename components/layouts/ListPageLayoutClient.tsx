@@ -6,7 +6,7 @@ import AppHeader from './AppHeader'
 import MobileFooter from './MobileFooter'
 // Table ListViewLayout removed; use explicit children instead
 
-export type ClientListPageChromeProps<Row> = {
+export type ListPageLayoutClientProps<Row> = {
   sidebarItems: NavItem[]
   sidebarTitle?: string
   headerTitle?: string
@@ -28,7 +28,7 @@ export type ClientListPageChromeProps<Row> = {
   accent?: 'blue' | 'emerald' | 'healthcare'
 }
 
-export default function ListPageLayoutClient<Row>(props: ClientListPageChromeProps<Row>) {
+export default function ListPageLayoutClient<Row>(props: ListPageLayoutClientProps<Row>) {
   const {
     sidebarItems,
     sidebarTitle = 'Patient Portal',

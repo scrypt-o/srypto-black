@@ -12,15 +12,15 @@ What this demonstrates
 
 Key files
 - Server pages: `app/patient/medhist/allergies/{page.tsx,[id]/page.tsx,new/page.tsx}`
-- Islands: `components/features/patient/allergies/{AllergiesListIsland,AllergyDetailIsland,NewAllergyIsland}.tsx`
-- Layouts: `components/layouts/{ListPageLayout,DetailPageLayout,ClientListPageChrome,ClientDetailPageChrome}.tsx`
+- Features: `components/features/patient/allergies/{AllergiesListFeature,AllergyDetailFeature,AllergyCreateFeature}.tsx`
+- Layouts: `components/layouts/{ListPageLayout,DetailPageLayout,ListPageLayoutClient,DetailPageLayoutClient}.tsx`
 - Store: `lib/state/listStore.ts`
 - API: `app/api/patient/medical-history/allergies/*`
 
 Recent Updates (Aug 28, 2025)
 - Schema improvements: Updated `AllergyRowSchema` to use proper enums (`AllergenTypeEnum`, `SeverityEnum`) instead of strings for better type safety and early drift detection
 - Severity mapping: Added explicit support for `life_threatening` severity level with strong red visual indicator
-- Component migration: Replaced `AllergiesListView` with `AllergiesListIsland` for proper URL-driven state and API-first mutations
+- Component migration: Replaced legacy list with `AllergiesListFeature` using `ListViewLayout`
 - Deprecated: `AllergiesListView` marked as deprecated - uses direct Supabase calls instead of API routes
 
 Notes
@@ -28,4 +28,3 @@ Notes
 - Accessibility basics: inputs labeled, `aria-sort` on sortable headers via `ListViewLayout`.
 - Security hardening: CSRF origin checks, security headers via `middleware.ts`, per‑user pages marked `dynamic = 'force-dynamic'`.
 - Severity enum values: `mild`, `moderate`, `severe`, `life_threatening` (maps to visual indicators in UI)
-

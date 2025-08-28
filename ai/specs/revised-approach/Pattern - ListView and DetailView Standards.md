@@ -188,13 +188,13 @@ export default async function EntityListPage({ searchParams }) {
     
   // Pass to client component
   return (
-    <ClientListPageChrome sidebarItems={navItems} headerTitle="Title">
+    <ListPageLayoutClient sidebarItems={navItems} headerTitle="Title">
       <EntityListView
         initialData={data || []}
         total={count || 0}
         initialState={params}
       />
-    </ClientListPageChrome>
+    </ListPageLayoutClient>
   )
 }
 ```

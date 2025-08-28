@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useCreateAllergy } from '@/hooks/usePatientAllergies'
 import { useToast } from '@/components/patterns/Toast'
 
-export default function NewAllergyIsland() {
+export default function AllergyCreateFeature() {
   const router = useRouter()
   const toast = useToast()
   const createMutation = useCreateAllergy()

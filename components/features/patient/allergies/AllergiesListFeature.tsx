@@ -14,7 +14,7 @@ interface AllergyItem extends ListItem {
   created_at: string
 }
 
-interface AllergiesListIslandProps {
+interface AllergiesListFeatureProps {
   initialData: AllergyRow[]
   total: number
   initialState: Record<string, any>
@@ -34,11 +34,11 @@ const mapSeverity = (severity: Severity | null): 'critical' | 'severe' | 'modera
   return severityMap[severity] || 'normal'
 }
 
-export default function AllergiesListIsland({
+export default function AllergiesListFeature({
   initialData,
   total,
   initialState
-}: AllergiesListIslandProps) {
+}: AllergiesListFeatureProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const deleteAllergy = useDeleteAllergy()
@@ -271,4 +271,4 @@ export default function AllergiesListIsland({
   )
 }
 
-export type { AllergiesListIslandProps }
+export type { AllergiesListFeatureProps }

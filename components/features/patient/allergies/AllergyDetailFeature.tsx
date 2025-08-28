@@ -12,11 +12,11 @@ import { useToast } from '@/components/patterns/Toast'
 import ConfirmDialog from '@/components/patterns/ConfirmDialog'
 import { formatDate } from '@/lib/utils/date'
 
-export type AllergyDetailIslandProps = {
+export type AllergyDetailFeatureProps = {
   allergy: AllergyRow
 }
 
-export default function AllergyDetailIsland({ allergy }: AllergyDetailIslandProps) {
+export default function AllergyDetailFeature({ allergy }: AllergyDetailFeatureProps) {
   const router = useRouter()
   const toast = useToast()
   const updateMutation = useUpdateAllergy()

@@ -6,7 +6,7 @@ import AppHeader from './AppHeader'
 import DetailViewLayout, { type DetailViewLayoutProps } from './DetailViewLayout'
 import MobileFooter from './MobileFooter'
 
-export type ClientDetailPageChromeProps = {
+export type DetailPageLayoutClientProps = {
   sidebarItems: NavItem[]
   sidebarTitle?: string
   headerTitle?: string
@@ -29,7 +29,7 @@ export type ClientDetailPageChromeProps = {
   accent?: 'blue' | 'emerald' | 'healthcare'
 }
 
-export default function DetailPageLayoutClient(props: ClientDetailPageChromeProps) {
+export default function DetailPageLayoutClient(props: DetailPageLayoutClientProps) {
   const {
     sidebarItems,
     sidebarTitle = 'Patient Portal',
