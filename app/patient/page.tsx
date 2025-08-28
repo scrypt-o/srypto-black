@@ -12,7 +12,7 @@ export default async function PatientHomePage() {
   return (
     <TilePageLayout
       sidebarItems={patientNavItems}
-      headerTitle=""
+      headerTitle="Home"
       contentHeading="Welcome to Scrypto, your medical hub"
       tileConfig={PatientHomeConfig}
     />

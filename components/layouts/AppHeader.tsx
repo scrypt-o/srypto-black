@@ -98,8 +98,8 @@ export default function AppHeader({
       
       {/* RIGHT SECTION - Actions */}
       <div className="flex items-center gap-2 flex-shrink-0 z-10">
-        {/* Right-side:Back button (hidden on Home); on Home show notifications if provided */}
-        {!isHome ? (
+        {/* Back button (hidden on Home) */}
+        {!isHome && (
           <button
             onClick={() => router.back()}
             className="p-2 rounded-lg hover:bg-white/10"
@@ -107,21 +107,22 @@ export default function AppHeader({
           >
             <Icons.ArrowLeft className="h-5 w-5 text-white" />
           </button>
-        ) : (
-          onNotificationClick && (
-            <button
-              onClick={onNotificationClick}
-              className="relative p-2 rounded-lg hover:bg-white/10"
-              aria-label="Notifications"
-            >
-              <Icons.Bell className="h-5 w-5 text-white" />
-              {notifications > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-semibold">
-                  {notifications > 9 ? '9+' : notifications}
-                </span>
-              )}
-            </button>
-          )
+        )}
+
+        {/* Notifications always visible on the right */}
+        {onNotificationClick && (
+          <button
+            onClick={onNotificationClick}
+            className="relative p-2 rounded-lg hover:bg-white/10"
+            aria-label="Notifications"
+          >
+            <Icons.Bell className="h-5 w-5 text-white" />
+            {notifications > 0 && (
+              <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-semibold">
+                {notifications > 9 ? '9+' : notifications}
+              </span>
+            )}
+          </button>
         )}
 
         {/* User Menu - Fixed Size */}
@@ -135,10 +136,7 @@ export default function AppHeader({
                 'max-w-[200px]' // Prevent expansion
               )}
             >
-              <div className={clsx(
-                'h-8 w-8 rounded-full bg-white/20',
-                'flex items-center justify-center flex-shrink-0'
-              )}>
+              <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
                 {user.avatar ? (
                   <img 
                     src={user.avatar} 
