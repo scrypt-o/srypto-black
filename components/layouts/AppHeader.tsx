@@ -57,7 +57,7 @@ export default function AppHeader({
   // Style mappings
   const headerBg = (accent === 'emerald' || accent === 'healthcare')
     ? 'bg-healthcare-primary text-white'
-    : 'bg-blue-600 text-white'
+    : 'bg-gradient-to-r from-blue-700 to-indigo-600 text-white dark:from-blue-600 dark:to-indigo-500'
   
   // Simple div with CSS transitions for animations
   

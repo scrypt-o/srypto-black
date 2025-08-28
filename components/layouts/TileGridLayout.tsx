@@ -17,6 +17,8 @@ export type Tile = {
   icon?: string          // Lucide icon name, e.g., "User"
   href: string
   badge?: string | number
+  // Optional status line shown under description (notifications, summaries)
+  status?: string | { text: string; tone?: 'neutral' | 'success' | 'warning' | 'info' | 'danger' }
   disabled?: boolean
   variant?: TileVariant
   color?: string         // Custom color classes
@@ -53,6 +55,7 @@ export interface TileGridConfig {
     href: string
     color?: string
     badge?: string | number
+    status?: string | { text: string; tone?: 'neutral' | 'success' | 'warning' | 'info' | 'danger' }
     disabled?: boolean
     variant?: 'default' | 'highlighted' | 'subtle' | 'warning'
   }>
@@ -182,11 +185,12 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
               key={t.id}
               id={t.id}
               title={t.title}
-              description={t.description}
-              icon={t.icon}
+              {...(t.description ? { description: t.description } : {})}
+              {...(t.icon ? { icon: t.icon } : {})}
               href={t.href}
-              badge={typeof t.badge === 'string' || typeof t.badge === 'number' ? t.badge : undefined}
-              disabled={t.disabled}
+              {...(t.badge != null ? { badge: t.badge } : {})}
+              {...(t.status ? { status: t.status } : {})}
+              {...(t.disabled ? { disabled: t.disabled } : {})}
               accent={
                 t.id === 'communications' ? 'indigo' :
                 t.id === 'personal-info' ? 'emerald' :
@@ -314,6 +318,22 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
                   {tile.description && (
                     <p className="text-xs text-gray-600 mt-0.5 leading-tight">{tile.description}</p>
                   )}
+                  {(() => {
+                    if (!tile.status) return null
+                    const s = typeof tile.status === 'string' ? { text: tile.status, tone: 'neutral' as const } : tile.status
+                    const toneClass = s.tone === 'success'
+                      ? 'text-emerald-700 dark:text-emerald-300'
+                      : s.tone === 'warning'
+                      ? 'text-amber-700 dark:text-amber-300'
+                      : s.tone === 'danger'
+                      ? 'text-rose-700 dark:text-rose-300'
+                      : s.tone === 'info'
+                      ? 'text-blue-700 dark:text-blue-300'
+                      : 'text-gray-700 dark:text-gray-300'
+                    return (
+                      <p className={clsx('text-[11px] mt-1 leading-tight', toneClass)}>{s.text}</p>
+                    )
+                  })()}
                 </div>
               </div>
               {tile.badge != null && (

@@ -48,7 +48,7 @@ export default function ListPageLayoutClient<Row>(props: ListPageLayoutClientPro
     showMobileMenu = true,
     style = 'flat',
     motion = 'subtle',
-    accent = 'healthcare',
+    accent = 'blue',
   } = props
 
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)

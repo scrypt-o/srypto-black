@@ -50,7 +50,7 @@ export default function DetailPageLayoutClient(props: DetailPageLayoutClientProp
     showMobileMenu = true,
     style = 'flat',
     motion = 'subtle',
-    accent = 'healthcare',
+    accent = 'blue',
   } = props
 
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)

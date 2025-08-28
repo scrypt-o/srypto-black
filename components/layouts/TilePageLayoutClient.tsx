@@ -65,7 +65,7 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
     showMobileMenu = true,
     style = 'flat',
     motion = 'none',
-    accent = 'healthcare',
+    accent = 'blue',
   } = props
 
   const router = useRouter()
