@@ -201,8 +201,8 @@ app/
 
 components/
   layouts/
-    ClientListPageChrome.tsx (Client - Layout wrapper)
-    ClientDetailPageChrome.tsx (Client - Layout wrapper)
+    ListPageLayoutClient.tsx (Client - Layout wrapper)
+    DetailPageLayoutClient.tsx (Client - Layout wrapper)
     ListView.tsx (Client - Base list component)
     DetailView.tsx (Client - Base detail component)
     TileGridLayout.tsx (Client - Tile grid component)

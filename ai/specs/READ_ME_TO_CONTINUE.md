@@ -54,7 +54,7 @@ Your mandate (do this, in order):
 
 3) List state + URL
    - Ensure Allergies uses a single store for page/search/filters/sort, hydrated from URL; keep URL sync debounced.
-   - Ensure client island takes initial data from the server page to avoid double fetch at first paint.
+- Ensure the client feature takes initial data from the server page to avoid double fetch at first paint.
 
 4) Prefetch and navigation polish
    - Add `<Link prefetch>` for list → detail and “Add New” routes; use `router.prefetch()` only inside client islands when imperative.

@@ -8,12 +8,12 @@ Textbook SSR-first Allergies module: server-rendered shells, URL-driven list sta
   - Auth: `await requireUser()`
   - Parse `searchParams` via Zod (page/pageSize/search/filters/sort)
   - Read: `v_patient__medhist__allergies` with sorting, filters, pagination
-  - Pass `{ initialData, total, initialState }` into client island
+  - Pass `{ initialData, total, initialState }` into the client feature component
 - Detail: `app/patient/medhist/allergies/[id]/page.tsx`
   - Fetch from view by `allergy_id`; `notFound()` on miss
-  - Render `DetailPageLayout` with `AllergyDetailIsland`
+  - Render `DetailPageLayout` with `AllergyDetailFeature`
 - Create: `app/patient/medhist/allergies/new/page.tsx`
-  - Render `DetailPageLayout` with `NewAllergyIsland`
+  - Render `DetailPageLayout` with `AllergyCreateFeature`
 
 ## Client Page/View Components
 - List: `AllergiesList` (feature client component)
@@ -42,6 +42,6 @@ Textbook SSR-first Allergies module: server-rendered shells, URL-driven list sta
 
 ## Pitfalls & Fixes
 - Do not fetch list on client first paint → pass `initialData` from server
-- No page-level `use client` in pages; only in islands/layout wrappers
+- No page-level `use client` in pages; only in client features and layout clients
 - Use view `v_*` for reads; base table for writes (RLS applies)
 - Keep URL as single source of truth for list state

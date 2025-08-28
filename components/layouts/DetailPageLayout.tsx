@@ -19,7 +19,7 @@ export type DetailPageLayoutProps = {
   onNotificationClick?: () => void
   onUserMenuClick?: (action: string) => void
   
-  // Detail view props or custom island
+  // Detail view props or custom feature component
   detailProps?: DetailViewLayoutProps
   children?: React.ReactNode
   

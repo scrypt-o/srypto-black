@@ -2,11 +2,11 @@ Allergies Module — Server‑First Pattern
 
 What this demonstrates
 - Server pages: `page.tsx`, `[id]/page.tsx`, and `new/page.tsx` are server components using the Supabase server client to read from the `v_patient__medhist__allergies` view.
-- Client islands only for interactivity:
-  - `AllergiesListIsland.tsx` renders the list UI, manages URL‑driven state via a small Zustand slice, and performs mutations.
-  - `AllergyDetailIsland.tsx` renders view/edit detail sections and handles update/delete.
-  - `NewAllergyIsland.tsx` renders the create form and handles submit.
-- Composed layouts: Server wrappers (`ListPageLayout`, `DetailPageLayout`) compose tiny client chrome (`Client*Chrome`) and mount the islands as children. No page‑level `use client`.
+- Client features only for interactivity:
+  - `AllergiesListFeature.tsx` renders the list UI, manages URL‑driven state, and performs mutations.
+  - `AllergyDetailFeature.tsx` renders view/edit detail sections and handles update/delete.
+  - `AllergyCreateFeature.tsx` renders the create form and handles submit.
+- Composed layouts: Server wrappers (`ListPageLayout`, `DetailPageLayout`) compose a small client layout shell (`*LayoutClient`) and mount the features as children. No page‑level `use client`.
 - URL‑driven list state: The list store hydrates from `searchParams` (page/search/filters/sort) and syncs back to the URL (debounced) to trigger new SSR reads.
 - Correct API semantics: Mutations go through existing API routes with Zod validation (422), auth (401/403), not found (404), and trimming/normalization on the server.
 
