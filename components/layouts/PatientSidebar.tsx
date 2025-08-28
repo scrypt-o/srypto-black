@@ -110,6 +110,7 @@ export default function PatientSidebar({
   /** ------- Renderers ------- */
   const LinkRow = (item: NavItem) => {
     const active = isActive(item.href)
+    const isHome = item.id === 'home'
     return (
       <Link
         key={item.id}
@@ -117,12 +118,13 @@ export default function PatientSidebar({
         aria-current={active ? 'page' : undefined}
         className={clsx(
           'group w-full inline-flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors',
-          active ? activeCls : hoverCls,
+          // Home should not show active background highlight
+          active && !isHome ? activeCls : hoverCls,
           isCollapsed ? 'justify-center' : 'justify-start'
         )}
         title={isCollapsed ? item.label : undefined}
       >
-        <IconByName name={String(item.icon)} className={clsx('h-5 w-5', active ? activeIcon : iconMuted)} />
+        <IconByName name={String(item.icon)} className={clsx('h-5 w-5', active && !isHome ? activeIcon : iconMuted)} />
         {!isCollapsed && (
           <span className="text-sm font-medium truncate">{item.label}</span>
         )}
@@ -218,21 +220,13 @@ export default function PatientSidebar({
           <div className="fixed inset-0 z-[100] md:hidden animate-fadeIn">
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
             <aside className={clsx('absolute inset-y-0 left-0 w-80 p-0 animate-slideInLeft', shell[style])}>
-                {/* Header */}
-                <div className={clsx('flex items-center justify-between p-4', 
+                {/* Header (match AppHeader height, no icon/title) */}
+                <div className={clsx('flex h-14 md:h-16 items-center justify-between px-4', 
                   accent === 'emerald' || accent === 'healthcare' 
                     ? 'bg-healthcare-primary text-white' 
                     : 'bg-blue-600 text-white'
                 )}>
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-                      <Icons.Heart className="h-4 w-4 text-white" />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="font-medium truncate">{title}</div>
-                      {!isLoading && user?.email && <div className="text-xs opacity-80 truncate">{user.email}</div>}
-                    </div>
-                  </div>
+                  <div />
                   <button onClick={onClose} className="rounded-lg p-2 hover:bg-white/10" aria-label="Close menu">
                     <Icons.X className="h-5 w-5" />
                   </button>
@@ -241,7 +235,14 @@ export default function PatientSidebar({
                 {/* Nav */}
                 <div className="max-h-[calc(100vh-56px-56px)] overflow-y-auto p-4">
                   <nav aria-label="Patient navigation" className="space-y-1">
-                    {items.map((item) =>
+                    {/* Home first (no active highlight) */}
+                    {items.find(i => i.id === 'home' && (i.type ?? 'link') === 'link') && (
+                      LinkRow(items.find(i => i.id === 'home') as NavItem)
+                    )}
+                    {/* Divider between Home and the rest */}
+                    <div className="my-2 border-t border-gray-200 dark:border-white/10" />
+                    {/* Rest of items excluding Home */}
+                    {items.filter(i => i.id !== 'home').map((item) =>
                       (item.type ?? 'link') === 'group' ? (
                         <div key={item.id} className="space-y-1">
                           <GroupHeader item={item} />
@@ -285,8 +286,8 @@ export default function PatientSidebar({
   // Desktop rail
   return (
     <aside className={clsx('hidden h-screen md:flex flex-col transition-all duration-300', shell[style], isCollapsed ? 'w-16' : 'w-64')}>
-      {/* Header */}
-      <div className={clsx('flex items-center gap-3 p-4', 
+      {/* Header (match AppHeader height, no icon/title) */}
+      <div className={clsx('flex h-14 md:h-16 items-center gap-3 px-4', 
         accent === 'emerald' || accent === 'healthcare' 
           ? 'bg-healthcare-primary text-white' 
           : 'bg-blue-600 text-white'
@@ -294,23 +295,20 @@ export default function PatientSidebar({
         <button onClick={onToggleCollapse} className="rounded-lg p-2 hover:bg-white/10" aria-label="Toggle sidebar">
           <Icons.Menu className="h-5 w-5" />
         </button>
-        {!isCollapsed && (
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-              <Icons.Heart className="h-4 w-4 text-white" />
-            </div>
-            <div className="min-w-0">
-              <div className="font-medium truncate">{title}</div>
-              {!isLoading && user?.email && <div className="text-xs opacity-80 truncate">{user.email}</div>}
-            </div>
-          </div>
-        )}
+        {/* Intentionally no title or icon */}
       </div>
 
       {/* Nav */}
       <div className="flex-1 overflow-y-auto p-4">
         <nav aria-label="Patient navigation" className="space-y-1">
-          {items.map((item) =>
+          {/* Home first (no active highlight) */}
+          {items.find(i => i.id === 'home' && (i.type ?? 'link') === 'link') && (
+            LinkRow(items.find(i => i.id === 'home') as NavItem)
+          )}
+          {/* Divider */}
+          <div className="my-2 border-t border-gray-200 dark:border-white/10" />
+          {/* Rest */}
+          {items.filter(i => i.id !== 'home').map((item) =>
             (item.type ?? 'link') === 'group' ? (
               <div key={item.id} className="space-y-1">
                 <GroupHeader item={item} />
