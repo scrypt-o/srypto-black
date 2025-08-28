@@ -3,6 +3,7 @@
 import * as React from 'react'
 import * as Icons from 'lucide-react'
 import clsx from 'clsx'
+import { usePathname, useRouter } from 'next/navigation'
 
 export type AppHeaderProps = {
   // Content
@@ -49,47 +50,26 @@ export default function AppHeader({
   accent = 'blue'
 }: AppHeaderProps) {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false)
+  const pathname = usePathname()
+  const router = useRouter()
+  const isHome = pathname === '/patient'
   
   // Style mappings
-  const styles = {
-    flat: 'bg-white dark:bg-gray-900',
-    elevated: 'bg-white dark:bg-gray-900 shadow-md',
-    glass: 'bg-white/80 dark:bg-gray-900/70 backdrop-blur-lg'
-  }
+  const headerBg = (accent === 'emerald' || accent === 'healthcare')
+    ? 'bg-healthcare-primary text-white'
+    : 'bg-blue-600 text-white'
   
   // Simple div with CSS transitions for animations
   
   return (
     <header 
       className={clsx(
-        // FIXED HEIGHT - IMMUTABLE
-        'h-14 md:h-16',
-        
-        // WIDTH - CONTAINED
-        'w-full',
-        
-        // FLEX - WITH SAFETY
-        'flex items-center gap-4',
-        'flex-shrink-0', // Never shrinks
-        
-        // OVERFLOW - NOTHING ESCAPES
-        'overflow-hidden',
-        
-        // SPACING
-        'px-4 md:px-6',
-        
-        // POSITION
-        'relative',
-        
-        // THEME
-        styles[style],
-        
-        // BORDER
-        'border-b border-gray-200 dark:border-white/10'
+        'h-14 md:h-16 w-full flex items-center gap-4 flex-shrink-0 overflow-hidden px-4 md:px-6 relative',
+        headerBg
       )}
     >
-      {/* LEFT SECTION - Constrained */}
-      <div className="flex items-center gap-3 min-w-0">
+      {/* LEFT SECTION - Mobile menu only */}
+      <div className="flex items-center gap-3 min-w-0 z-10">
         {/* Mobile Menu - Fixed Size */}
         {showMobileMenu && (
           <button
@@ -97,112 +77,53 @@ export default function AppHeader({
             className={clsx(
               'md:hidden',
               'p-2 rounded-lg',
-              'hover:bg-gray-100 dark:hover:bg-white/10',
+              'hover:bg-white/10',
               'flex-shrink-0' // Never shrinks
             )}
             aria-label="Menu"
           >
-            <Icons.Menu className="h-5 w-5" />
+            <Icons.Menu className="h-5 w-5 text-white" />
           </button>
         )}
-        
-        {/* Title Group - Can shrink */}
-        <div className="min-w-0">
-          {title && (
-            <h1 className={clsx(
-              'text-lg md:text-xl font-semibold',
-              'text-gray-900 dark:text-white',
-              'truncate' // Text overflow protection
-            )}>
-              {title}
-            </h1>
-          )}
-          {subtitle && (
-            <p className={clsx(
-              'text-sm text-gray-500 dark:text-gray-400',
-              'truncate' // Text overflow protection
-            )}>
-              {subtitle}
-            </p>
-          )}
-        </div>
+      </div>
+
+      {/* CENTERED TITLE */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        {title && (
+          <h1 className="text-base md:text-lg font-semibold text-white truncate">
+            {title}
+          </h1>
+        )}
       </div>
       
-      {/* CENTER SECTION - Search (Desktop) */}
-      {showSearch && (
-        <div className={clsx(
-          'hidden md:flex',
-          'flex-1 max-w-xl', // Constrained max width
-          'min-w-0' // Can shrink
-        )}>
-          <div className="relative w-full">
-            <Icons.Search className={clsx(
-              'absolute left-3 top-1/2 -translate-y-1/2',
-              'h-4 w-4 text-gray-400'
-            )} />
-            <input
-              type="text"
-              value={searchValue}
-              onChange={(e) => onSearch?.(e.target.value)}
-              placeholder={searchPlaceholder}
-              className={clsx(
-                'w-full pl-10 pr-4 py-2',
-                'rounded-lg border',
-                'border-gray-200 dark:border-white/10',
-                'bg-gray-50 dark:bg-white/5',
-                'focus:outline-none focus:ring-2',
-                accent === 'emerald' 
-                  ? 'focus:ring-emerald-500'
-                  : 'focus:ring-blue-500'
-              )}
-            />
-          </div>
-        </div>
-      )}
-      
       {/* RIGHT SECTION - Actions */}
-      <div className={clsx(
-        'flex items-center gap-2',
-        'flex-shrink-0' // Never shrinks
-      )}>
-        {/* Search Mobile */}
-        {showSearch && (
+      <div className="flex items-center gap-2 flex-shrink-0 z-10">
+        {/* Right-side:Back button (hidden on Home); on Home show notifications if provided */}
+        {!isHome ? (
           <button
-            className={clsx(
-              'md:hidden p-2 rounded-lg',
-              'hover:bg-gray-100 dark:hover:bg-white/10'
-            )}
-            aria-label="Search"
+            onClick={() => router.back()}
+            className="p-2 rounded-lg hover:bg-white/10"
+            aria-label="Back"
           >
-            <Icons.Search className="h-5 w-5" />
+            <Icons.ArrowLeft className="h-5 w-5 text-white" />
           </button>
+        ) : (
+          onNotificationClick && (
+            <button
+              onClick={onNotificationClick}
+              className="relative p-2 rounded-lg hover:bg-white/10"
+              aria-label="Notifications"
+            >
+              <Icons.Bell className="h-5 w-5 text-white" />
+              {notifications > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-semibold">
+                  {notifications > 9 ? '9+' : notifications}
+                </span>
+              )}
+            </button>
+          )
         )}
-        
-        {/* Notifications - Fixed Size */}
-        {onNotificationClick && (
-          <button
-            onClick={onNotificationClick}
-            className={clsx(
-              'relative p-2 rounded-lg',
-              'hover:bg-gray-100 dark:hover:bg-white/10'
-            )}
-            aria-label="Notifications"
-          >
-            <Icons.Bell className="h-5 w-5" />
-            {notifications > 0 && (
-              <span className={clsx(
-                'absolute -top-1 -right-1',
-                'h-5 w-5 rounded-full',
-                'bg-red-500 text-white',
-                'text-xs flex items-center justify-center',
-                'font-semibold'
-              )}>
-                {notifications > 9 ? '9+' : notifications}
-              </span>
-            )}
-          </button>
-        )}
-        
+
         {/* User Menu - Fixed Size */}
         {user && (
           <div className="relative">
@@ -210,12 +131,12 @@ export default function AppHeader({
               onClick={() => setUserMenuOpen(!userMenuOpen)}
               className={clsx(
                 'flex items-center gap-2 p-2 rounded-lg',
-                'hover:bg-gray-100 dark:hover:bg-white/10',
+                'hover:bg-white/10',
                 'max-w-[200px]' // Prevent expansion
               )}
             >
               <div className={clsx(
-                'h-8 w-8 rounded-full bg-gray-200 dark:bg-white/10',
+                'h-8 w-8 rounded-full bg-white/20',
                 'flex items-center justify-center flex-shrink-0'
               )}>
                 {user.avatar ? (
@@ -225,16 +146,16 @@ export default function AppHeader({
                     className="h-full w-full rounded-full object-cover"
                   />
                 ) : (
-                  <Icons.User className="h-4 w-4" />
+                  <Icons.User className="h-4 w-4 text-white" />
                 )}
               </div>
               <span className={clsx(
-                'hidden md:block text-sm font-medium',
+                'hidden md:block text-sm font-medium text-white',
                 'truncate min-w-0' // Text safety
               )}>
                 {user.name || user.email}
               </span>
-              <Icons.ChevronDown className="h-4 w-4 flex-shrink-0" />
+              <Icons.ChevronDown className="h-4 w-4 flex-shrink-0 text-white" />
             </button>
             
             {/* Dropdown - Position controlled */}
@@ -253,20 +174,13 @@ export default function AppHeader({
               >
                 <button
                   onClick={() => onUserMenuClick?.('profile')}
-                  className={clsx(
-                    'w-full px-4 py-2 text-left text-sm',
-                    'hover:bg-gray-100 dark:hover:bg-white/10'
-                  )}
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-white/10"
                 >
                   Profile Settings
                 </button>
                 <button
                   onClick={() => onUserMenuClick?.('logout')}
-                  className={clsx(
-                    'w-full px-4 py-2 text-left text-sm',
-                    'text-red-600 dark:text-red-400',
-                    'hover:bg-red-50 dark:hover:bg-red-900/20'
-                  )}
+                  className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
                   Sign Out
                 </button>
