@@ -4,6 +4,7 @@ import * as React from 'react'
 import PatientSidebar, { type NavItem } from '@/components/layouts/PatientSidebar'
 import AppHeader from './AppHeader'
 import MobileFooter from './MobileFooter'
+import ChatDock from '@/components/patterns/ChatDock'
 // Table ListViewLayout removed; use explicit children instead
 
 export type ListPageLayoutClientProps<Row> = {
@@ -114,6 +115,8 @@ export default function ListPageLayoutClient<Row>(props: ListPageLayoutClientPro
 
         {/* Mobile bottom navigation */}
         <MobileFooter />
+        {/* Chat dock */}
+        <ChatDock />
       </div>
     </div>
   )

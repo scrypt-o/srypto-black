@@ -5,6 +5,7 @@ import PatientSidebar, { type NavItem } from '@/components/layouts/PatientSideba
 import AppHeader from './AppHeader'
 import DetailViewLayout, { type DetailViewLayoutProps } from './DetailViewLayout'
 import MobileFooter from './MobileFooter'
+import ChatDock from '@/components/patterns/ChatDock'
 
 export type DetailPageLayoutClientProps = {
   sidebarItems: NavItem[]
@@ -115,6 +116,8 @@ export default function DetailPageLayoutClient(props: DetailPageLayoutClientProp
         </main>
         {/* Mobile bottom navigation */}
         <MobileFooter />
+        {/* Chat dock */}
+        <ChatDock />
       </div>
     </div>
   )}

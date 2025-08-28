@@ -19,7 +19,8 @@ export default async function MedicalHistoryPage() {
         description: 'Track allergic reactions and sensitivities',
         icon: 'AlertTriangle',
         href: '/patient/medhist/allergies',
-        variant: 'default' as const
+        variant: 'default' as const,
+        accent: 'blue' as const
       }
     ]
   }

@@ -10,6 +10,7 @@ import PatientSidebar, { type NavItem } from '@/components/layouts/PatientSideba
 import AppHeader from './AppHeader'
 import TileGridLayout, { type TileGridLayoutProps } from './TileGridLayout'
 import MobileFooter from './MobileFooter'
+import ChatDock from '@/components/patterns/ChatDock'
 
 export type TilePageLayoutClientProps = {
   // Navigation props
@@ -249,6 +250,8 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
         </main>
         {/* Mobile bottom navigation */}
         <MobileFooter />
+        {/* Chat dock */}
+        <ChatDock />
       </div>
     </div>
   )
