@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { useLayoutStore } from '@/lib/stores/layout-store'
-import PatientSidebar, { type NavItem } from '@/components/nav/PatientSidebar'
+import PatientSidebar, { type NavItem } from '@/components/layouts/PatientSidebar'
 import AppHeader from './AppHeader'
 import TileGridLayout, { type TileGridLayoutProps } from './TileGridLayout'
 

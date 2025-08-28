@@ -1,6 +1,6 @@
 import * as React from 'react'
 import TilePageLayoutClient, { type TilePageLayoutClientProps } from './TilePageLayoutClient'
-import { type NavItem } from '@/components/nav/PatientSidebar'
+import { type NavItem } from '@/components/layouts/PatientSidebar'
 import { type TileGridLayoutProps } from './TileGridLayout'
 
 export type TilePageLayoutProps = {

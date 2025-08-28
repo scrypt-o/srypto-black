@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import PatientSidebar, { type NavItem } from '@/components/nav/PatientSidebar'
+import PatientSidebar, { type NavItem } from '@/components/layouts/PatientSidebar'
 import AppHeader from './AppHeader'
 import DetailViewLayout, { type DetailViewLayoutProps } from './DetailViewLayout'
 import MobileFooter from './MobileFooter'

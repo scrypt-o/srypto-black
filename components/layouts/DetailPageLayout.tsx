@@ -1,4 +1,4 @@
-import PatientSidebar, { type NavItem } from '@/components/nav/PatientSidebar'
+import PatientSidebar, { type NavItem } from '@/components/layouts/PatientSidebar'
 import { type DetailViewLayoutProps } from './DetailViewLayout'
 import DetailPageLayoutClient from './DetailPageLayoutClient'
 

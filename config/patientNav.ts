@@ -1,4 +1,4 @@
-import type { NavItem } from '@/components/nav/PatientSidebar'
+import type { NavItem } from '@/components/layouts/PatientSidebar'
 
 export const patientNavItems: NavItem[] = [
   {
