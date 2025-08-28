@@ -39,12 +39,12 @@ const severityColors = {
   normal: 'bg-gray-400 text-white'
 }
 
-const letterBadgeColors = [
-  'bg-blue-100 text-blue-700',
-  'bg-green-100 text-green-700',
-  'bg-purple-100 text-purple-700',
-  'bg-pink-100 text-pink-700',
-  'bg-indigo-100 text-indigo-700',
+const letterBadgeStyles = [
+  'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700 ring-1 ring-blue-200',
+  'bg-gradient-to-br from-emerald-50 to-emerald-100 text-emerald-700 ring-1 ring-emerald-200',
+  'bg-gradient-to-br from-purple-50 to-purple-100 text-purple-700 ring-1 ring-purple-200',
+  'bg-gradient-to-br from-pink-50 to-pink-100 text-pink-700 ring-1 ring-pink-200',
+  'bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-700 ring-1 ring-indigo-200',
 ]
 
 export default function ListView<T extends ListItem>({
@@ -135,7 +135,7 @@ export default function ListView<T extends ListItem>({
   return (
     <div className="flex flex-col h-full">
       {/* Header with Search */}
-      <div className="flex flex-col gap-3 p-4 bg-white border-b">
+      <div className="flex flex-col gap-3 p-4 bg-white border-b dark:bg-gray-950 dark:border-white/10">
         <div className="flex items-center gap-2">
           <div className="flex-1 relative">
             <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -233,7 +233,7 @@ export default function ListView<T extends ListItem>({
           <div className="divide-y">
             {items.map((item, index) => {
               const letter = item.letter || item.title[0]?.toUpperCase() || '?'
-              const badgeColor = letterBadgeColors[index % letterBadgeColors.length]
+              const badgeStyle = letterBadgeStyles[index % letterBadgeStyles.length]
               
               return (
                 <div
@@ -259,31 +259,57 @@ export default function ListView<T extends ListItem>({
 
                   {/* Letter Badge */}
                   <div className={clsx(
-                    'w-10 h-10 rounded-lg flex items-center justify-center font-semibold text-lg',
-                    badgeColor
+                    'w-10 h-10 rounded-full grid place-items-center font-semibold text-sm shadow-sm',
+                    badgeStyle
                   )}>
                     {letter}
                   </div>
 
                   {/* Main Content */}
-                  <div className="flex-1 flex items-center gap-3 min-w-0">
-                    <span className="font-medium text-gray-900 truncate">
-                      {item.title}
-                    </span>
-                    
-                    {item.severity && (
-                      <span className={clsx(
-                        'px-2 py-0.5 rounded-full text-xs font-medium',
-                        severityColors[item.severity]
-                      )}>
-                        {item.severity}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-medium text-gray-900 dark:text-gray-100 truncate">
+                        {item.title}
                       </span>
-                    )}
+                      {item.severity && (
+                        <span className={clsx(
+                          'px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide',
+                          severityColors[item.severity]
+                        )}>
+                          {item.severity}
+                        </span>
+                      )}
+                    </div>
+                    {/* Secondary line: tags and preview if available */}
+                    <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300 min-w-0">
+                      {(() => {
+                        const anyItem: any = item
+                        const tags: React.ReactNode[] = []
+                        if (anyItem.allergen_type) {
+                          tags.push(
+                            <span key="type" className="inline-flex items-center rounded-full bg-gray-100 dark:bg-white/10 px-2 py-0.5 text-[11px]">
+                              {String(anyItem.allergen_type)}
+                            </span>
+                          )
+                        }
+                        if (anyItem.reaction) {
+                          tags.push(
+                            <span key="reaction" className="truncate max-w-[50%] text-[11px] text-gray-500 dark:text-gray-400">
+                              {String(anyItem.reaction)}
+                            </span>
+                          )
+                        }
+                        return tags
+                      })()}
+                    </div>
                   </div>
 
                   {/* Third Column */}
-                  <div className="text-sm text-gray-500">
-                    {formatThirdColumn(item.thirdColumn)}
+                  <div className="ml-auto flex items-center gap-2">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      {formatThirdColumn(item.thirdColumn)}
+                    </div>
+                    <Icons.ChevronRight className="h-4 w-4 text-gray-300" />
                   </div>
 
                   {/* Edit Button */}
@@ -292,7 +318,7 @@ export default function ListView<T extends ListItem>({
                       e.stopPropagation()
                       onEditClick?.(item)
                     }}
-                    className="p-1.5 hover:bg-gray-100 rounded"
+                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded"
                   >
                     <Icons.Pencil className="h-4 w-4 text-gray-400" />
                   </button>

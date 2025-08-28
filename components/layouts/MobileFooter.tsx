@@ -8,7 +8,10 @@ import {
   Search,
   QrCode,
   Sparkles,
-  SlidersHorizontal
+  SlidersHorizontal,
+  BadgePercent,
+  LocateFixed,
+  HeartPulse
 } from 'lucide-react'
 
 export default function MobileFooter() {
@@ -99,24 +102,27 @@ export default function MobileFooter() {
 
       {/* Custom quick menu (small sliding sheet) */}
       <div className={`md:hidden fixed bottom-16 left-2 z-40 transition-transform ${customOpen ? 'translate-y-0' : 'translate-y-6 opacity-0 pointer-events-none'} `}>
-        <div className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden">
+        <div className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden min-w-[200px]">
           <button
-            className="block px-3 py-2 text-sm text-left hover:bg-gray-50 dark:hover:bg-white/10 w-full"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-left w-full hover:bg-pink-50 dark:hover:bg-pink-900/15"
             onClick={() => { setCustomOpen(false); router.push('/patient/deals') }}
           >
-            Daily deals
+            <BadgePercent className="h-4 w-4 text-pink-600 dark:text-pink-300" />
+            <span className="text-gray-800 dark:text-gray-100">Daily deals</span>
           </button>
           <button
-            className="block px-3 py-2 text-sm text-left hover:bg-gray-50 dark:hover:bg-white/10 w-full"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-left w-full hover:bg-teal-50 dark:hover:bg-teal-900/15"
             onClick={() => { setCustomOpen(false); router.push('/patient/location/find-loved-ones') }}
           >
-            Find my loved ones
+            <LocateFixed className="h-4 w-4 text-teal-600 dark:text-teal-300" />
+            <span className="text-gray-800 dark:text-gray-100">Find my loved ones</span>
           </button>
           <button
-            className="block px-3 py-2 text-sm text-left hover:bg-gray-50 dark:hover:bg-white/10 w-full"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-left w-full hover:bg-fuchsia-50 dark:hover:bg-fuchsia-900/15"
             onClick={() => { setCustomOpen(false); router.push('/patient/vitality') }}
           >
-            Vitality
+            <HeartPulse className="h-4 w-4 text-fuchsia-600 dark:text-fuchsia-300" />
+            <span className="text-gray-800 dark:text-gray-100">Vitality</span>
           </button>
         </div>
       </div>
