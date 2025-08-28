@@ -26,6 +26,9 @@ export type TilePageLayoutClientProps = {
   
   // Tile grid props
   tileConfig: TileGridLayoutProps
+  // Content heading below header and above tiles
+  contentHeading?: string
+  contentSubheading?: string
   
   // Options to show/hide components
   showSidebar?: boolean
@@ -53,6 +56,8 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
     onNotificationClick,
     onUserMenuClick,
     tileConfig,
+    contentHeading,
+    contentSubheading,
     showSidebar = true,
     showHeader = true,
     showMobileMenu = true,
@@ -145,16 +150,16 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
         {/* Content Area */}
         <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 md:p-6">
           <div className="w-full max-w-7xl mx-auto">
-            {/* Inline heading when header is hidden */}
-            {!showHeader && (headerTitle || headerSubtitle) && (
+            {/* Inline heading below AppHeader */}
+            {(contentHeading || contentSubheading) && (
               <div className="mb-4 md:mb-6">
-                {headerTitle && (
+                {contentHeading && (
                   <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
-                    {headerTitle}
+                    {contentHeading}
                   </h1>
                 )}
-                {headerSubtitle && (
-                  <p className="mt-1 text-gray-600 dark:text-gray-400">{headerSubtitle}</p>
+                {contentSubheading && (
+                  <p className="mt-1 text-gray-600 dark:text-gray-400">{contentSubheading}</p>
                 )}
               </div>
             )}

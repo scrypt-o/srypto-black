@@ -22,6 +22,9 @@ export type TilePageLayoutProps = {
   
   // Tile grid props
   tileConfig: TileGridLayoutProps
+  // Content heading shown above tiles (below AppHeader)
+  contentHeading?: string
+  contentSubheading?: string
   
   // Options to show/hide components
   showSidebar?: boolean
