@@ -38,7 +38,7 @@ export const patientNavItems: NavItem[] = [
   {
     id: 'prescriptions',
     label: 'Prescriptions',
-    icon: 'Prescription',
+    icon: 'FileText',
     type: 'group',
     children: [
       { id: 'scan-prescription', label: 'Scan Prescription', icon: 'Scan' },
@@ -64,7 +64,7 @@ export const patientNavItems: NavItem[] = [
   {
     id: 'vitality',
     label: 'Vitality',
-    icon: 'Heartbeat',
+    icon: 'Heart',
     type: 'group',
     children: [
       { id: 'body-measurements', label: 'Body Measurements', icon: 'Ruler' },
