@@ -1,6 +1,6 @@
 import PatientSidebar, { type NavItem } from '@/components/nav/PatientSidebar'
 import { type DetailViewLayoutProps } from './DetailViewLayout'
-import ClientDetailPageChrome from './ClientDetailPageChrome'
+import DetailPageLayoutClient from './DetailPageLayoutClient'
 
 export type DetailPageLayoutProps = {
   // Navigation props
@@ -35,5 +35,5 @@ export type DetailPageLayoutProps = {
 }
 
 export default function DetailPageLayout(props: DetailPageLayoutProps) {
-  return <ClientDetailPageChrome {...props} />
+  return <DetailPageLayoutClient {...props} />
 }

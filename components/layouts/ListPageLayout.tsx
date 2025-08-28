@@ -1,5 +1,5 @@
 import PatientSidebar, { type NavItem } from '@/components/nav/PatientSidebar'
-import ClientListPageChrome from './ClientListPageChrome'
+import ListPageLayoutClient from './ListPageLayoutClient'
 
 export type ListPageLayoutProps<Row> = {
   // Navigation props
@@ -33,5 +33,5 @@ export type ListPageLayoutProps<Row> = {
 }
 
 export default function ListPageLayout<Row>(props: ListPageLayoutProps<Row>) {
-  return <ClientListPageChrome {...props} />
+  return <ListPageLayoutClient {...props} />
 }

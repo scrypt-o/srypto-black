@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { requireUser, getServerClient } from '@/lib/supabase-server'
 import { patientNavItems } from '@/config/patientNav'
-import ClientListPageChrome from '@/components/layouts/ClientListPageChrome'
-import AllergiesListIsland from '@/components/features/patient/allergies/AllergiesListIsland'
+import ListPageLayoutClient from '@/components/layouts/ListPageLayoutClient'
+import AllergiesListFeature from '@/components/features/patient/allergies/AllergiesListFeature'
 
 export const dynamic = 'force-dynamic'
 
@@ -58,8 +58,8 @@ export default async function AllergiesListPage({ searchParams }: { searchParams
   const { data, error, count } = await query
 
   return (
-    <ClientListPageChrome sidebarItems={patientNavItems} headerTitle="Allergies">
-      <AllergiesListIsland
+    <ListPageLayoutClient sidebarItems={patientNavItems} headerTitle="Allergies">
+      <AllergiesListFeature
         initialData={error ? [] : (data || [])}
         total={error ? 0 : (count || 0)}
         initialState={{
@@ -72,6 +72,6 @@ export default async function AllergiesListPage({ searchParams }: { searchParams
           sort_dir: sortDir,
         }}
       />
-    </ClientListPageChrome>
+    </ListPageLayoutClient>
   )
 }
