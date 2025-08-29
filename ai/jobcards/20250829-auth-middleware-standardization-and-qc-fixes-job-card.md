@@ -2,7 +2,7 @@
 
 - Date: 2025-08-29
 - Owner: AI Assistant
-- Status: Proposed (awaiting discussion/approval)
+- Status: Completed — Phase 1 (Auth baseline + Allergies UI)
 - Related: ai/audit/2025-08-28-codebase-qa-audit-report.md, ai/audit/26082025-layout-and-specs-audit.md
 - Specs: ai/init.md (middleware-only auth), ai/specs/READ_ME_TO_CONTINUE.md, ai/specs/API and Error Semantics (Revised).md, ai/specs/SSR-First Architecture.md
 
@@ -97,3 +97,59 @@ Goal: Reconcile auth pattern to middleware-only (single source of truth), clean 
 
 > Do not start implementation until approved. This card will remain immutable; follow-ups will be appended below after approval.
 
+---
+
+## IMPLEMENTATION SUMMARY (2025-08-29)
+
+- Middleware route protection added for `/patient` with PUBLIC_PATHS and edge Supabase session check; existing security headers/CSP preserved.
+- Removed page-level `requireUser()` across patient pages; converted pages without awaits to sync functions to satisfy `require-await`.
+- Allergies list: replaced `window.confirm` + `window.alert` with `<ConfirmDialog>` and `useToast()`; no logic changes.
+- Typecheck and lint run; no lint errors introduced. Warnings in unrelated areas noted below.
+- No changes to API auth checks (still enforced per route).
+
+### Commits
+- Auth: add middleware route protection for /patient with PUBLIC_PATHS + edge Supabase session check; preserve headers/CSP; no page changes yet.
+- Auth: standardize on middleware-only; remove page-level requireUser and switch pages without awaits to sync functions; lint clean (no errors).
+- Allergies: replace browser confirm/alert with ConfirmDialog + Toast; no logic changes; verified typecheck/lint clean.
+
+### Quick Validation
+- Typecheck: OK (`npm run typecheck`).
+- Lint: OK (errors) with known warnings outside scope (`npm run lint`).
+- Recommended next: run Playwright auth redirect tests and a smoke pass on `/patient` routes.
+
+---
+
+## OUTSTANDING ITEMS (Deferred — to be tracked separately)
+
+1) Type Safety & Lint Hygiene
+- Many `any` usages and unsafe assignments in:
+  - `app/patient/*/page.tsx` (tiles and configs)
+  - `components/layouts/ListViewLayout.tsx`, `DetailView.tsx`, `BottomBar.tsx`
+  - `components/auth/LoginForm.tsx` (response parsing)
+- API typing warnings: unsafe destructuring in `app/api/patient/medical-history/allergies/**/*.ts`.
+- Unused variables in some layout components.
+- Action: Phase 1 tighten types in shared layouts and tile configs; add minimal interfaces; adjust APIs’ destructuring types.
+
+2) next/image adoption warnings
+- `@next/next/no-img-element` in `AppHeader.tsx`, `ListViewLayout.tsx`.
+- Action: Decide whether to adopt `next/image` for these assets or suppress rule for icons/avatars.
+
+3) Placeholder Pages UX
+- Several patient pages are placeholders with empty tiles; clarify UX with consistent empty states.
+
+4) Docs Alignment
+- Resolve spec conflict: update `ai/specs/READ_ME_TO_CONTINUE.md` to remove page-level `requireUser()` guidance and emphasize middleware-only pattern per `ai/init.md`.
+
+---
+
+## CURRENT STATUS & NEXT TASKS (Plan)
+
+- Status: Phase 1 complete (middleware-only auth in place; Allergies UI fix applied). No breaking changes detected.
+
+- Next (proposed small PRs):
+  1. Tests: Add Playwright auth redirect test for `/patient/*` unauthenticated → `/login`; add a unit test for API 401 path (Allergies).
+  2. Types Phase 1: Define tile config interfaces and remove obvious `any` in patient pages; minimal edits to shared layouts to accept typed accessors.
+  3. API typing: Replace unsafe destructuring in allergies API handlers with typed objects.
+  4. Docs: Update `READ_ME_TO_CONTINUE.md` to reflect middleware-only auth.
+
+Note: Each subtask will be a separate, low‑risk commit with lint/typecheck runs.

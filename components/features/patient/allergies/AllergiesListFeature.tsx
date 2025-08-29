@@ -38,8 +38,8 @@ const mapSeverity = (severity: Severity | null): 'critical' | 'severe' | 'modera
 
 export default function AllergiesListFeature({
   initialData,
-  total,
-  initialState
+  total: _total,
+  initialState: _initialState,
 }: AllergiesListFeatureProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
