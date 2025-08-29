@@ -72,11 +72,34 @@ export function verifyCsrf(request: NextRequest): NextResponse | undefined {
 
   const origin = request.headers.get('origin') || ''
   const referer = request.headers.get('referer') || ''
-  // Prefer configured site URL; fall back to request URL origin
-  const expected = process.env.NEXT_PUBLIC_SITE_URL || request.nextUrl.origin
 
-  const sameOrigin = origin ? origin === expected : referer.startsWith(expected)
-  if (!sameOrigin) {
+  // Build allowlist of acceptable origins
+  const envOrigins = [
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.CSRF_ALLOWED_ORIGINS,
+  ]
+    .filter(Boolean)
+    .flatMap((v) => String(v).split(','))
+    .map((s) => s.trim())
+    .filter(Boolean)
+
+  // Always allow the current request origin (deployment domain)
+  const currentOrigin = request.nextUrl.origin
+  const allowed = new Set([currentOrigin, ...envOrigins])
+
+  // Determine the request's declared origin (prefer Origin header; fallback to Referer origin)
+  let declaredOrigin = ''
+  if (origin) {
+    declaredOrigin = origin
+  } else if (referer) {
+    try {
+      declaredOrigin = new URL(referer).origin
+    } catch {
+      declaredOrigin = ''
+    }
+  }
+
+  if (!declaredOrigin || !allowed.has(declaredOrigin)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
   return undefined
