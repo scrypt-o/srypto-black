@@ -1142,6 +1142,580 @@ SELECT * FROM patient__presc__prescriptions LIMIT 1;
 
 ---
 
-**FINAL RECOMMENDATION**: This specification provides a strategic path to implement prescription scanning by adapting proven legacy patterns to current architecture. The legacy solved the hard problems - we just need to modernize the implementation approach while preserving the working core functionality.
+## CRITICAL GAPS IDENTIFIED & SOLUTIONS
 
-**Next Step**: Assess existing components in current codebase and begin selective porting process.
+### Session Management Implementation (MISSING FROM SPEC)
+```typescript
+// lib/services/prescription/session-service.ts
+interface ScanningSession {
+  sessionId: string
+  userId: string
+  status: 'uploading' | 'analyzing' | 'analyzed' | 'saving' | 'completed' | 'failed'
+  uploadedPath?: string
+  analysisResult?: AnalysisResult
+  createdAt: string
+  expiresAt: string        // 2 hour timeout
+  retryCount: number
+  costAccumulated: number  // Track OpenAI costs per session
+}
+
+export class ScanningSessionService {
+  // Store in Redis or database table for persistence
+  async createSession(userId: string): Promise<string>
+  async getSession(sessionId: string): Promise<ScanningSession | null>
+  async updateSession(sessionId: string, updates: Partial<ScanningSession>): Promise<void>
+  async cleanupExpiredSessions(): Promise<void>
+}
+```
+
+### Medical Validation Rules (DETAILED IMPLEMENTATION)
+```typescript
+// lib/services/prescription/medical-validation-service.ts
+export class MedicalValidationService {
+  // Dosage limit tables - CRITICAL for patient safety
+  private readonly DOSAGE_LIMITS = {
+    'paracetamol': { max_daily: 4000, units: 'mg', warning_threshold: 3000 },
+    'ibuprofen': { max_daily: 2400, units: 'mg', warning_threshold: 1800 },
+    'aspirin': { max_daily: 4000, units: 'mg', contraindications: ['age_under_16'] },
+    'codeine': { max_daily: 240, units: 'mg', controlled_substance: true }
+  }
+
+  validateDosage(medication: string, dosage: string): ValidationResult {
+    const limits = this.DOSAGE_LIMITS[medication.toLowerCase()]
+    if (!limits) return { valid: true, warnings: [`Unknown medication: ${medication}`] }
+    
+    const extractedAmount = this.extractDosageAmount(dosage)
+    if (extractedAmount > limits.max_daily) {
+      return { 
+        valid: false, 
+        errors: [`Dangerous dosage detected: ${dosage} exceeds safe limit of ${limits.max_daily}${limits.units}`] 
+      }
+    }
+    
+    return { valid: true }
+  }
+
+  checkPrescriptionAge(issueDate: string): ValidationResult {
+    const days = this.daysSince(issueDate)
+    if (days > 180) {
+      return { valid: false, errors: ['Prescription is over 6 months old'] }
+    }
+    if (days > 90) {
+      return { valid: true, warnings: ['Prescription is over 3 months old'] }
+    }
+    return { valid: true }
+  }
+
+  detectDuplicatePrescription(medications: Medication[], userId: string): Promise<boolean> {
+    // Check database for recent prescriptions with same medications
+    // Return true if duplicate found within last 30 days
+  }
+}
+```
+
+### OpenAI Cost Control System (CRITICAL FOR PRODUCTION)
+```typescript
+// lib/services/prescription/cost-control-service.ts
+export class OpenAICostControlService {
+  private readonly USER_DAILY_LIMIT = 50    // Max $50 per user per day
+  private readonly GLOBAL_HOURLY_LIMIT = 1000  // Max $1000 per hour globally
+
+  async checkCostLimits(userId: string): Promise<{ allowed: boolean; reason?: string }> {
+    const userDailyCost = await this.getUserDailyCost(userId)
+    const globalHourlyCost = await this.getGlobalHourlyCost()
+    
+    if (userDailyCost > this.USER_DAILY_LIMIT) {
+      return { allowed: false, reason: 'Daily cost limit exceeded' }
+    }
+    
+    if (globalHourlyCost > this.GLOBAL_HOURLY_LIMIT) {
+      return { allowed: false, reason: 'System busy, try again later' }
+    }
+    
+    return { allowed: true }
+  }
+
+  async trackOpenAICost(userId: string, tokensUsed: number, model: string): Promise<void> {
+    const cost = this.calculateCost(tokensUsed, model)
+    await this.recordCost(userId, cost, { tokens: tokensUsed, model })
+  }
+}
+```
+
+---
+
+## COMPREHENSIVE AUTOMATIC TEST SUITES
+
+### Prescription Scanning Automatic Tests
+
+#### 1. Generative Medical Data Testing
+```typescript
+// tests/automatic/prescription-scanning/generative-tests.spec.ts
+import { test, expect } from '@playwright/test'
+import { generateMedicalTestCases, generateDangerousScenarios } from './test-generators'
+
+test.describe('Prescription Scanning - Generative Tests', () => {
+  const testCases = generateMedicalTestCases(1000) // Generate 1000 test cases
+  
+  testCases.forEach((testCase, index) => {
+    test(`Generated prescription test ${index + 1}: ${testCase.type}`, async ({ page }) => {
+      await page.goto('/patient/presc/scanning')
+      
+      // Upload generated test image
+      await page.setInputFiles('[data-testid="file-input"]', testCase.imageFile)
+      await page.click('[data-testid="submit-processing"]')
+      
+      // Verify expected behavior based on test case type
+      if (testCase.shouldSucceed) {
+        await expect(page.locator('[data-testid="analysis-success"]')).toBeVisible()
+        await expect(page.locator('[data-testid="confidence-score"]')).toContainText(
+          new RegExp(`[${testCase.expectedConfidenceRange}]`)
+        )
+      } else {
+        await expect(page.locator('[data-testid="analysis-failure"]')).toBeVisible()
+        await expect(page.locator('[data-testid="failure-reason"]')).toContainText(testCase.expectedReason)
+      }
+    })
+  })
+})
+
+// Test generator functions
+function generateMedicalTestCases(count: number) {
+  const cases = []
+  for (let i = 0; i < count; i++) {
+    cases.push({
+      type: randomChoice(['clear_prescription', 'blurry_prescription', 'non_prescription', 'dangerous_dosage']),
+      imageFile: generateTestImage(type),
+      shouldSucceed: type !== 'non_prescription',
+      expectedConfidenceRange: getExpectedConfidence(type),
+      expectedReason: type === 'non_prescription' ? 'Not a prescription' : null
+    })
+  }
+  return cases
+}
+```
+
+#### 2. Session Recovery Chaos Testing
+```typescript
+// tests/automatic/prescription-scanning/chaos-tests.spec.ts
+test.describe('Prescription Scanning - Chaos Engineering', () => {
+  test('Session recovery under random interruptions', async ({ page }) => {
+    const interruptionPoints = [
+      'after_upload_before_analysis',
+      'during_openai_processing', 
+      'after_analysis_before_save',
+      'during_database_save'
+    ]
+    
+    for (const point of interruptionPoints) {
+      await page.goto('/patient/presc/scanning')
+      await uploadTestPrescription(page)
+      
+      // Interrupt at specific point
+      await interruptAt(point, page)
+      
+      // Refresh browser
+      await page.reload()
+      
+      // Verify session recovery
+      await expect(page.locator('[data-testid="session-recovered"]')).toBeVisible()
+      await expect(page.locator('[data-testid="resume-analysis"]')).toBeEnabled()
+      
+      // Complete the workflow
+      await page.click('[data-testid="resume-analysis"]')
+      await expect(page.locator('[data-testid="analysis-results"]')).toBeVisible()
+    }
+  })
+})
+```
+
+#### 3. Security Penetration Testing
+```typescript
+// tests/automatic/prescription-scanning/security-tests.spec.ts
+test.describe('Prescription Scanning - Security Tests', () => {
+  test('Cannot access other users prescription data', async ({ page, context }) => {
+    // Login as user 1
+    await loginAs(page, 'user1@test.com', 'password')
+    await uploadAndAnalyzePrescription(page)
+    const prescriptionId = await page.getAttribute('[data-testid="prescription-id"]', 'value')
+    
+    // Login as user 2 in new context
+    const page2 = await context.newPage()
+    await loginAs(page2, 'user2@test.com', 'password')
+    
+    // Attempt to access user 1's prescription
+    await page2.goto(`/patient/presc/${prescriptionId}`)
+    await expect(page2.locator('text=Unauthorized')).toBeVisible()
+  })
+
+  test('File upload security - reject malicious files', async ({ page }) => {
+    const maliciousFiles = [
+      'executable.exe.jpg',    // Executable disguised as image
+      'script.js',             // JavaScript file
+      'oversized-10gb.jpg',    // Extremely large file
+      'corrupted-header.jpg'   // Corrupted image header
+    ]
+    
+    for (const fileName of maliciousFiles) {
+      await page.goto('/patient/presc/scanning')
+      await page.setInputFiles('[data-testid="file-input"]', `tests/malicious/${fileName}`)
+      await expect(page.locator('[data-testid="upload-error"]')).toBeVisible()
+      await expect(page.locator('[data-testid="error-message"]')).toContainText('Invalid file')
+    }
+  })
+})
+```
+
+#### 4. Medical Validation Automatic Testing
+```typescript
+// tests/automatic/prescription-scanning/medical-validation-tests.spec.ts
+test.describe('Prescription Scanning - Medical Safety Tests', () => {
+  test('Dangerous dosage detection', async ({ page }) => {
+    const dangerousScenarios = [
+      { medication: 'paracetamol', dosage: '10000mg', expectedError: 'Exceeds safe daily limit' },
+      { medication: 'aspirin', dosage: '5000mg', patientAge: 12, expectedError: 'Not suitable for children' },
+      { medication: 'warfarin', dosage: '20mg', expectedWarning: 'Blood thinner - monitor carefully' }
+    ]
+    
+    for (const scenario of dangerousScenarios) {
+      // Generate mock AI response with dangerous dosage
+      await page.route('/api/patient/presc/scanning/analyze', route => {
+        route.fulfill({
+          json: {
+            success: true,
+            isPrescription: true,
+            data: {
+              medications: [{ name: scenario.medication, dosage: scenario.dosage }],
+              // ... other prescription data
+            }
+          }
+        })
+      })
+      
+      await page.goto('/patient/presc/scanning')
+      await uploadTestImage(page)
+      await page.click('[data-testid="submit-processing"]')
+      
+      // Verify validation catches the dangerous dosage
+      if (scenario.expectedError) {
+        await expect(page.locator('[data-testid="validation-error"]')).toContainText(scenario.expectedError)
+        await expect(page.locator('[data-testid="save-button"]')).toBeDisabled()
+      } else if (scenario.expectedWarning) {
+        await expect(page.locator('[data-testid="validation-warning"]')).toContainText(scenario.expectedWarning)
+        await expect(page.locator('[data-testid="save-button"]')).toBeEnabled()
+      }
+    }
+  })
+})
+```
+
+### Location Services Automatic Tests
+
+#### 1. Geographic Edge Case Testing
+```typescript
+// tests/automatic/location-services/geographic-tests.spec.ts
+test.describe('Location Services - Geographic Tests', () => {
+  test('Location search across South African regions', async ({ page }) => {
+    const locationTests = [
+      { name: 'Cape Town CBD', lat: -33.9249, lng: 18.4241, expectedResults: '>100' },
+      { name: 'Johannesburg CBD', lat: -26.2041, lng: 28.0473, expectedResults: '>150' },
+      { name: 'Rural Northern Cape', lat: -28.7282, lng: 24.7499, expectedResults: '<10' },
+      { name: 'Border with Botswana', lat: -25.8627, lng: 25.6437, expectedResults: '<5' }
+    ]
+    
+    for (const location of locationTests) {
+      // Mock geolocation to specific coordinates
+      await page.addInitScript(coords => {
+        Object.defineProperty(navigator, 'geolocation', {
+          value: {
+            getCurrentPosition: (success) => success({
+              coords: { latitude: coords.lat, longitude: coords.lng }
+            })
+          }
+        })
+      }, location)
+      
+      await page.goto('/patient/location/find-pharmacies')
+      await page.waitForSelector('[data-testid="search-results"]')
+      
+      const resultCount = await page.locator('[data-testid="result-item"]').count()
+      
+      // Verify result count matches expectations for the region
+      if (location.expectedResults.startsWith('>')) {
+        const minResults = parseInt(location.expectedResults.substring(1))
+        expect(resultCount).toBeGreaterThan(minResults)
+      } else if (location.expectedResults.startsWith('<')) {
+        const maxResults = parseInt(location.expectedResults.substring(1))
+        expect(resultCount).toBeLessThan(maxResults)
+      }
+    }
+  })
+})
+```
+
+#### 2. Google Maps API Resilience Testing
+```typescript
+// tests/automatic/location-services/api-resilience-tests.spec.ts
+test.describe('Location Services - API Resilience', () => {
+  test('Graceful degradation when Google Maps API fails', async ({ page }) => {
+    const failureScenarios = [
+      { type: 'invalid_api_key', mockResponse: { error: 'API_KEY_INVALID' } },
+      { type: 'quota_exceeded', mockResponse: { error: 'OVER_QUERY_LIMIT' } },
+      { type: 'network_timeout', delay: 30000 },
+      { type: 'malformed_response', mockResponse: { invalid: 'json' } }
+    ]
+    
+    for (const scenario of failureScenarios) {
+      // Mock Google Maps API to return error
+      await page.route('**/maps.googleapis.com/**', route => {
+        if (scenario.delay) {
+          // Simulate timeout
+          setTimeout(() => route.abort(), scenario.delay)
+        } else {
+          route.fulfill({
+            status: 400,
+            body: JSON.stringify(scenario.mockResponse)
+          })
+        }
+      })
+      
+      await page.goto('/patient/location/find-pharmacies/map')
+      
+      // Verify fallback behavior
+      await expect(page.locator('[data-testid="maps-error"]')).toBeVisible()
+      await expect(page.locator('[data-testid="fallback-list-view"]')).toBeVisible()
+      await expect(page.locator('[data-testid="retry-maps"]')).toBeEnabled()
+      
+      // Test that basic functionality still works without maps
+      await page.click('[data-testid="search-input"]')
+      await page.fill('[data-testid="search-input"]', 'pharmacy')
+      await page.press('[data-testid="search-input"]', 'Enter')
+      await expect(page.locator('[data-testid="text-search-results"]')).toBeVisible()
+    }
+  })
+})
+```
+
+#### 3. Privacy and Family Tracking Tests
+```typescript
+// tests/automatic/location-services/privacy-tests.spec.ts
+test.describe('Location Services - Privacy Tests', () => {
+  test('Family location sharing consent workflow', async ({ page, context }) => {
+    // Test user (parent)
+    await loginAs(page, 'parent@test.com', 'password')
+    await page.goto('/patient/location/find-loved-ones')
+    
+    // Invite family member
+    await page.click('[data-testid="invite-family"]')
+    await page.fill('[data-testid="family-email"]', 'child@test.com')
+    await page.click('[data-testid="send-invite"]')
+    
+    // Family member (child) receives invitation
+    const childPage = await context.newPage()
+    await loginAs(childPage, 'child@test.com', 'password')
+    await childPage.goto('/patient/location/invitations')
+    
+    // Test consent scenarios
+    const consentScenarios = ['accept', 'decline', 'accept_then_revoke']
+    
+    for (const scenario of consentScenarios) {
+      if (scenario === 'accept' || scenario === 'accept_then_revoke') {
+        await childPage.click('[data-testid="accept-sharing"]')
+        await expect(page.locator('[data-testid="family-member-active"]')).toBeVisible()
+        
+        if (scenario === 'accept_then_revoke') {
+          await childPage.click('[data-testid="revoke-sharing"]')
+          await expect(page.locator('[data-testid="family-member-inactive"]')).toBeVisible()
+        }
+      } else {
+        await childPage.click('[data-testid="decline-sharing"]')
+        await expect(page.locator('[data-testid="invitation-declined"]')).toBeVisible()
+      }
+    }
+  })
+})
+```
+
+#### 4. Performance and Load Testing
+```typescript
+// tests/automatic/location-services/performance-tests.spec.ts
+test.describe('Location Services - Performance Tests', () => {
+  test('Map performance with large result sets', async ({ page }) => {
+    // Mock API to return 500+ pharmacy results
+    await page.route('/api/patient/location/pharmacies', route => {
+      const mockPharmacies = Array.from({ length: 500 }, (_, i) => ({
+        pharmacy_id: `pharmacy_${i}`,
+        name: `Test Pharmacy ${i}`,
+        latitude: -26.2041 + (Math.random() - 0.5) * 0.1,
+        longitude: 28.0473 + (Math.random() - 0.5) * 0.1,
+        chain_name: ['Clicks', 'Dis-Chem', 'Pick n Pay'][i % 3]
+      }))
+      
+      route.fulfill({ json: { data: mockPharmacies } })
+    })
+    
+    await page.goto('/patient/location/find-pharmacies/map')
+    
+    // Measure performance metrics
+    const startTime = Date.now()
+    await page.waitForSelector('[data-testid="map-loaded"]')
+    const loadTime = Date.now() - startTime
+    
+    // Verify performance requirements
+    expect(loadTime).toBeLessThan(5000) // Map should load within 5 seconds
+    
+    // Test interaction performance
+    const searchStart = Date.now()
+    await page.fill('[data-testid="search-input"]', 'clicks')
+    await page.waitForSelector('[data-testid="filtered-results"]')
+    const searchTime = Date.now() - searchStart
+    
+    expect(searchTime).toBeLessThan(1000) // Search should complete within 1 second
+  })
+})
+```
+
+### 5. Medical Compliance Automatic Testing
+```typescript
+// tests/automatic/shared/compliance-tests.spec.ts
+test.describe('Medical Compliance - Automated Auditing', () => {
+  test('Audit trail completeness', async ({ page }) => {
+    await page.goto('/patient/presc/scanning')
+    await uploadTestPrescription(page)
+    await analyzeAndSave(page)
+    
+    // Verify audit trail was created
+    const auditResponse = await page.request.get('/api/admin/audit-log', {
+      headers: { 'Authorization': 'Bearer admin_token' }
+    })
+    const auditData = await auditResponse.json()
+    
+    // Check required audit fields
+    const latestAudit = auditData.data[0]
+    expect(latestAudit).toMatchObject({
+      action_type: 'prescription_scan_save',
+      user_id: expect.any(String),
+      ai_confidence: expect.any(Number),
+      processing_time_ms: expect.any(Number),
+      outcome: 'success'
+    })
+  })
+
+  test('Data retention policy compliance', async ({ page }) => {
+    // Test that old prescription images are automatically cleaned up
+    const oldDate = new Date()
+    oldDate.setDate(oldDate.getDate() - 91) // 91 days ago
+    
+    // Create old prescription record
+    await createOldPrescriptionRecord(oldDate)
+    
+    // Run cleanup job
+    await page.request.post('/api/admin/cleanup-old-data')
+    
+    // Verify old images are deleted but prescription data remains
+    const prescriptions = await getAllPrescriptions()
+    const oldPrescription = prescriptions.find(p => p.created_at < oldDate)
+    
+    expect(oldPrescription.image_url).toBeNull() // Image deleted
+    expect(oldPrescription.medications_prescribed).toBeTruthy() // Data preserved
+  })
+})
+```
+
+### 6. Cost Control and Monitoring Tests  
+```typescript
+// tests/automatic/prescription-scanning/cost-control-tests.spec.ts
+test.describe('Prescription Scanning - Cost Control', () => {
+  test('OpenAI cost limits prevent abuse', async ({ page }) => {
+    // Simulate user hitting daily cost limit
+    await simulateHighAPIUsage('user@test.com', 55) // $55 in API costs
+    
+    await page.goto('/patient/presc/scanning')
+    await uploadTestPrescription(page)
+    await page.click('[data-testid="submit-processing"]')
+    
+    // Should be rejected due to cost limits
+    await expect(page.locator('[data-testid="cost-limit-error"]')).toBeVisible()
+    await expect(page.locator('[data-testid="error-message"]')).toContainText('daily limit')
+  })
+
+  test('Global rate limiting protects system', async ({ browser }) => {
+    // Create 10 concurrent users
+    const pages = await Promise.all(
+      Array.from({ length: 10 }, () => browser.newPage())
+    )
+    
+    // All try to analyze prescriptions simultaneously
+    const analysisPromises = pages.map(async (page, index) => {
+      await loginAs(page, `user${index}@test.com`, 'password')
+      await page.goto('/patient/presc/scanning')
+      await uploadTestPrescription(page)
+      return page.click('[data-testid="submit-processing"]')
+    })
+    
+    await Promise.all(analysisPromises)
+    
+    // Some should succeed, some should be rate limited
+    const successCount = await countSuccessfulAnalyses(pages)
+    const rateLimitCount = await countRateLimitedAnalyses(pages)
+    
+    expect(successCount).toBeLessThan(10) // Not all should succeed
+    expect(rateLimitCount).toBeGreaterThan(0) // Some should be rate limited
+  })
+})
+```
+
+### 7. Continuous Integration Test Pipeline
+```yaml
+# .github/workflows/medical-features-tests.yml
+name: Medical Features Automated Testing
+
+on: [push, pull_request, schedule]
+
+jobs:
+  prescription-scanning-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Prescription Scanning Tests
+        run: |
+          npm run test:prescription-scanning:generative
+          npm run test:prescription-scanning:chaos  
+          npm run test:prescription-scanning:security
+          npm run test:prescription-scanning:medical-validation
+          
+  location-services-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Location Services Tests
+        run: |
+          npm run test:location:geographic-edge-cases
+          npm run test:location:api-resilience
+          npm run test:location:privacy-compliance
+          npm run test:location:performance-load
+          
+  medical-compliance-audit:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' # Weekly compliance check
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Medical Compliance Audit
+        run: |
+          npm run test:compliance:audit-trail
+          npm run test:compliance:data-retention
+          npm run test:compliance:privacy-controls
+```
+
+---
+
+**ENHANCED SPECIFICATIONS STATUS:**
+
+Both specifications have been thoroughly reviewed and enhanced with:
+- **Critical gap analysis**: Session management, medical validation, cost controls
+- **Comprehensive automatic test suites**: 6 categories of automated tests per feature
+- **Medical compliance testing**: Automated auditing for regulatory requirements
+- **Security penetration testing**: Automated attempts to break authentication and data access
+- **Performance load testing**: Automated stress testing with realistic usage patterns
+
+The automatic test cases are designed to run continuously and catch issues that manual testing would miss, which is essential for medical software where failures could impact patient safety.
