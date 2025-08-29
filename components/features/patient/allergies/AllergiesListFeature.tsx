@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import ListView, { ListItem } from '@/components/layouts/ListViewLayout'
 import { useDeleteAllergy } from '@/hooks/usePatientAllergies'
 import type { AllergyRow, Severity } from '@/schemas/allergies'
+import ConfirmDialog from '@/components/patterns/ConfirmDialog'
+import { useToast } from '@/components/patterns/Toast'
 
 interface AllergyItem extends ListItem {
   allergy_id: string
@@ -42,6 +44,7 @@ export default function AllergiesListFeature({
   const router = useRouter()
   const searchParams = useSearchParams()
   const deleteAllergy = useDeleteAllergy()
+  const toast = useToast()
   
   // Convert initial data to list items
   const [items, setItems] = useState<AllergyItem[]>(
@@ -61,6 +64,8 @@ export default function AllergiesListFeature({
   
   const [loading, setLoading] = useState(false)
   const [showFilterModal, setShowFilterModal] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [pendingDeleteIds, setPendingDeleteIds] = useState<string[] | null>(null)
 
   // Update items when initialData changes (from server refresh)
   useEffect(() => {
@@ -94,31 +99,34 @@ export default function AllergiesListFeature({
   }, [router])
 
   // Delete handler using API hook
-  const handleDelete = useCallback(async (ids: string[]) => {
-    if (!confirm(`Are you sure you want to delete ${ids.length} allergy record(s)?`)) {
+  const handleDelete = useCallback((ids: string[]) => {
+    setPendingDeleteIds(ids)
+    setConfirmOpen(true)
+  }, [])
+
+  const confirmDelete = useCallback(async () => {
+    const ids = pendingDeleteIds ?? []
+    if (!ids.length) {
+      setConfirmOpen(false)
       return
     }
-    
     setLoading(true)
-    
     try {
-      // Delete each item using the API hook
       for (const id of ids) {
         await deleteAllergy.mutateAsync(id)
       }
-      
-      // Optimistically remove deleted items from list
       setItems(prev => prev.filter(item => !ids.includes(item.id)))
-      
-      // Refresh the page to get updated data from server
       router.refresh()
+      toast.push({ type: 'success', title: 'Deleted', message: `${ids.length} item(s) removed` })
     } catch (error) {
       console.error('Delete failed:', error)
-      alert('Failed to delete some items. Please try again.')
+      toast.push({ type: 'error', title: 'Delete failed', message: 'Some items could not be deleted. Please try again.' })
     } finally {
       setLoading(false)
+      setConfirmOpen(false)
+      setPendingDeleteIds(null)
     }
-  }, [deleteAllergy, router])
+  }, [deleteAllergy, pendingDeleteIds, router, toast])
 
   // Export handler
   const handleExport = useCallback((ids: string[]) => {
@@ -211,6 +219,17 @@ export default function AllergiesListFeature({
         titleWrap="wrap"
         showSecondaryLine={false}
         showInlineEdit={false}
+      />
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Delete selected allergies?"
+        message={pendingDeleteIds && pendingDeleteIds.length > 1 ? `You are about to delete ${pendingDeleteIds.length} records.` : 'This action cannot be undone.'}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+        busy={loading}
+        onConfirm={confirmDelete}
+        onCancel={() => { if (!loading) { setConfirmOpen(false); setPendingDeleteIds(null) } }}
       />
       
       {/* Filter Modal */}
