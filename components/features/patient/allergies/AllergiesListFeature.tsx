@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import ListView, { ListItem } from '@/components/layouts/ListViewLayout'
 import { useDeleteAllergy } from '@/hooks/usePatientAllergies'
 import type { AllergyRow, Severity } from '@/schemas/allergies'
+import { AllergenTypeEnum, SeverityEnum } from '@/schemas/allergies'
 import ConfirmDialog from '@/components/patterns/ConfirmDialog'
 import { useToast } from '@/components/patterns/Toast'
 
@@ -16,10 +17,22 @@ interface AllergyItem extends ListItem {
   created_at: string
 }
 
+type SortBy = 'created_at' | 'allergen' | 'severity' | 'allergen_type'
+type SortDir = 'asc' | 'desc'
+interface ListState {
+  page: number
+  pageSize: number
+  search?: string
+  allergen_type?: string
+  severity?: string
+  sort_by: SortBy
+  sort_dir: SortDir
+}
+
 interface AllergiesListFeatureProps {
   initialData: AllergyRow[]
   total: number
-  initialState: Record<string, any>
+  initialState: ListState
 }
 
 // Map database severity to UI severity levels with proper life_threatening support
@@ -66,6 +79,7 @@ export default function AllergiesListFeature({
   const [showFilterModal, setShowFilterModal] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [pendingDeleteIds, setPendingDeleteIds] = useState<string[] | null>(null)
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Update items when initialData changes (from server refresh)
   useEffect(() => {
@@ -154,15 +168,18 @@ export default function AllergiesListFeature({
 
   // URL-driven search handler
   const handleSearch = useCallback((query: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (query) {
-      params.set('search', query)
-    } else {
-      params.delete('search')
-    }
-    // Reset to first page when searching
-    params.set('page', '1')
-    router.push(`?${params.toString()}`)
+    if (searchTimer.current) clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (query) {
+        params.set('search', query)
+      } else {
+        params.delete('search')
+      }
+      // Reset to first page when searching
+      params.set('page', '1')
+      router.push(`?${params.toString()}`)
+    }, 300)
   }, [router, searchParams])
 
   // Filter handler
@@ -247,10 +264,9 @@ export default function AllergiesListFeature({
                   id="severity-filter"
                 >
                   <option value="">All</option>
-                  <option value="life_threatening">Life Threatening</option>
-                  <option value="severe">Severe</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="mild">Mild</option>
+                  {SeverityEnum.options.map((opt) => (
+                    <option key={opt} value={opt}>{opt.replace('_', ' ')}</option>
+                  ))}
                 </select>
               </div>
               
@@ -262,10 +278,9 @@ export default function AllergiesListFeature({
                   id="type-filter"
                 >
                   <option value="">All</option>
-                  <option value="food">Food</option>
-                  <option value="medication">Medication</option>
-                  <option value="environmental">Environmental</option>
-                  <option value="other">Other</option>
+                  {AllergenTypeEnum.options.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
                 </select>
               </div>
             </div>
