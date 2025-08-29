@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { requireUser, getServerClient } from '@/lib/supabase-server'
+import { getServerClient } from '@/lib/supabase-server'
 import { patientNavItems } from '@/config/patientNav'
 import ListPageLayoutClient from '@/components/layouts/ListPageLayoutClient'
 import AllergiesListFeature from '@/components/features/patient/allergies/AllergiesListFeature'
@@ -7,7 +7,6 @@ import AllergiesListFeature from '@/components/features/patient/allergies/Allerg
 export const dynamic = 'force-dynamic'
 
 export default async function AllergiesListPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  await requireUser()
   const supabase = await getServerClient()
   const spRaw = await searchParams
 

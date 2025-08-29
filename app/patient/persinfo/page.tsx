@@ -1,11 +1,11 @@
 import React from 'react'
 export const dynamic = 'force-dynamic'
-import { requireUser } from '@/lib/supabase-server'
+ 
 import TilePageLayout from '@/components/layouts/TilePageLayout'
 import { patientNavItems } from '@/config/patientNav'
 
-export default async function PersonalInfoPage() {
-  const _user = await requireUser()
+export default function PersonalInfoPage() {
+  // Auth enforced by middleware
   
   const personalInfoConfig = {
     title: 'Personal Information',

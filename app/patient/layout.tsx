@@ -1,13 +1,12 @@
 import React from 'react'
-import { requireUser } from '@/lib/supabase-server'
+ 
 
-export default async function PatientLayout({
+export default function PatientLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // Ensure user is authenticated before rendering patient pages
-  await requireUser()
+  // Auth is enforced via middleware; no page-level guard
   
   return (
     <>{children}</>
