@@ -210,6 +210,7 @@ export default function AllergiesListFeature({
         dateFormat="short"
         titleWrap="wrap"
         showSecondaryLine={false}
+        showInlineEdit={false}
       />
       
       {/* Filter Modal */}

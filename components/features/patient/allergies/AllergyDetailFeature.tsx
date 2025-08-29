@@ -67,19 +67,21 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
       id: 'basic',
       title: 'Basic Information',
       content: (
-        <div className="grid gap-4">
+        <div className="grid gap-3">
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Allergen</p>
-            <p className="text-sm font-medium">{allergy.allergen || '-'}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Allergen</p>
+            <div className="rounded-lg border border-gray-200 bg-white/80 px-3 py-2 text-sm font-medium dark:bg-gray-900 dark:border-white/10">{allergy.allergen || '-'}</div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Type</p>
-              <p className="text-sm font-medium">{allergy.allergen_type || '-'}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Type</p>
+              <div className="rounded-lg border border-gray-200 bg-white/80 px-3 py-2 text-sm font-medium dark:bg-gray-900 dark:border-white/10">{allergy.allergen_type || '-'}</div>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Severity</p>
-              <p className="text-sm font-medium">{allergy.severity || '-'}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Severity</p>
+              <div className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200">
+                {allergy.severity || '-'}
+              </div>
             </div>
           </div>
         </div>
@@ -89,18 +91,18 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
       id: 'details',
       title: 'Reaction Details',
       content: (
-        <div className="grid gap-4">
+        <div className="grid gap-3">
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Reaction</p>
-            <p className="text-sm">{allergy.reaction || '-'}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Reaction</p>
+            <div className="rounded-lg border border-gray-200 bg-white/80 px-3 py-2 text-sm dark:bg-gray-900 dark:border-white/10">{allergy.reaction || '-'}</div>
           </div>
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">First Observed</p>
-            <p className="text-sm">{formatDate(allergy.first_observed)}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">First Observed</p>
+            <div className="rounded-lg border border-gray-200 bg-white/80 px-3 py-2 text-sm dark:bg-gray-900 dark:border-white/10">{formatDate(allergy.first_observed)}</div>
           </div>
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Trigger Factors</p>
-            <p className="text-sm">{allergy.trigger_factors || '-'}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Trigger Factors</p>
+            <div className="rounded-lg border border-gray-200 bg-white/80 px-3 py-2 text-sm dark:bg-gray-900 dark:border-white/10">{allergy.trigger_factors || '-'}</div>
           </div>
         </div>
       )
@@ -109,14 +111,14 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
       id: 'emergency',
       title: 'Emergency Information',
       content: (
-        <div className="grid gap-4">
+        <div className="grid gap-3">
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Emergency Action Plan</p>
-            <p className="text-sm">{allergy.emergency_action_plan || '-'}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Emergency Action Plan</p>
+            <div className="rounded-lg border border-gray-200 bg-white/80 px-3 py-2 text-sm dark:bg-gray-900 dark:border-white/10">{allergy.emergency_action_plan || '-'}</div>
           </div>
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Additional Notes</p>
-            <p className="text-sm">{allergy.notes || '-'}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Additional Notes</p>
+            <div className="rounded-lg border border-gray-200 bg-white/80 px-3 py-2 text-sm dark:bg-gray-900 dark:border-white/10">{allergy.notes || '-'}</div>
           </div>
         </div>
       )
@@ -187,7 +189,7 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
         stickyActions
         onBack={() => router.push('/patient/medhist/allergies')}
         onCancel={() => { setMode('view'); reset() }}
-        {...(mode === 'view' ? { onSaveClick: () => setMode('edit') } : {})}
+        {...(mode === 'view' ? { onSaveClick: () => { setMode('edit'); if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' }) } } : {})}
         onDelete={handleDelete}
         showDelete={mode === 'edit'}
         primaryActionLabel={mode === 'view' ? 'Edit' : 'Save Changes'}

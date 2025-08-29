@@ -98,18 +98,7 @@ export default function AppHeader({
       
       {/* RIGHT SECTION - Actions */}
       <div className="flex items-center gap-2 flex-shrink-0 z-10">
-        {/* Back button (hidden on Home) */}
-        {!isHome && (
-          <button
-            onClick={() => router.back()}
-            className="p-2 rounded-lg hover:bg-white/10"
-            aria-label="Back"
-          >
-            <Icons.ArrowLeft className="h-5 w-5 text-white" />
-          </button>
-        )}
-
-        {/* Notifications always visible on the right */}
+        {/* Notifications */}
         {onNotificationClick && (
           <button
             onClick={onNotificationClick}
@@ -125,7 +114,7 @@ export default function AppHeader({
           </button>
         )}
 
-        {/* User Menu - Fixed Size */}
+        {/* User Menu */}
         {user && (
           <div className="relative">
             <button
@@ -185,6 +174,18 @@ export default function AppHeader({
               </div>
             )}
           </div>
+        )}
+
+        {/* Back at far right (hidden on Home) */}
+        {!isHome && (
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10"
+            aria-label="Back"
+          >
+            <Icons.ArrowLeft className="h-5 w-5 text-white" />
+            <span className="text-sm text-white">Back</span>
+          </button>
         )}
       </div>
     </header>

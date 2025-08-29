@@ -46,7 +46,7 @@ const shellStyles = {
 } as const
 
 const actionBarBase =
-  'flex items-center justify-end gap-2 border-t bg-white/80 p-3 backdrop-blur dark:bg-gray-900/70 dark:border-white/10'
+  'flex items-center justify-end gap-2 border-t bg-white/80 p-3 backdrop-blur dark:bg-gray-900/70 dark:border-white/10 z-20'
 
 /** ---------- Component ---------- */
 export default function DetailViewLayout(props: DetailViewLayoutProps) {
@@ -95,24 +95,53 @@ export default function DetailViewLayout(props: DetailViewLayoutProps) {
       {/* Header */}
       <header className="mb-4 flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          {onBack && (
-            <button
-              type="button"
-              onClick={onBack}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white
-                         hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500
-                         dark:bg-gray-900 dark:border-white/10"
-              aria-label="Back"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-          )}
           <div>
             <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h1>
             {subtitle && <p className="mt-1 text-gray-600 dark:text-gray-400">{subtitle}</p>}
           </div>
         </div>
-        {/* Header actions (optional spot for future) */}
+        {/* Header actions */}
+        <div className="flex items-center gap-2">
+          {mode === 'view' && (
+            <>
+              {showDelete && (
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  className="inline-flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-sm font-medium text-rose-700 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-rose-900/20 dark:border-rose-800/60 dark:text-rose-200"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={onSaveClick}
+                className="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-white/90 px-3 py-1.5 text-sm font-medium text-blue-700 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-white/10 dark:text-blue-200"
+              >
+                Edit
+              </button>
+            </>
+          )}
+          {mode !== 'view' && (
+            <>
+              <button
+                type="button"
+                onClick={onCancel}
+                className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-white/10 dark:text-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={submitForm}
+                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Save
+              </button>
+            </>
+          )}
+        </div>
       </header>
 
       {/* Error summary */}
@@ -154,7 +183,7 @@ export default function DetailViewLayout(props: DetailViewLayoutProps) {
         <div
           className={clsx(
             actionBarBase,
-            stickyActions ? 'sticky bottom-0' : '',
+            stickyActions ? 'sticky bottom-16 md:bottom-0' : '',
           )}
         >
           {showDelete && (

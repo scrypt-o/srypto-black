@@ -40,6 +40,7 @@ export interface ListViewProps<T extends ListItem> {
   rightColumns?: Array<{ key: string; label?: string; render?: (item: T) => React.ReactNode; align?: 'left' | 'right'; width?: number }>
   titleWrap?: 'single' | 'wrap'
   showSecondaryLine?: boolean
+  showInlineEdit?: boolean
 }
 
 // Color mapping for severity
@@ -82,7 +83,8 @@ export default function ListView<T extends ListItem>({
   dateFormat = 'long',
   rightColumns,
   titleWrap = 'single',
-  showSecondaryLine = true
+  showSecondaryLine = true,
+  showInlineEdit = true
 }: ListViewProps<T>) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectMode, setSelectMode] = useState(false)
@@ -264,7 +266,7 @@ export default function ListView<T extends ListItem>({
                 <div
                   key={item.id}
                   className={clsx(
-                    'flex gap-3 hover:bg-gray-50 transition-colors',
+                    'flex gap-3 hover:bg-gray-50 active:bg-gray-100 active:scale-[0.995] transition-all',
                     titleWrap === 'wrap' ? 'items-start' : 'items-center',
                     padding,
                     'cursor-pointer'
@@ -377,6 +379,7 @@ export default function ListView<T extends ListItem>({
                   )}
 
                   {/* Edit Button */}
+                  {showInlineEdit && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
@@ -386,6 +389,7 @@ export default function ListView<T extends ListItem>({
                   >
                     <Icons.Pencil className="h-4 w-4 text-gray-400" />
                   </button>
+                  )}
                 </div>
               )
             })}
