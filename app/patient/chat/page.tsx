@@ -2,16 +2,17 @@ import React from 'react'
 export const dynamic = 'force-dynamic'
  
 import TilePageLayout from '@/components/layouts/TilePageLayout'
+import type { TileGridLayoutProps } from '@/components/layouts/TileGridLayout'
 import { patientNavItems } from '@/config/patientNav'
 
 export default function ChatPage() {
   // Auth enforced by middleware
 
-  const config = {
+  const config: TileGridLayoutProps = {
     title: 'Assistant',
     subtitle: '',
     description: '',
-    tiles: [] as any[],
+    tiles: [],
   }
 
   return (
@@ -19,7 +20,7 @@ export default function ChatPage() {
       sidebarItems={patientNavItems}
       headerTitle="Assistant"
       headerSubtitle=""
-      tileConfig={config as any}
+      tileConfig={config}
       contentHeading="Assistant"
       contentSubheading=""
     />
