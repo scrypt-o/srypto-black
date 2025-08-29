@@ -1,7 +1,43 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { updateSession } from '@/lib/supabase/middleware'
 
-export function middleware(_req: NextRequest) {
-  const res = NextResponse.next()
+export async function middleware(request: NextRequest) {
+  // Public routes (do not require auth)
+  const PUBLIC_PATHS = ['/', '/login', '/signup', '/reset-password', '/api/auth']
+  const { pathname } = request.nextUrl
+
+  // Always refresh session cookies if needed (edge-safe)
+  let res = await updateSession(request)
+
+  // Basic route protection for patient app
+  const isPublic = PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))
+  const isProtectedAppRoute = pathname.startsWith('/patient')
+
+  if (!isPublic && isProtectedAppRoute) {
+    // Create a supabase client bound to this request to check auth at the edge
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              res.cookies.set(name, value, options)
+            })
+          },
+        },
+      }
+    )
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      const url = new URL('/login', request.url)
+      return NextResponse.redirect(url)
+    }
+  }
 
   // Minimal, safe security headers (keep conservative to avoid breakage)
   res.headers.set('X-Content-Type-Options', 'nosniff')
