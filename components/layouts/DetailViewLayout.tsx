@@ -92,15 +92,12 @@ export default function DetailViewLayout(props: DetailViewLayoutProps) {
         </nav>
       ) : null}
 
-      {/* Header */}
-      <header className="mb-4 flex items-start justify-between gap-3">
-        <div className="flex items-start gap-3">
-          <div>
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h1>
-            {subtitle && <p className="mt-1 text-gray-600 dark:text-gray-400">{subtitle}</p>}
-          </div>
+      {/* Title and actions - simplified layout */}
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h1>
+          {subtitle && <p className="mt-1 text-gray-600 dark:text-gray-400">{subtitle}</p>}
         </div>
-        {/* Header actions */}
         <div className="flex items-center gap-2">
           {mode === 'view' && (
             <>
@@ -142,7 +139,7 @@ export default function DetailViewLayout(props: DetailViewLayoutProps) {
             </>
           )}
         </div>
-      </header>
+      </div>
 
       {/* Error summary */}
       {errors.length > 0 && (

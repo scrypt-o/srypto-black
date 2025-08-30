@@ -202,14 +202,12 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
   if (orientation === 'vertical') {
     return (
       <section className="w-full">
-        {(title || subtitle || description || (quickActions && quickActions.length > 0)) && (
-          <header className="mb-4 flex items-start justify-between gap-3">
-            <div>
-              {title && <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h1>}
-              {subtitle && <p className="text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>}
-              {description && <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{description}</p>}
-            </div>
-          </header>
+        {(title || subtitle || description) && (
+          <div className="mb-4">
+            {title && <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h1>}
+            {subtitle && <p className="text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>}
+            {description && <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{description}</p>}
+          </div>
         )}
 
         <div className="flex flex-col gap-3">
@@ -262,7 +260,7 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
 
       {/* Header (only render if content exists) */}
       {(title || subtitle || description || (quickActions && quickActions.length > 0)) && (
-        <header className="mb-4 flex items-start justify-between gap-3">
+        <div className="mb-4 flex items-start justify-between gap-3">
           <div>
             {title && <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h1>}
             {subtitle && <p className="text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>}
@@ -284,7 +282,7 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
               ))}
             </div>
           ) : null}
-        </header>
+        </div>
       )}
 
       {/* Grid */}
