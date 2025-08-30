@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery, useMutation, invalidateQueries } from '@/lib/query/runtime'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ApiError } from '@/lib/api-error'
 import type { 
   AllergyRow, 
@@ -9,7 +9,7 @@ import type {
   AllergyListResponse 
 } from '@/schemas/allergies'
 
-// Query keys for cache management (future TanStack compatibility)
+// Query keys for TanStack Query
 export const AllergyKeys = {
   all: ['allergies'] as const,
   list: (params?: { page?: number; pageSize?: number; search?: string; allergen_type?: string; severity?: string }) => 
@@ -37,9 +37,9 @@ export function useAllergiesList(params?: {
     ...(params?.sort_dir && { sort_dir: params.sort_dir }),
   }).toString()
 
-  return useQuery<AllergyListResponse>(
-    AllergyKeys.list(params) as unknown as any[],
-    async () => {
+  return useQuery<AllergyListResponse>({
+    queryKey: AllergyKeys.list(params),
+    queryFn: async () => {
       const response = await fetch(`/api/patient/medical-history/allergies?${queryString}`, {
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -50,18 +50,17 @@ export function useAllergiesList(params?: {
       }
       
       return response.json()
-    }
-  )
+    },
+  })
 }
 
 // Hook to fetch single allergy by ID
 export function useAllergyById(id: string) {
-  return useQuery<AllergyRow>(
-    AllergyKeys.detail(id) as unknown as any[],
-    async () => {
+  return useQuery<AllergyRow>({
+    queryKey: AllergyKeys.detail(id),
+    queryFn: async () => {
       const response = await fetch(`/api/patient/medical-history/allergies/${id}`, {
         credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' },
       })
       
       if (!response.ok) {
@@ -69,13 +68,16 @@ export function useAllergyById(id: string) {
       }
       
       return response.json()
-    }
-  )
+    },
+    enabled: !!id,
+  })
 }
 
 // Hook to create new allergy
 export function useCreateAllergy() {
-  return useMutation<AllergyCreateInput, AllergyRow>({
+  const queryClient = useQueryClient()
+  
+  return useMutation<AllergyRow, Error, AllergyCreateInput>({
     mutationFn: async (data) => {
       const response = await fetch('/api/patient/medical-history/allergies', {
         method: 'POST',
@@ -92,15 +94,16 @@ export function useCreateAllergy() {
     },
     onSuccess: (data) => {
       console.log('Allergy created successfully:', data)
-      // Invalidate all allergy-related queries to refresh UI
-      invalidateQueries(['allergies'] as unknown as any[])  // This will match all allergy keys
+      queryClient.invalidateQueries({ queryKey: ['allergies'] })
     },
   })
 }
 
 // Hook to update existing allergy
 export function useUpdateAllergy() {
-  return useMutation<{ id: string; data: AllergyUpdateInput }, AllergyRow>({
+  const queryClient = useQueryClient()
+  
+  return useMutation<AllergyRow, Error, { id: string; data: AllergyUpdateInput }>({
     mutationFn: async ({ id, data }) => {
       const response = await fetch(`/api/patient/medical-history/allergies/${id}`, {
         method: 'PUT',
@@ -117,40 +120,33 @@ export function useUpdateAllergy() {
     },
     onSuccess: (data) => {
       console.log('Allergy updated successfully:', data)
-      // Invalidate all allergy-related queries to refresh UI
-      invalidateQueries(['allergies'] as unknown as any[])  // This will match all allergy keys
-      // Also invalidate the specific detail record
-      if (data && (data as any).allergy_id) {
-        invalidateQueries(['allergies', 'detail', (data as any).allergy_id] as unknown as any[])
+      queryClient.invalidateQueries({ queryKey: ['allergies'] })
+      if (data && typeof data === 'object' && 'allergy_id' in data) {
+        queryClient.invalidateQueries({ queryKey: ['allergies', 'detail', (data as any).allergy_id] })
       }
     },
   })
 }
 
-// Hook to delete allergy (soft delete)
+// Hook to delete allergy
 export function useDeleteAllergy() {
-  return useMutation<string, { success: boolean }>({
-    mutationFn: async (id) => {
+  const queryClient = useQueryClient()
+  
+  return useMutation<void, Error, string>({
+    mutationFn: async (id: string) => {
       const response = await fetch(`/api/patient/medical-history/allergies/${id}`, {
         method: 'DELETE',
         credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' },
       })
       
       if (!response.ok) {
         throw await ApiError.fromResponse(response)
       }
-      
-      return response.json()
     },
-    onSuccess: (_result, id) => {
-      console.log('Allergy deleted successfully')
-      // Invalidate all allergy-related queries to refresh UI
-      invalidateQueries(['allergies'] as unknown as any[])  // This will match all allergy keys
-      // Invalidate the specific detail record
-      if (id) {
-        invalidateQueries(['allergies', 'detail', id] as unknown as any[])
-      }
+    onSuccess: (_, id) => {
+      console.log('Allergy deleted successfully:', id)
+      queryClient.invalidateQueries({ queryKey: ['allergies'] })
+      queryClient.invalidateQueries({ queryKey: ['allergies', 'detail', id] })
     },
   })
 }
