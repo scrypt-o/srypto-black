@@ -63,7 +63,7 @@ test.describe('Allergies CRUD - DDL Verified Tests', () => {
     
     // Enter edit mode and modify
     await page.click('button:has-text("Edit")')
-    await expect(page.locator('text=Update allergy information')).toBeVisible()
+    await expect(page.locator('button:has-text("Save")')).toBeVisible()
     
     const updatedNotes = 'UPDATED - E2E edit test successful'
     await page.fill('textarea[name="notes"]', updatedNotes)
