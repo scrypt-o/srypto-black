@@ -17,4 +17,5 @@ module.exports = {
   ],
   // Polyfills and globals for Node/Web APIs used in tests
   setupFiles: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 }

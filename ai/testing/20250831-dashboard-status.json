@@ -1,0 +1,121 @@
+{
+  "base": "https://qa.scrypto.online",
+  "pages": [
+    {
+      "route": "/patient/care-network/caregivers",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "route": "/patient/persinfo/dependents",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "route": "/patient/persinfo/emergency-contacts",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "route": "/patient/medhist/allergies",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "route": "/patient/medhist/conditions",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "route": "/patient/medhist/immunizations",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "route": "/patient/medhist/surgeries",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "route": "/patient/medhist/family-history",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "route": "/patient/vitality/vital-signs",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "route": "/patient/vitality",
+      "status": 200,
+      "ok": true
+    }
+  ],
+  "apis": [
+    {
+      "key": "caregivers",
+      "create": 201,
+      "list": 200,
+      "get": 200,
+      "update": 200,
+      "delete": 200
+    },
+    {
+      "key": "dependents",
+      "create": 201,
+      "list": 200,
+      "get": 200,
+      "update": 200,
+      "delete": 200
+    },
+    {
+      "key": "emergency-contacts",
+      "create": 201,
+      "list": 200,
+      "get": 200,
+      "update": 200,
+      "delete": 200
+    },
+    {
+      "key": "allergies",
+      "create": 201,
+      "list": 200,
+      "get": 200,
+      "update": 200,
+      "delete": 200
+    },
+    {
+      "key": "conditions",
+      "create": 201,
+      "list": 200,
+      "get": 200,
+      "update": 200,
+      "delete": 200
+    },
+    {
+      "key": "immunizations",
+      "create": 201,
+      "list": 200,
+      "get": 200,
+      "update": 200,
+      "delete": 200
+    },
+    {
+      "key": "surgeries",
+      "create": 201,
+      "list": 200,
+      "get": 200,
+      "update": 200,
+      "delete": 200
+    },
+    {
+      "key": "vital-signs",
+      "create": 201,
+      "list": 200,
+      "get": 200,
+      "update": 200,
+      "delete": 200
+    }
+  ]
+}
