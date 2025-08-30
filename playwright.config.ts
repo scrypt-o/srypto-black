@@ -9,7 +9,6 @@ export default defineConfig({
   fullyParallel: true,
   use: {
     baseURL,
-    storageState: 'tests/e2e/storageState.json',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

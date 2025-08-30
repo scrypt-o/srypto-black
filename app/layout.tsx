@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { ToastProvider } from '@/components/patterns/Toast'
 import QueryProvider from '@/components/providers/QueryProvider'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 export const metadata: Metadata = {
   title: 'Scrypto Medical Portal',
@@ -37,11 +38,13 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${inter.className} h-screen overflow-hidden antialiased text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-950`}>
-        <QueryProvider>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
-        </QueryProvider>
+        <ErrorBoundary>
+          <QueryProvider>
+            <ToastProvider>
+              {children}
+            </ToastProvider>
+          </QueryProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )

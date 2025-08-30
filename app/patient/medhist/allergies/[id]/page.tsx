@@ -20,7 +20,7 @@ export default async function ViewAllergyPage({ params }: { params: Promise<{ id
   }
 
   return (
-    <DetailPageLayout sidebarItems={patientNavItems} headerTitle={data.allergen || 'Allergy'}>
+    <DetailPageLayout sidebarItems={patientNavItems} headerTitle="Allergies">
       <AllergyDetailFeature allergy={data} />
     </DetailPageLayout>
   )
