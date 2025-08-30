@@ -3,8 +3,8 @@
 import * as React from 'react'
 import { useState, useCallback } from 'react'
 import * as Icons from 'lucide-react'
-import { Check, X } from 'lucide-react'
 import clsx from 'clsx'
+import ActionButtons from '@/components/ui/ActionButtons'
 
 // Types
 export interface ListItem {
@@ -179,72 +179,19 @@ export default function ListView<T extends ListItem>({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-between w-full">
-          {selectMode ? (
-            <>
-              {/* Left: All button */}
-              <button
-                onClick={selectAll}
-                className="flex items-center gap-2 p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
-              >
-                <Check className="w-5 h-5" />
-                <span className="text-sm">All</span>
-              </button>
-              
-              {/* Right: Actions */}
-              <div className="flex items-center gap-3">
-                {selectedIds.size > 0 && (
-                  <>
-                    <button
-                      onClick={() => {}}
-                      className="flex items-center gap-2 p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
-                    >
-                      <Icons.Download className="w-5 h-5" />
-                      <span className="text-sm">Export</span>
-                    </button>
-                    <button
-                      onClick={handleDelete}
-                      className="flex items-center gap-2 p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                    >
-                      <X className="w-5 h-5" />
-                      <span className="text-sm">Delete</span>
-                    </button>
-                  </>
-                )}
-                <button
-                  onClick={() => {
-                    setSelectMode(false)
-                    setSelectedIds(new Set())
-                  }}
-                  className="flex items-center gap-2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-                >
-                  <Icons.X className="w-5 h-5" />
-                  <span className="text-sm">Cancel</span>
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => setSelectMode(true)}
-                className="flex items-center gap-2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-              >
-                <Check className="w-5 h-5" />
-                <span className="text-sm">Select</span>
-              </button>
-              
-              {onAdd && (
-                <button
-                  onClick={onAdd}
-                  className="flex items-center gap-2 p-2 text-green-600 hover:bg-green-50 rounded-lg"
-                >
-                  <Icons.Plus className="w-5 h-5" />
-                  <span className="text-sm">Add new</span>
-                </button>
-              )}
-            </>
-          )}
-        </div>
+        <ActionButtons
+          selectMode={selectMode}
+          selectedCount={selectedIds.size}
+          allSelected={selectedIds.size === items.length && items.length > 0}
+          onSelectToggle={() => {
+            setSelectMode(!selectMode)
+            setSelectedIds(new Set())
+          }}
+          onSelectAll={selectAll}
+          onAdd={onAdd}
+          onExport={onExport ? (format) => onExport(Array.from(selectedIds)) : undefined}
+          onDelete={onDelete ? () => handleDelete() : undefined}
+        />
       </div>
 
       {/* List Items */}
