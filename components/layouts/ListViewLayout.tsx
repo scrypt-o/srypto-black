@@ -76,7 +76,7 @@ export default function ListView<T extends ListItem>({
   thirdColumnLabel,
   getThumbnail,
   showAvatar = true,
-  avatarShape = 'round',
+  avatarShape = 'square',
   showChevron = true,
   density = 'comfortable',
   exportEnabled = true,
@@ -156,26 +156,23 @@ export default function ListView<T extends ListItem>({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header with Search */}
-      <div className="flex flex-col gap-3 p-4 bg-white border-b dark:bg-gray-950 dark:border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="flex-1 relative">
-            <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              placeholder={searchPlaceholder}
-              className="w-full pl-9 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <button
-            onClick={onFilter}
-            className="p-2 border rounded-lg hover:bg-gray-50"
-            title="Filters"
-          >
-            <Icons.Filter className="h-4 w-4" />
-          </button>
+      {/* Sticky header with search and actions */}
+      <div className="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-white/10 flex flex-col gap-3 pb-4 px-4 -mx-4 md:-mx-6 md:px-6">
+        {/* Page heading with top spacing inside container */}
+        <div className="text-center pt-6">
+          <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">{pageTitle}</h1>
+        </div>
+        
+        {/* Full width search bar */}
+        <div className="relative w-full">
+          <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder={searchPlaceholder}
+            className="w-full pl-9 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
         {/* Action Buttons */}
@@ -188,7 +185,8 @@ export default function ListView<T extends ListItem>({
             setSelectedIds(new Set())
           }}
           onSelectAll={selectAll}
-          onAdd={onAdd}
+          onAdd={onAdd || undefined}
+          onFilter={onFilter || undefined}
           onExport={onExport ? (format) => onExport(Array.from(selectedIds)) : undefined}
           onDelete={onDelete ? () => handleDelete() : undefined}
         />
@@ -203,7 +201,7 @@ export default function ListView<T extends ListItem>({
         ) : (
           <div className="divide-y">
             {items.map((item, index) => {
-              const letter = item.letter || item.title[0]?.toUpperCase() || '?'
+              const letter = item.letter || item.title.slice(0, 2).toUpperCase() || '??'
               const badgeStyle = letterBadgeStyles[index % letterBadgeStyles.length]
               const padding = density === 'compact' ? 'p-3' : 'p-4'
               const avatarSize = density === 'compact' ? 'w-9 h-9' : 'w-10 h-10'

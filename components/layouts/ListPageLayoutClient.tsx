@@ -107,7 +107,7 @@ export default function ListPageLayoutClient<Row>(props: ListPageLayoutClientPro
           />
         )}
 
-        <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 md:p-6 pb-20 md:pb-6">
+        <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-4 md:px-6 pb-20 md:pb-6">
           <div className="w-full max-w-7xl mx-auto">
             {children}
           </div>

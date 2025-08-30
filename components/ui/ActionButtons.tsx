@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, Plus, Download, X, ChevronDown } from 'lucide-react'
+import { Check, Plus, Download, X, ChevronDown, Filter } from 'lucide-react'
 
 interface ActionButtonsProps {
   selectMode: boolean
@@ -9,9 +9,10 @@ interface ActionButtonsProps {
   allSelected: boolean
   onSelectToggle: () => void
   onSelectAll: () => void
-  onAdd?: () => void
-  onExport?: (format: 'csv' | 'pdf') => void
-  onDelete?: () => void
+  onAdd?: (() => void) | undefined
+  onFilter?: (() => void) | undefined
+  onExport?: ((format: 'csv' | 'pdf') => void) | undefined
+  onDelete?: (() => void) | undefined
 }
 
 export default function ActionButtons({
@@ -21,6 +22,7 @@ export default function ActionButtons({
   onSelectToggle,
   onSelectAll,
   onAdd,
+  onFilter,
   onExport,
   onDelete
 }: ActionButtonsProps) {
@@ -105,13 +107,25 @@ export default function ActionButtons({
   // Normal mode
   return (
     <div className="flex items-center justify-between w-full">
-      <button
-        onClick={onSelectToggle}
-        className="flex items-center gap-2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-      >
-        <Check className="w-5 h-5" />
-        <span className="text-sm">Select</span>
-      </button>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onSelectToggle}
+          className="flex items-center gap-2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+        >
+          <Check className="w-5 h-5" />
+          <span className="text-sm">Select</span>
+        </button>
+        
+        {onFilter && (
+          <button
+            onClick={onFilter}
+            className="flex items-center gap-2 p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+          >
+            <Filter className="w-5 h-5" />
+            <span className="text-sm">Filter</span>
+          </button>
+        )}
+      </div>
       
       {onAdd && (
         <button

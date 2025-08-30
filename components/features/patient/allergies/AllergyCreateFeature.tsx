@@ -33,10 +33,15 @@ export default function AllergyCreateFeature() {
   const { register, handleSubmit, formState: { errors } } = form
 
   const onSubmit = (data: AllergyFormData) => {
+    if (!data.allergen?.trim() || !data.allergen_type || !data.severity) {
+      toast?.push({ type: 'error', message: 'Please fill in required fields' })
+      return
+    }
+    
     const normalized = {
-      allergen: data.allergen?.trim() || undefined,
-      allergen_type: data.allergen_type || undefined,
-      severity: data.severity || undefined,
+      allergen: data.allergen.trim(),
+      allergen_type: data.allergen_type,
+      severity: data.severity,
       reaction: data.reaction?.trim() || undefined,
       first_observed: data.first_observed?.trim() || undefined,
       trigger_factors: data.trigger_factors?.trim() || undefined,

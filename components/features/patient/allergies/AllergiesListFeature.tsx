@@ -65,7 +65,7 @@ export default function AllergiesListFeature({
       id: item.allergy_id,
       allergy_id: item.allergy_id,
       title: item.allergen || 'Unknown',
-      letter: item.allergen?.[0]?.toUpperCase() || '?',
+      letter: item.allergen?.slice(0, 2).toUpperCase() || '??',
       severity: mapSeverity(item.severity),
       allergen: item.allergen || '',
       allergen_type: item.allergen_type,
@@ -88,7 +88,7 @@ export default function AllergiesListFeature({
         id: item.allergy_id,
         allergy_id: item.allergy_id,
         title: item.allergen || 'Unknown',
-        letter: item.allergen?.[0]?.toUpperCase() || '?',
+        letter: item.allergen?.slice(0, 2).toUpperCase() || '??',
         severity: mapSeverity(item.severity),
         allergen: item.allergen || '',
         allergen_type: item.allergen_type,
@@ -213,11 +213,6 @@ export default function AllergiesListFeature({
 
   return (
     <>
-      {/* Page heading */}
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">Allergies</h1>
-      </div>
-      
       <ListView<AllergyItem>
         items={items}
         loading={loading || deleteAllergy.isPending}
@@ -262,6 +257,20 @@ export default function AllergiesListFeature({
             
             <div className="space-y-4">
               <div>
+                <label className="block text-sm font-medium mb-1">Sort by</label>
+                <select 
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  defaultValue={searchParams.get('sort_by') || 'created_at'}
+                  id="sort-filter"
+                >
+                  <option value="created_at">Date Added</option>
+                  <option value="allergen">Allergen Name</option>
+                  <option value="severity">Severity</option>
+                  <option value="allergen_type">Type</option>
+                </select>
+              </div>
+              
+              <div>
                 <label className="block text-sm font-medium mb-1">Severity</label>
                 <select 
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -290,14 +299,31 @@ export default function AllergiesListFeature({
               </div>
             </div>
             
-            <div className="flex justify-end gap-2 mt-6">
+            <div className="flex justify-between mt-6">
               <button
-                onClick={() => setShowFilterModal(false)}
-                className="px-4 py-2 text-sm border rounded-lg hover:bg-gray-50"
+                onClick={() => {
+                  // Clear all filters
+                  const newParams = new URLSearchParams(searchParams.toString())
+                  newParams.delete('severity')
+                  newParams.delete('allergen_type')
+                  newParams.delete('sort_by')
+                  newParams.set('page', '1')
+                  router.push(`?${newParams.toString()}`)
+                  setShowFilterModal(false)
+                }}
+                className="px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg"
               >
-                Cancel
+                Clear Filters
               </button>
-              <button
+              
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowFilterModal(false)}
+                  className="px-4 py-2 text-sm border rounded-lg hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
                 onClick={() => {
                   const severityEl = document.getElementById('severity-filter') as HTMLSelectElement
                   const typeEl = document.getElementById('type-filter') as HTMLSelectElement
@@ -310,6 +336,7 @@ export default function AllergiesListFeature({
               >
                 Apply
               </button>
+              </div>
             </div>
           </div>
         </div>
