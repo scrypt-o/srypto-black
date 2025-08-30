@@ -21,7 +21,7 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
   const updateMutation = useUpdateAllergy()
   const deleteMutation = useDeleteAllergy()
   const [mode, setMode] = React.useState<'view' | 'edit'>('view')
-  const [layoutStyle, setLayoutStyle] = React.useState<'table' | 'stacked'>('table')
+  const [layoutStyle, setLayoutStyle] = React.useState<'table' | 'stacked'>('stacked')
   const [confirmDelete, setConfirmDelete] = React.useState(false)
 
   const form = useForm<AllergyFormData>({
@@ -38,7 +38,7 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
     }
   })
 
-  const { register, handleSubmit, reset } = form
+  const { register, handleSubmit, reset, formState: { errors } } = form
 
   const onSubmit = (data: AllergyFormData) => {
     const normalized = {
@@ -71,8 +71,8 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
           <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-3">
             {allergy.allergen || 'Allergy'}
           </h1>
-          <div className="flex items-center justify-center gap-3">
-            {/* Layout toggle */}
+          <div className="flex items-center justify-between w-full max-w-sm mx-auto">
+            {/* Left: Layout toggle */}
             <button
               onClick={() => setLayoutStyle(layoutStyle === 'table' ? 'stacked' : 'table')}
               className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
@@ -81,39 +81,42 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
               {layoutStyle === 'table' ? <List className="w-5 h-5" /> : <LayoutGrid className="w-5 h-5" />}
             </button>
             
-            {mode === 'view' ? (
-              <button 
-                onClick={() => { setMode('edit'); if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-                className="flex items-center gap-2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-              >
-                <Edit className="w-5 h-5" />
-                <span className="text-sm">Edit</span>
-              </button>
-            ) : (
-              <>
+            {/* Right: Actions */}
+            <div className="flex items-center gap-3">
+              {mode === 'view' ? (
                 <button 
-                  onClick={handleSubmit(onSubmit)}
-                  disabled={updateMutation.isPending}
-                  className="flex items-center gap-2 p-2 text-green-600 hover:bg-green-50 rounded-lg disabled:opacity-50"
+                  onClick={() => { setMode('edit'); if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                  className="flex items-center gap-2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                 >
-                  <Check className="w-5 h-5" />
-                  <span className="text-sm">Save</span>
+                  <Edit className="w-5 h-5" />
+                  <span className="text-sm">Edit</span>
                 </button>
-                <button 
-                  onClick={handleDelete}
-                  className="flex items-center gap-2 p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                >
-                  <X className="w-5 h-5" />
-                  <span className="text-sm">Delete</span>
-                </button>
-                <button 
-                  onClick={() => { setMode('view'); reset() }}
-                  className="text-gray-600 hover:text-gray-800 text-sm px-2"
-                >
-                  Cancel
-                </button>
-              </>
-            )}
+              ) : (
+                <>
+                  <button 
+                    onClick={handleSubmit(onSubmit)}
+                    disabled={updateMutation.isPending}
+                    className="flex items-center gap-2 p-2 text-green-600 hover:bg-green-50 rounded-lg disabled:opacity-50"
+                  >
+                    <Check className="w-5 h-5" />
+                    <span className="text-sm">Save</span>
+                  </button>
+                  <button 
+                    onClick={handleDelete}
+                    className="flex items-center gap-2 p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                  >
+                    <X className="w-5 h-5" />
+                    <span className="text-sm">Delete</span>
+                  </button>
+                  <button 
+                    onClick={() => { setMode('view'); reset() }}
+                    className="text-gray-600 hover:text-gray-800 text-sm px-2"
+                  >
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -123,22 +126,22 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
         <form onSubmit={handleSubmit(onSubmit)}>
           {layoutStyle === 'table' ? (
             // TABLE VIEW: Excel-like with justified columns
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="flex items-center gap-6">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-32 flex-shrink-0">Allergen:</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-32 flex-shrink-0">Allergen<span className="text-red-500">*</span>:</label>
                 <input
                   {...register('allergen')}
                   disabled={mode === 'view'}
                   placeholder="Enter allergen name"
-                  className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
               </div>
               <div className="flex items-center gap-6">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-32 flex-shrink-0">Type:</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-32 flex-shrink-0">Type<span className="text-red-500">*</span>:</label>
                 <select
                   {...register('allergen_type')}
                   disabled={mode === 'view'}
-                  className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 >
                   <option value="">Select type</option>
                   {Object.values(AllergenTypeEnum.enum).map(type => (
@@ -147,11 +150,11 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
                 </select>
               </div>
               <div className="flex items-center gap-6">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-32 flex-shrink-0">Severity:</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-32 flex-shrink-0">Severity<span className="text-red-500">*</span>:</label>
                 <select
                   {...register('severity')}
                   disabled={mode === 'view'}
-                  className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 >
                   <option value="">Select severity</option>
                   {Object.values(SeverityEnum.enum).map(severity => (
@@ -166,7 +169,7 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
                   disabled={mode === 'view'}
                   rows={3}
                   placeholder="Describe symptoms"
-                  className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
               </div>
               <div className="flex items-center gap-6">
@@ -175,7 +178,7 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
                   {...register('first_observed')}
                   type="date"
                   disabled={mode === 'view'}
-                  className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
               </div>
               <div className="flex items-start gap-6">
@@ -185,7 +188,7 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
                   disabled={mode === 'view'}
                   rows={3}
                   placeholder="What triggers this"
-                  className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
               </div>
               <div className="flex items-start gap-6">
@@ -195,7 +198,7 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
                   disabled={mode === 'view'}
                   rows={3}
                   placeholder="Action plan"
-                  className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
               </div>
               <div className="flex items-start gap-6">
@@ -205,104 +208,104 @@ export default function AllergyDetailFeature({ allergy }: AllergyDetailFeaturePr
                   disabled={mode === 'view'}
                   rows={3}
                   placeholder="Additional notes"
-                  className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
               </div>
             </div>
           ) : (
             // STACKED VIEW: Field name on top, field below, tooltip below
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Allergen *</label>
+                <label className="block text-base font-bold text-blue-600 dark:text-blue-400 mb-1">Allergen <span className="text-red-500">*</span></label>
                 <input
                   {...register('allergen')}
                   disabled={mode === 'view'}
                   placeholder="Enter allergen name"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10 ${errors.allergen ? 'bg-red-50 border-red-300' : ''}`}
                 />
-                <p className="text-xs text-gray-500 mt-1">The substance causing the reaction</p>
+                <p className="text-[11px] text-blue-400 dark:text-blue-300 mt-0.5 ml-4">The substance causing the reaction</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Type *</label>
+                <label className="block text-base font-bold text-blue-600 dark:text-blue-400 mb-1">Type <span className="text-red-500">*</span></label>
                 <select
                   {...register('allergen_type')}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10 ${errors.allergen_type ? 'bg-red-50 border-red-300' : ''}`}
                 >
                   <option value="">Select type</option>
                   {Object.values(AllergenTypeEnum.enum).map(type => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">Category of allergen</p>
+                <p className="text-[11px] text-blue-400 dark:text-blue-300 mt-0.5 ml-4">Category of allergen</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Severity *</label>
+                <label className="block text-base font-bold text-blue-600 dark:text-blue-400 mb-1">Severity <span className="text-red-500">*</span></label>
                 <select
                   {...register('severity')}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10 ${errors.severity ? 'bg-red-50 border-red-300' : ''}`}
                 >
                   <option value="">Select severity</option>
                   {Object.values(SeverityEnum.enum).map(severity => (
                     <option key={severity} value={severity}>{severity}</option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">Reaction severity level</p>
+                <p className="text-[11px] text-blue-400 dark:text-blue-300 mt-0.5 ml-4">Reaction severity level</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Reaction</label>
+                <label className="block text-base font-bold text-blue-600 dark:text-blue-400 mb-1">Reaction</label>
                 <textarea
                   {...register('reaction')}
                   disabled={mode === 'view'}
                   rows={3}
                   placeholder="Describe symptoms"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
-                <p className="text-xs text-gray-500 mt-1">Physical symptoms experienced</p>
+                <p className="text-[11px] text-blue-400 dark:text-blue-300 mt-0.5 ml-4">Physical symptoms experienced</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Observed</label>
+                <label className="block text-base font-bold text-blue-600 dark:text-blue-400 mb-1">First Observed</label>
                 <input
                   {...register('first_observed')}
                   type="date"
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
-                <p className="text-xs text-gray-500 mt-1">When first noticed</p>
+                <p className="text-[11px] text-blue-400 dark:text-blue-300 mt-0.5 ml-4">When first noticed</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Trigger Factors</label>
+                <label className="block text-base font-bold text-blue-600 dark:text-blue-400 mb-1">Trigger Factors</label>
                 <textarea
                   {...register('trigger_factors')}
                   disabled={mode === 'view'}
                   rows={3}
                   placeholder="What triggers this"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
-                <p className="text-xs text-gray-500 mt-1">Conditions that trigger reactions</p>
+                <p className="text-[11px] text-blue-400 dark:text-blue-300 mt-0.5 ml-4">Conditions that trigger reactions</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Emergency Plan</label>
+                <label className="block text-base font-bold text-blue-600 dark:text-blue-400 mb-1">Emergency Plan</label>
                 <textarea
                   {...register('emergency_action_plan')}
                   disabled={mode === 'view'}
                   rows={3}
                   placeholder="Action plan"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
-                <p className="text-xs text-gray-500 mt-1">Steps for severe reactions</p>
+                <p className="text-[11px] text-blue-400 dark:text-blue-300 mt-0.5 ml-4">Steps for severe reactions</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notes</label>
+                <label className="block text-base font-bold text-blue-600 dark:text-blue-400 mb-1">Notes</label>
                 <textarea
                   {...register('notes')}
                   disabled={mode === 'view'}
                   rows={3}
                   placeholder="Additional notes"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:bg-gray-900 dark:border-white/10"
                 />
-                <p className="text-xs text-gray-500 mt-1">Any additional notes</p>
+                <p className="text-[11px] text-blue-400 dark:text-blue-300 mt-0.5 ml-4">Any additional notes</p>
               </div>
             </div>
           )}
