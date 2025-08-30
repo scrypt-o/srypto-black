@@ -1,22 +1,178 @@
-# Stream Implementation Guide - Agent Instructions
+# Scrypto Stream Implementation Guide
 
-**PURPOSE**: Step-by-step instructions for implementing any Scrypto stream (domain__group__item) following the verified allergies pattern.
+## WHAT IS SCRYPTO
 
-**CONTEXT**: You are implementing a new stream based on user request. The allergies stream is your reference implementation - copy its exact patterns.
+Scrypto is a medical portal built with **Next.js 15**, **TypeScript**, **Supabase**, and **TanStack Query**. 
+
+### DESIGN PHILOSOPHY
+- **SSR-First**: Server components fetch data, client components handle interactions
+- **Middleware Authentication**: Route protection at edge, no page-level auth calls
+- **Database Security**: Reads from RLS views, writes to base tables with ownership enforcement
+- **Type Safety**: Zod schemas as single source of truth for all data shapes
+
+### ARCHITECTURE LAYERS
+
+#### 1. DATABASE LAYER
+- **Tables**: `patient__medhist__allergies` (snake_case naming)
+- **Views**: `v_patient__medhist__allergies` (RLS-filtered reads)
+- **Purpose**: Data storage with user isolation and soft deletes
+
+#### 2. API LAYER  
+- **Routes**: `/api/patient/medical-history/allergies` (kebab-case URLs)
+- **Security**: CSRF protection + user authentication + ownership enforcement
+- **Validation**: Zod schemas validate all inputs/outputs
+
+#### 3. HOOKS LAYER
+- **Files**: `hooks/usePatientAllergies.ts`
+- **Purpose**: TanStack Query wrappers for API calls with cache management
+- **Pattern**: useList, useById, useCreate, useUpdate, useDelete
+
+#### 4. PAGES LAYER (SERVER COMPONENTS)
+- **Files**: `app/patient/medhist/allergies/page.tsx` (list, detail, create)
+- **Purpose**: Server-side data fetching, SSR with initial data
+- **Pattern**: Fetch from views, pass data to client features
+
+#### 5. FEATURES LAYER (CLIENT COMPONENTS)  
+- **Files**: `components/features/patient/allergies/AllergiesListFeature.tsx`
+- **Purpose**: Interactive UI with forms, mutations, state management
+- **Pattern**: Receive initial data, handle user interactions, manage loading/error states
+
+### WHY THIS ARCHITECTURE
+- **Security**: Authentication at edge, data isolation at database level
+- **Performance**: Server-side rendering with client-side interactions
+- **Maintainability**: Clear separation between data fetching and UI logic
+- **Scalability**: Consistent patterns across 50+ streams
 
 ---
 
-## STOP - READ THIS FIRST
+## IMPLEMENTATION PROCESS
 
-### Required Reading
-**BEFORE IMPLEMENTING**: Read `ai/specs/core/` folder (9 numbered specs in order)
+You will follow this exact process to implement any new stream. Each step includes verification checkpoints to ensure correctness.
 
-### Reference Implementation  
-**COPY THIS EXACTLY**: `app/patient/medhist/allergies/*` - verified working pattern with all best practices
+```
+SCRYPTO STREAM IMPLEMENTATION FLOW
 
-### Context
-**APP**: Medical portal, SSR-first Next.js 15, middleware auth, TanStack Query
-**PATTERN**: Allergies stream has everything - auth, CRUD, validation, loading states, error handling
+┌─────────────────────────────────────────────────────────────────┐
+│                         START HERE                              │
+│                    User Request: "Add X"                       │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  STEP 1: PARSE REQUEST                                         │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ Parse: domain__group__item                              │    │
+│  │ Map to: API paths, file names, navigation               │    │
+│  │ [Check: Does naming convention make sense?]             │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  STEP 2: VERIFY DATABASE                                       │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ Find DDL: ai/specs/ddl/{domain}__{group}__{item}_ddl.md │    │
+│  │ Check table exists: mcp__supabase__execute_sql          │    │
+│  │ Check view exists: v_{domain}__{group}__{item}          │    │
+│  │ Verify columns match DDL specification                  │    │
+│  │ [Check: Table + view exist? Columns match DDL?]        │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  STEP 3: CREATE ZOD SCHEMAS                                    │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ Copy: schemas/allergies.ts                              │    │
+│  │ Update: Column names, enum values from DDL              │    │
+│  │ Create: Row/Create/Update/List schemas + types          │    │
+│  │ [Check: npm run typecheck passes? Enums match DDL?]    │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  STEP 4: CREATE API ROUTES                                     │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ Copy: app/api/patient/medical-history/allergies/        │    │
+│  │ Update: Schema imports, table/view names                │    │
+│  │ Verify: CSRF + auth + validation patterns               │    │
+│  │ [Check: Compiles? Auth working? Error codes correct?]   │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  STEP 5: CREATE TANSTACK HOOKS                                │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ Copy: hooks/usePatientAllergies.ts                      │    │
+│  │ Update: API endpoints, schema types, cache keys         │    │
+│  │ Verify: Query keys, mutation patterns, invalidation     │    │
+│  │ [Check: Hooks compile? Cache keys consistent?]          │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  STEP 6: CREATE SERVER PAGES                                   │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ Copy: app/patient/medhist/allergies/*.tsx               │    │
+│  │ Update: View names, feature component imports           │    │
+│  │ Verify: SSR data fetching, layout usage                 │    │
+│  │ [Check: Pages compile? Data fetching works?]            │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  STEP 7: CREATE FEATURE COMPONENTS                             │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ Read: AllergiesListFeature.tsx (understand patterns)    │    │
+│  │ Copy: Entire file to ConditionsListFeature.tsx         │    │
+│  │ Update: Field names, schema imports, hook calls         │    │
+│  │ Test: npm run typecheck after each change               │    │
+│  │ [Check: Interfaces match? Fields exist? APIs correct?]  │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  STEP 8: ADD NAVIGATION                                        │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ Update: Medical history page tile config                │    │
+│  │ Add: Navigation entry pointing to correct path          │    │
+│  │ [Check: Navigation link works? Points to right page?]   │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  STEP 9: END-TO-END TESTING                                   │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ Test: npm run typecheck (must pass)                     │    │
+│  │ Test: npm run build (must pass)                         │    │
+│  │ Test: Playwright MCP full CRUD flow                     │    │
+│  │ [Check: Create works? Edit works? Delete works?]        │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    SUCCESS ✅                                   │
+│                Stream Ready for Production                      │
+│            Update Job Card with Evidence                       │
+└─────────────────────────────────────────────────────────────────┘
+
+VERIFICATION CHECKPOINTS:
+[Database] → Table + view exist, columns match DDL
+[Schemas] → TypeScript compiles, enums match constraints  
+[API] → Auth + CSRF + validation working, correct status codes
+[Hooks] → TanStack patterns, cache invalidation working
+[Pages] → SSR data fetching, proper layouts used
+[Features] → UI components work, forms validate, mutations succeed
+[Navigation] → Links work, routing correct
+[Testing] → Full CRUD cycle verified with Playwright
+```
 
 ---
 
@@ -57,7 +213,8 @@ Use mcp__supabase-scrypto__execute_sql to check column names:
 ```
 
 ### STEP 3: CREATE ZOD SCHEMAS
-**File**: `schemas/{item}.ts` (e.g., `schemas/conditions.ts`)
+**Example**: Look at `schemas/allergies.ts` as your template
+**Create**: `schemas/{item}.ts` (e.g., `schemas/conditions.ts`)
 
 **Copy pattern from**: `schemas/allergies.ts`
 
@@ -113,7 +270,8 @@ export const {EnumName}Enum = z.enum([...]) // From DDL constraints
 ```
 
 ### STEP 4: CREATE API ROUTES
-**Files**:
+**Example**: Look at `app/api/patient/medical-history/allergies/route.ts` and `app/api/patient/medical-history/allergies/[id]/route.ts` as your templates
+**Create**:
 - `app/api/{domain-readable}/{group-readable}/{item}/route.ts` (list GET, create POST)
 - `app/api/{domain-readable}/{group-readable}/{item}/[id]/route.ts` (get GET, update PUT, delete DELETE)
 
@@ -160,7 +318,8 @@ export async function POST(request: NextRequest) {
 ```
 
 ### STEP 5: CREATE HOOKS
-**File**: `hooks/use{ItemPlural}.ts` (e.g., `hooks/usePatientConditions.ts`)
+**Example**: Look at `hooks/usePatientAllergies.ts` as your template
+**Create**: `hooks/use{ItemPlural}.ts` (e.g., `hooks/usePatientConditions.ts`)
 
 **Copy pattern from**: `hooks/usePatientAllergies.ts`
 
@@ -192,12 +351,15 @@ export function useDelete{Item}() { /* useMutation with cache invalidation */ }
 ```
 
 ### STEP 6: CREATE PAGES (SERVER COMPONENTS)
-**Files**:
+**Examples**: Look at these files as your templates:
+- `app/patient/medhist/allergies/page.tsx` (list page)
+- `app/patient/medhist/allergies/new/page.tsx` (create page)  
+- `app/patient/medhist/allergies/[id]/page.tsx` (detail page)
+
+**Create**:
 - `app/{domain-readable}/{group-readable}/{item}/page.tsx` (list)
 - `app/{domain-readable}/{group-readable}/{item}/new/page.tsx` (create)
 - `app/{domain-readable}/{group-readable}/{item}/[id]/page.tsx` (detail/edit)
-
-**Copy pattern from**: `app/patient/medhist/allergies/*`
 
 **List page pattern**:
 ```ts
@@ -236,26 +398,68 @@ export default async function {Item}ListPage({ searchParams }) {
 
 ### STEP 7: CREATE FEATURE COMPONENTS (CLIENT)
 **Files**:
-- `components/features/{domain}/{group}/{Item}ListFeature.tsx`
-- `components/features/{domain}/{group}/{Item}DetailFeature.tsx`
-- `components/features/{domain}/{group}/{Item}CreateFeature.tsx`
+- `config/{item}ListConfig.ts` (configuration only)
+- `components/features/{domain}/{group}/{Item}ListFeature.tsx` (27 lines - imports config)
 
-**Copy pattern from**: `components/features/patient/allergies/*`
+**CONFIGURATION-DRIVEN METHOD**:
 
-**Required features**:
-- List: Uses `ListViewLayout` with search/filter/pagination
-- Detail: Uses `DetailViewLayout` with React Hook Form + loading states
-- Create: Uses `DetailViewLayout` with React Hook Form + validation
+1. **Create configuration file**:
+   ```typescript
+   // config/{item}ListConfig.ts
+   export const {item}ListConfig: ListFeatureConfig<{Item}Row, {Item}Item> = {
+     entityName: '{item}',
+     entityNamePlural: '{items}',
+     basePath: '/{domain-readable}/{group-readable}/{item}',
+     
+     // DDL field mappings
+     transformRowToItem: (row: {Item}Row): {Item}Item => ({
+       id: row.{item}_id,           // Primary key from DDL
+       title: row.{main_field},     // Display field from DDL
+       severity: mapSeverity(row.severity), // Business logic mapping
+       // ... other DDL column mappings
+     }),
+     
+     // Filter configuration from DDL enums
+     filterFields: [
+       {
+         key: 'severity',
+         label: 'Severity',
+         options: SeverityEnum.options.map(opt => ({ value: opt, label: opt }))
+       }
+     ],
+     
+     hooks: { useDelete: useDelete{Item} }
+   }
+   ```
+
+2. **Create minimal feature component**:
+   ```typescript
+   // components/features/{domain}/{group}/{Item}ListFeature.tsx
+   import GenericListFeature from '@/components/layouts/GenericListFeature'
+   import { {item}ListConfig } from '@/config/{item}ListConfig'
+   
+   export default function {Item}ListFeature(props) {
+     return <GenericListFeature {...props} config={{item}ListConfig} />
+   }
+   ```
+
+3. **Verify implementation**:
+   ```bash
+   npm run typecheck  # Must pass
+   npm run dev        # Test in browser
+   ```
+
+**RESULT: 27 lines per feature instead of 350+ lines of duplicated code.**
 
 **Checkpoint**: Write in job card:
 ```
 ## FEATURE COMPONENTS CREATED ✅
-- List feature with search/filter/pagination
-- Detail feature with view/edit modes
-- Create feature with form validation
-- React Hook Form + Zod validation
-- Loading states implemented
-- Error handling with toasts
+- Configuration file with DDL-derived mappings
+- Minimal feature component using GenericListFeature
+- All functionality inherited: search/filter/pagination/CRUD
+- TanStack Query integration for mutations
+- FilterModal and ConfirmDialog components
+- 92% code reduction achieved
 ```
 
 ### STEP 8: ADD NAVIGATION

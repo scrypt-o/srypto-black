@@ -214,18 +214,20 @@ const PUBLIC_PATHS = ['/login', '/signup', '/reset-password', '/api/auth']
 
 ## API Routes
 
-### Minimal API Surface
-Only create API routes for:
-- Complex operations (multi-table updates)
-- File uploads
-- External service integrations
-- Webhook handlers
+### Standard API Surface
+Create API routes for all CRUD operations:
+- List endpoints with filtering/pagination
+- Create operations with validation
+- Update operations with ownership checks
+- Delete operations with confirmation
+- All routes include CSRF protection and authentication
 
-### Direct Supabase Calls
-For simple CRUD:
-- Use `getBrowserClient()` in Client Components
-- Direct table/view access
-- RLS handles permissions
+### TanStack Query Integration
+For client-side operations:
+- Use mutation hooks that call API routes
+- Proper cache invalidation on success
+- Error handling with toast notifications
+- Loading states during operations
 
 ## Component Hierarchy
 
@@ -266,8 +268,8 @@ components/
 - Better SEO potential
 
 ### Simplicity
-- Less client-side state
-- No cache invalidation complexity
+- Server-side initial data loading
+- TanStack Query for mutations and cache management
 - Straightforward data flow
 - Easier debugging
 
@@ -289,7 +291,7 @@ components/
 - [x] Move data fetching to page component
 - [x] Convert to async Server Component
 - [x] Pass data as props
-- [x] Remove TanStack Query hooks
+- [x] Integrate TanStack Query for mutations
 - [x] Update navigation to use router
 - [x] Handle loading/error states
 
