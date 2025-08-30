@@ -93,7 +93,9 @@ export function useCreateAllergy() {
       return response.json()
     },
     onSuccess: (data) => {
-      console.log('Allergy created successfully:', data)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Allergy created successfully:', data)
+      }
       queryClient.invalidateQueries({ queryKey: ['allergies'] })
     },
   })
@@ -119,7 +121,9 @@ export function useUpdateAllergy() {
       return response.json()
     },
     onSuccess: (data) => {
-      console.log('Allergy updated successfully:', data)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Allergy updated successfully:', data)
+      }
       queryClient.invalidateQueries({ queryKey: ['allergies'] })
       if (data && typeof data === 'object' && 'allergy_id' in data) {
         queryClient.invalidateQueries({ queryKey: ['allergies', 'detail', (data as any).allergy_id] })
@@ -144,7 +148,9 @@ export function useDeleteAllergy() {
       }
     },
     onSuccess: (_, id) => {
-      console.log('Allergy deleted successfully:', id)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Allergy deleted successfully:', id)
+      }
       queryClient.invalidateQueries({ queryKey: ['allergies'] })
       queryClient.invalidateQueries({ queryKey: ['allergies', 'detail', id] })
     },

@@ -44,7 +44,7 @@ Large domain complexity, AI context issues, and lack of planning → complex rul
 
 **SOLUTION**:
 
-* **DEFER TANSTACK QUERY** – Use simple facade pattern first
+* **USE TANSTACK QUERY** – Production-ready query management
 * **NO WORK WITHOUT A SPEC AND JOB CARD** – No negotiations
 * **ALWAYS TEST END TO END** – Do not assume anything
 * **DO NOT CLAIM SUCCESS WITHOUT PROOF**
@@ -176,21 +176,16 @@ supabase gen types      # Generate TypeScript types from database
 
 ---
 
-## Architecture – Simplified with Facade Pattern
+## Architecture – SSR-First with TanStack Query
 
-### Critical: Defer TanStack Query Pattern
+### Query Management
 
-**Phase 1**: Use Query Facade (simple fetch wrapper)
+**TanStack Query**: Production-ready state management
 
-* Create `/lib/query/runtime.ts` with useQuery/useMutation shims
-* Use `useState` + `useEffect` internally
-* Same API shape as TanStack
-
-**Phase 2**: Add TanStack Later
-
-* Replace internals with TanStack
-* Hooks/pages unchanged
-* Add caching/optimizations only after stability proven
+* Use `@tanstack/react-query` for all data fetching
+* Server components provide initial data
+* Client components use TanStack for interactions
+* Proper cache invalidation and optimistic updates
 
 ### Three-Layer Hierarchical Naming
 
@@ -233,8 +228,8 @@ components/
    layouts/       # Layout components only
 
 lib/
-   query/runtime.ts
    supabase-*.ts
+   api-helpers.ts
 
 schemas/
    allergies.ts   # Zod schemas
@@ -243,10 +238,10 @@ hooks/
    usePatientAllergies.ts
 
 ai/
-   plan/
-   specs/
-   proof/
-   testing/
+   specs/core/     # Essential specs
+   specs/ddl/      # Database schemas
+   jobcards/       # Active job tracking
+   testing/        # Screenshots and evidence
 ```
 
 ---
@@ -262,9 +257,9 @@ ai/
 
 ### Query Pattern
 
-* Always use facade (`/lib/query/runtime.ts`)
-* Never import TanStack in Phase 1
-* Same API shape for migration
+* Use TanStack Query (`@tanstack/react-query`)
+* Server components provide initial data
+* Client components handle interactions with TanStack
 
 ### Database
 
@@ -300,8 +295,8 @@ ai/
 Steps:
 
 1. Create job card in `./ai/jobcards/`
-2. Write task reference in `./ai/ai_current_task_.md`
-3. Find spec in `./ai/specs/`
+2. Write task reference in `./ai/current-jobcard.md`
+3. Find spec in `./ai/specs/core/`
 
    * If not found → **STOP** → rename job card `*-stopped`
    * If found → create plan → task list → execute → update job card
@@ -337,13 +332,13 @@ Status: Ongoing|Stopped|Done
 
 ### New Features
 
-1. Read spec in `/ai/specs/database-ddl/`
-2. Create Zod schemas in `/schemas/`
-3. Create API routes using schemas
-4. Create hooks using facade
-5. Create pages with layouts
-6. Test with Playwright MCP
-7. Create proof in `/ai/proof/`
+1. Read spec in `/ai/specs/core/`
+2. Reference DDL in `/ai/specs/ddl/`
+3. Create Zod schemas in `/schemas/`
+4. Create API routes using schemas
+5. Create hooks using TanStack Query
+6. Create pages with layouts
+7. Test with Playwright MCP
 
 ### Fixes
 
@@ -375,19 +370,19 @@ Format: `[YYYYMMDD]-[feature]-[step]-[viewport].png`
 
 **Implementation status**:
 
-* Codebase cleaned
-* Plan created: `/ai/plan/ALLERGIES-IMPLEMENTATION-PLAN.md`
-* Facade ready (TanStack deferred)
-* Ready for Step 1 (create Zod schemas)
+* Codebase cleaned and organized
+* Core specs established in `/ai/specs/core/`
+* TanStack Query implemented and working
+* Allergies reference implementation complete
 
 ---
 
 ## Emergency Procedures
 
-* If lost → check `./ai_current_task_`
+* If lost → check `./ai/current-jobcard.md`
 * If uncertain → **HALT** and ask
 * If Playwright fails → **STOP**, tell user to restart Claude session
-* If TanStack confusion → remember **Phase 1 = facade only**
+* If confused → read `/ai/specs/core/` specs in order
 
 ---
 
@@ -395,9 +390,9 @@ Format: `[YYYYMMDD]-[feature]-[step]-[viewport].png`
 
 Medical software = lives at risk.
 Complexity = bugs = harm.
-Simple facade = fewer bugs = safer.
+Proven patterns = fewer bugs = safer.
 
-Rules exist because complexity killed the project 22 times.
+Rules exist because complexity killed the project 29 times.
 **Keep it simple. Follow specs 100%. HALT if gap.**
 
 ---

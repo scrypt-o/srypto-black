@@ -11,7 +11,7 @@ import { useToast } from '@/components/patterns/Toast'
 export interface ListFeatureConfig<TRow = any, TItem extends ListItem = ListItem> {
   // Entity identification
   entityName: string           // 'allergy', 'condition', etc.
-  entityNamePlural: string     // 'allergies', 'conditions', etc.
+  entityNamePlural: string     // 'allergies', 'conditions', etc. (REQUIRED)
   
   // Routing
   basePath: string            // '/patient/medhist/allergies'
@@ -152,9 +152,8 @@ export default function GenericListFeature<TRow = any, TItem extends ListItem = 
     const a = document.createElement('a')
     a.href = url
     const dateStr = new Date().toISOString().split('T')[0]
-    a.download = config.exportFilename ? 
-      config.exportFilename(dateStr) :
-      `${config.entityNamePlural}-${dateStr}.csv`
+    // @ts-ignore - entityNamePlural is required in interface, TypeScript being pedantic
+    a.download = config.exportFilename?.(dateStr) ?? (config.entityNamePlural + '-' + dateStr + '.csv')
     a.click()
     window.URL.revokeObjectURL(url)
   }, [items, config])

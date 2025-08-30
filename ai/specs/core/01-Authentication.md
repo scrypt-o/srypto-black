@@ -7,7 +7,7 @@
 ## Server Pages
 - Auth protection handled by middleware for `/patient/*` routes.
 - Use `getServerClient()` for reads; view names `v_*` enforce RLS by user.
-- `await requireUser()` is optional when middleware already protects routes.
+- Do not call requireUser() in pages; middleware protects /patient/* routes.
 
 ## API Routes
 - Call `getServerClient()` and `supabase.auth.getUser()`; return 401 if `!user`.
@@ -18,7 +18,7 @@
 - Public: `/login`, `/signup`, `/reset-password`.
 - All other pages require a session; redirect to `/login` if missing.
 
-## Client Islands
+## Client Components
 - Use `getBrowserClient()` (already cookie-scoped).
 - Never trust client input: server validates again with Zod in API routes.
 

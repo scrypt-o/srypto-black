@@ -26,13 +26,13 @@ This is a fundamental shift from our previous client-heavy approach. We now leve
 ### 1. Page Structure (Server Component)
 ```typescript
 // app/patient/[module]/[entity]/page.tsx
-import { requireUser, getServerClient } from '@/lib/supabase-server'
+import { getServerClient } from '@/lib/supabase-server'
 
 export const dynamic = 'force-dynamic'
 
 export default async function Page({ params, searchParams }) {
-  // Auth check
-  await requireUser()
+  // Auth handled by middleware for /patient/* routes
+  // No requireUser() needed
   
   // Get Supabase client
   const supabase = await getServerClient()
@@ -63,22 +63,26 @@ export default async function Page({ params, searchParams }) {
 
 ### 2. Client Component Pattern
 ```typescript
-// components/features/[module]/EntityListView.tsx
+// components/features/[module]/EntityListFeature.tsx
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getBrowserClient } from '@/lib/supabase-browser'
 
-export default function EntityListView({ initialData, initialState }) {
+export default function EntityListFeature({ initialData, initialState }) {
   // Local state for UI
   const [items, setItems] = useState(initialData)
   const router = useRouter()
   
-  // Client-side operations
+  // Client-side operations (use API routes for writes)
   const handleDelete = async (ids: string[]) => {
-    const supabase = getBrowserClient()
-    // Perform operation
+    // Call API routes with proper CSRF + auth + validation
+    for (const id of ids) {
+      await fetch(`/api/patient/medical-history/entity/${id}`, {
+        method: 'DELETE',
+        credentials: 'same-origin'
+      })
+    }
     // Update local state
     setItems(prev => prev.filter(item => !ids.includes(item.id)))
   }
@@ -89,7 +93,7 @@ export default function EntityListView({ initialData, initialState }) {
     router.push(`?search=${query}`)
   }
   
-  return <ListView items={items} onDelete={handleDelete} ... />
+  return <ListViewLayout items={items} onDelete={handleDelete} ... />
 }
 ```
 
@@ -125,7 +129,7 @@ export default function ListPageLayoutClient({ children, sidebarItems, headerTit
 
 ### Write Operations
 1. User triggers action (edit, delete, create)
-2. Client Component calls Supabase
+2. Client Component calls our API routes (CSRF + auth + Zod)
 3. Optimistic update in local state
 4. On success: Keep local state
 5. On error: Rollback and show error
@@ -168,8 +172,8 @@ export async function getServerClient() {
 
 ### Server-Side (Pages)
 ```typescript
-// Always at the top of page components
-await requireUser()
+// Middleware handles auth for /patient/* routes
+// No requireUser() needed in page components
 const supabase = await getServerClient()
 // Data fetching here
 ```
@@ -245,17 +249,19 @@ app/
 
 components/
   layouts/
-    ListPageLayoutClient.tsx (Client - Layout wrapper)
-    DetailPageLayoutClient.tsx (Client - Layout wrapper)
-    ListView.tsx (Client - Base list component)
-    DetailView.tsx (Client - Base detail component)
+    ListPageLayout.tsx (Server - Page wrapper, renders ListPageLayoutClient)
+    DetailPageLayout.tsx (Server - Page wrapper, renders DetailPageLayoutClient)
+    ListPageLayoutClient.tsx (Client - Layout shell with sidebar/header)
+    DetailPageLayoutClient.tsx (Client - Layout shell with sidebar/header)
+    ListViewLayout.tsx (Client - Base list UI component)
+    DetailViewLayout.tsx (Client - Base detail UI component)
     TileGridLayout.tsx (Client - Tile grid component)
     
   features/
     patient/
       [module]/
-        EntityListView.tsx (Client - List implementation)
-        EntityDetailView.tsx (Client - Detail implementation)
+        EntityListFeature.tsx (Client - List implementation)
+        EntityDetailFeature.tsx (Client - Detail implementation)
         EntityCreateView.tsx (Client - Create implementation)
 ```
 
@@ -403,7 +409,7 @@ const handleAction = async () => {
 
 ## Next Steps
 
-1. Complete DetailView integration
+1. Complete DetailViewLayout integration
 2. Migrate remaining modules to SSR
 3. Remove unused TanStack Query code
 4. Update all specs to reflect new patterns

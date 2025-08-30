@@ -23,11 +23,11 @@ export default function MedicalHistoryPage() {
         accent: 'blue' as const
       },
       {
-        id: 'medical-conditions',
+        id: 'conditions',
         title: 'Conditions',
         description: 'Diagnosed conditions and statuses',
         icon: 'Stethoscope',
-        href: '/patient/medhist/medical-conditions',
+        href: '/patient/medhist/conditions',
         variant: 'default' as const,
         accent: 'blue' as const
       },

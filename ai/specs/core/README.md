@@ -8,7 +8,7 @@
 3. **03-Database-Access.md** - Views vs tables, RLS, ownership enforcement
 4. **04-Zod-Validation.md** - Schema patterns, input/output validation
 5. **05-Layout-Components.md** - ListPageLayout, DetailPageLayout usage
-6. **06-SSR-Architecture.md** - Server components, client islands, data flow
+6. **06-SSR-Architecture.md** - Server components, client components, data flow
 7. **07-Navigation-URL-State.md** - Routing, search params, state management
 
 ## Supporting Specs

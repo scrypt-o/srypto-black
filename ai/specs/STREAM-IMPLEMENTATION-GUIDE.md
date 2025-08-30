@@ -398,8 +398,10 @@ export default async function {Item}ListPage({ searchParams }) {
 
 ### STEP 7: CREATE FEATURE COMPONENTS (CLIENT)
 **Files**:
-- `config/{item}ListConfig.ts` (configuration only)
-- `components/features/{domain}/{group}/{Item}ListFeature.tsx` (27 lines - imports config)
+- `config/{item}ListConfig.ts` (list configuration)
+- `config/{item}DetailConfig.ts` (detail configuration)
+- `components/features/{domain}/{group}/{Item}ListFeature.tsx` (27 lines)
+- `components/features/{domain}/{group}/{Item}DetailFeature.tsx` (13 lines)
 
 **CONFIGURATION-DRIVEN METHOD**:
 
@@ -449,17 +451,61 @@ export default async function {Item}ListPage({ searchParams }) {
    npm run dev        # Test in browser
    ```
 
-**RESULT: 27 lines per feature instead of 350+ lines of duplicated code.**
+3. **Create detail configuration**:
+   ```typescript
+   // config/{item}DetailConfig.ts
+   export const {item}DetailConfig: DetailFeatureConfig = {
+     entityName: '{item}',
+     entityNamePlural: '{items}',
+     listPath: '/{domain-readable}/{group-readable}/{item}',
+     
+     // Form schema and transformation
+     formSchema: {item}FormSchema,
+     transformRowToFormData: (row) => ({ /* DDL field mappings */ }),
+     
+     // Field definitions from DDL
+     fields: [
+       {
+         key: '{field_name}',
+         label: '{Field Label}',
+         type: 'text' | 'textarea' | 'select' | 'date',
+         required: true,
+         description: 'Field description from DDL'
+       }
+     ],
+     
+     hooks: { 
+       useUpdate: useUpdate{Item},
+       useDelete: useDelete{Item} 
+     }
+   }
+   ```
+
+4. **Create minimal feature components**:
+   ```typescript
+   // List Feature (27 lines)
+   export default function {Item}ListFeature(props) {
+     return <GenericListFeature {...props} config={{item}ListConfig} />
+   }
+   
+   // Detail Feature (13 lines)  
+   export default function {Item}DetailFeature({ {item} }) {
+     return <GenericDetailFeature data={{item}} config={{item}DetailConfig} />
+   }
+   ```
+
+**RESULT: 40 lines per stream instead of 685+ lines of duplicated code.**
 
 **Checkpoint**: Write in job card:
 ```
 ## FEATURE COMPONENTS CREATED ✅
-- Configuration file with DDL-derived mappings
-- Minimal feature component using GenericListFeature
-- All functionality inherited: search/filter/pagination/CRUD
-- TanStack Query integration for mutations
-- FilterModal and ConfirmDialog components
-- 92% code reduction achieved
+- List configuration with DDL-derived field mappings (67 lines)
+- Detail configuration with form fields and validation (90 lines)
+- List feature component using GenericListFeature (27 lines)
+- Detail feature component using GenericDetailFeature (13 lines)
+- All functionality inherited: CRUD, forms, validation, UI states
+- TanStack Query, FilterModal, ConfirmDialog integration
+- 94% code reduction achieved (40 lines vs 685+ lines)
 ```
 
 ### STEP 8: ADD NAVIGATION

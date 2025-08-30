@@ -118,7 +118,7 @@ export default function AllergyCreateFeature() {
                   className={`flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-white/10 ${errors.allergen_type ? 'bg-red-50 border-red-300' : ''}`}
                 >
                   <option value="">Select type</option>
-                  {Object.values(AllergenTypeEnum.enum).map(type => (
+                  {AllergenTypeEnum.options.map(type => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
@@ -130,7 +130,7 @@ export default function AllergyCreateFeature() {
                   className={`flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-white/10 ${errors.severity ? 'bg-red-50 border-red-300' : ''}`}
                 >
                   <option value="">Select severity</option>
-                  {Object.values(SeverityEnum.enum).map(severity => (
+                  {SeverityEnum.options.map(severity => (
                     <option key={severity} value={severity}>{severity}</option>
                   ))}
                 </select>
@@ -199,7 +199,7 @@ export default function AllergyCreateFeature() {
                   className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-white/10 ${errors.allergen_type ? 'bg-red-50 border-red-300' : ''}`}
                 >
                   <option value="">Select type</option>
-                  {Object.values(AllergenTypeEnum.enum).map(type => (
+                  {AllergenTypeEnum.options.map(type => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
@@ -212,7 +212,7 @@ export default function AllergyCreateFeature() {
                   className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-white/10 ${errors.severity ? 'bg-red-50 border-red-300' : ''}`}
                 >
                   <option value="">Select severity</option>
-                  {Object.values(SeverityEnum.enum).map(severity => (
+                  {SeverityEnum.options.map(severity => (
                     <option key={severity} value={severity}>{severity}</option>
                   ))}
                 </select>

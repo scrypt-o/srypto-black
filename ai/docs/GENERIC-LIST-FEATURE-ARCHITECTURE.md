@@ -1,4 +1,4 @@
-# Generic List Feature Architecture - Configuration-Driven Pattern
+# Generic Component Architecture - Configuration-Driven Pattern
 
 **Date**: 2025-08-30  
 **Status**: IMPLEMENTED AND TESTED  
@@ -10,6 +10,7 @@
 
 ### Before: Massive Code Duplication
 - **AllergiesListFeature.tsx**: 349 lines of code
+- **AllergyDetailFeature.tsx**: 336 lines of code
 - **90% generic boilerplate** repeated in every feature:
   - State management (loading, selectMode, selectedIds, modals)
   - URL handling (searchParams, router navigation) 
@@ -19,34 +20,52 @@
 - **Same patterns duplicated** across all 50+ medical streams
 
 ### After: Configuration-Driven Architecture
-- **GenericListFeature.tsx**: 276 lines of reusable logic
+- **GenericListFeature.tsx**: 276 lines of reusable list logic
+- **GenericDetailFeature.tsx**: 305 lines of reusable detail logic
 - **AllergiesListConfig.ts**: 67 lines of DDL-specific mappings
-- **AllergiesListFeature.tsx**: **27 lines** - just configuration import
+- **AllergiesDetailConfig.ts**: 90 lines of DDL-specific form fields
+- **AllergiesListFeature.tsx**: **27 lines** - imports list config
+- **AllergyDetailFeature.tsx**: **13 lines** - imports detail config
 - **Proper React patterns** with accessibility and type safety
 
 ---
 
 ## FILES CREATED
 
-### 1. Generic Component
+### 1. Generic List Component
 **File**: `components/layouts/GenericListFeature.tsx`
 **Purpose**: Handles all generic list operations for any medical stream
 **Size**: 276 lines of reusable logic
 
-### 2. Filter Modal Component  
+### 2. Generic Detail Component
+**File**: `components/layouts/GenericDetailFeature.tsx`
+**Purpose**: Handles all generic detail/edit operations for any medical stream
+**Size**: 305 lines of reusable logic
+
+### 3. Filter Modal Component  
 **File**: `components/patterns/FilterModal.tsx`
 **Purpose**: Reusable filter modal with React Hook Form + accessibility
 **Size**: 125 lines - replaces custom HTML modals everywhere
 
-### 3. Configuration Pattern
+### 4. List Configuration
 **File**: `config/allergiesListConfig.ts` 
-**Purpose**: All allergy-specific mappings derived from DDL
+**Purpose**: List-specific mappings derived from DDL
 **Size**: 67 lines of DDL-based configuration
 
-### 4. Minimal Feature
+### 5. Detail Configuration
+**File**: `config/allergiesDetailConfig.ts`
+**Purpose**: Detail form fields and validation derived from DDL  
+**Size**: 90 lines of DDL-based field definitions
+
+### 6. Minimal List Feature
 **File**: `components/features/patient/allergies/AllergiesListFeature.tsx`
-**Purpose**: Just imports generic component with config
+**Purpose**: Imports GenericListFeature with config
 **Size**: 27 lines total
+
+### 7. Minimal Detail Feature
+**File**: `components/features/patient/allergies/AllergyDetailFeature.tsx`
+**Purpose**: Imports GenericDetailFeature with config
+**Size**: 13 lines total
 
 ---
 
@@ -193,9 +212,9 @@ export default function {Entity}ListFeature(props) {
 ## BENEFITS ACHIEVED
 
 ### 1. **Massive Code Reduction**
-- **Old**: 350+ lines per feature × 50 streams = 17,500+ lines
-- **New**: 90 lines per config × 50 streams = 4,500 lines
-- **Saved**: 13,000+ lines of duplicated boilerplate
+- **Old**: 685+ lines per stream (349 list + 336 detail) × 30 streams = 20,550+ lines
+- **New**: 197 lines per stream (67+90 config + 27+13 features) × 30 streams = 5,910 lines
+- **Saved**: 14,640+ lines of duplicated boilerplate (71% reduction)
 
 ### 2. **Centralized Maintenance**
 - **Fix bug once** in GenericListFeature → fixes all 50 streams
