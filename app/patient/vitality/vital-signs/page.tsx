@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerClient } from '@/lib/supabase-server'
 import { patientNavItems } from '@/config/patientNav'
-import ListPageLayout from '@/components/layouts/ListPageLayout'
+import PageShell from '@/components/layouts/PageShell'
 import VitalSignsListFeature from '@/components/features/patient/vitality/VitalSignsListFeature'
 
 export const dynamic = 'force-dynamic'
@@ -62,7 +62,7 @@ export default async function VitalSignsListPage({ searchParams }: { searchParam
   const { data, error, count } = await query
 
   return (
-    <ListPageLayout sidebarItems={patientNavItems} headerTitle="Scrypto">
+    <PageShell sidebarItems={patientNavItems} headerTitle="Scrypto">
       <VitalSignsListFeature
         initialData={error ? [] : (data || [])}
         total={error ? 0 : (count || 0)}
@@ -77,6 +77,6 @@ export default async function VitalSignsListPage({ searchParams }: { searchParam
           sort_dir: sortDir,
         }}
       />
-    </ListPageLayout>
+    </PageShell>
   )
 }

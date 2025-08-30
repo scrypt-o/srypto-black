@@ -1,13 +1,13 @@
  
-import DetailPageLayout from '@/components/layouts/DetailPageLayout'
+import PageShell from '@/components/layouts/PageShell'
 import { patientNavItems } from '@/config/patientNav'
 import SurgeryCreateFeature from '@/components/features/patient/surgeries/SurgeryCreateFeature'
 export const dynamic = 'force-dynamic'
 
 export default function NewSurgeryPage() {
   return (
-    <DetailPageLayout sidebarItems={patientNavItems} headerTitle="Scrypto">
+    <PageShell sidebarItems={patientNavItems} headerTitle="Scrypto">
       <SurgeryCreateFeature />
-    </DetailPageLayout>
+    </PageShell>
   )
 }

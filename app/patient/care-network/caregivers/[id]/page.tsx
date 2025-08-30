@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getServerClient } from '@/lib/supabase-server'
-import DetailPageLayout from '@/components/layouts/DetailPageLayout'
+import PageShell from '@/components/layouts/PageShell'
 import { patientNavItems } from '@/config/patientNav'
 import CaregiverDetailFeature from '@/components/features/patient/caregivers/CaregiverDetailFeature'
 export const dynamic = 'force-dynamic'
@@ -20,8 +20,8 @@ export default async function ViewCaregiverPage({ params }: { params: Promise<{ 
   }
 
   return (
-    <DetailPageLayout sidebarItems={patientNavItems} headerTitle="Scrypto">
+    <PageShell sidebarItems={patientNavItems} headerTitle="Scrypto">
       <CaregiverDetailFeature caregiver={data} />
-    </DetailPageLayout>
+    </PageShell>
   )
 }

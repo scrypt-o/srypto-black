@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getServerClient } from '@/lib/supabase-server'
-import DetailPageLayout from '@/components/layouts/DetailPageLayout'
+import PageShell from '@/components/layouts/PageShell'
 import { patientNavItems } from '@/config/patientNav'
 import ConditionDetailFeature from '@/components/features/patient/medhist/ConditionDetailFeature'
 export const dynamic = 'force-dynamic'
@@ -20,8 +20,8 @@ export default async function ViewConditionPage({ params }: { params: Promise<{ 
   }
 
   return (
-    <DetailPageLayout sidebarItems={patientNavItems} headerTitle={data.condition_name || 'Condition'}>
+    <PageShell sidebarItems={patientNavItems} headerTitle={data.condition_name || 'Condition'}>
       <ConditionDetailFeature condition={data} />
-    </DetailPageLayout>
+    </PageShell>
   )
 }
