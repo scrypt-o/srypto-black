@@ -9,3 +9,8 @@ ASSERT READ ./ai/*\_ai\_init\_*.md
 * Every task requires a spec.
 * If no spec is available - STOP
 * Stop if you do not have a spec.
+
+# GIT REMOTE ISSUE - QUICK FIX
+* `git push` always fails - use `git push newrepo` instead
+* See GIT-REMOTE-FIX.md for permanent solution
+* Remote: https://github.com/scrypt-o/srypto-black.git
