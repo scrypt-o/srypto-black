@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { useState, useCallback } from 'react'
 import * as Icons from 'lucide-react'
+import { Check, X } from 'lucide-react'
 import clsx from 'clsx'
 
 // Types
@@ -178,72 +179,70 @@ export default function ListView<T extends ListItem>({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              setSelectMode(!selectMode)
-              setSelectedIds(new Set())
-            }}
-            className="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-50"
-          >
-            {selectMode ? 'Cancel' : 'Select'}
-          </button>
-          
-          {onAdd && (
-            <button
-              onClick={onAdd}
-              className="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            >
-              Add new
-            </button>
-          )}
-
-          {selectMode && selectedIds.size > 0 && exportEnabled && (
+        <div className="flex items-center justify-between w-full">
+          {selectMode ? (
             <>
+              {/* Left: All button */}
               <button
-                onClick={handleDelete}
-                className="px-3 py-1.5 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600"
+                onClick={selectAll}
+                className="flex items-center gap-2 p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
               >
-                Delete ({selectedIds.size})
+                <Check className="w-5 h-5" />
+                <span className="text-sm">All</span>
               </button>
-              <div className="relative">
-                <button
-                  onClick={() => setShowExportMenu(!showExportMenu)}
-                  className="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-50"
-                >
-                  Export
-                </button>
-                {showExportMenu && (
-                  <div className="absolute top-full mt-1 right-0 bg-white border rounded-lg shadow-lg z-10">
-                    {exportFormats.includes('csv') && (
-                      <button
-                        onClick={() => handleExport('csv')}
-                        className="block w-full px-4 py-2 text-sm text-left hover:bg-gray-50"
-                      >
-                        Export as CSV
-                      </button>
-                    )}
-                    {exportFormats.includes('pdf') && (
-                      <button
-                        onClick={() => handleExport('pdf')}
-                        className="block w-full px-4 py-2 text-sm text-left hover:bg-gray-50"
-                      >
-                        Export as PDF
-                      </button>
-                    )}
-                  </div>
+              
+              {/* Right: Actions */}
+              <div className="flex items-center gap-3">
+                {selectedIds.size > 0 && (
+                  <>
+                    <button
+                      onClick={() => {}}
+                      className="flex items-center gap-2 p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      <Icons.Download className="w-5 h-5" />
+                      <span className="text-sm">Export</span>
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      className="flex items-center gap-2 p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                    >
+                      <X className="w-5 h-5" />
+                      <span className="text-sm">Delete</span>
+                    </button>
+                  </>
                 )}
+                <button
+                  onClick={() => {
+                    setSelectMode(false)
+                    setSelectedIds(new Set())
+                  }}
+                  className="flex items-center gap-2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                >
+                  <Icons.X className="w-5 h-5" />
+                  <span className="text-sm">Cancel</span>
+                </button>
               </div>
             </>
-          )}
-
-          {selectMode && (
-            <button
-              onClick={selectAll}
-              className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900"
-            >
-              {selectedIds.size === items.length ? 'Deselect all' : 'Select all'}
-            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => setSelectMode(true)}
+                className="flex items-center gap-2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+              >
+                <Check className="w-5 h-5" />
+                <span className="text-sm">Select</span>
+              </button>
+              
+              {onAdd && (
+                <button
+                  onClick={onAdd}
+                  className="flex items-center gap-2 p-2 text-green-600 hover:bg-green-50 rounded-lg"
+                >
+                  <Icons.Plus className="w-5 h-5" />
+                  <span className="text-sm">Add new</span>
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -385,9 +384,9 @@ export default function ListView<T extends ListItem>({
                       e.stopPropagation()
                       onEditClick?.(item)
                     }}
-                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded"
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                   >
-                    <Icons.Pencil className="h-4 w-4 text-gray-400" />
+                    <Icons.Edit className="h-4 w-4" />
                   </button>
                   )}
                 </div>

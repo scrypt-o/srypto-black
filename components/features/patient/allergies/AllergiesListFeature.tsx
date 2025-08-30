@@ -213,6 +213,11 @@ export default function AllergiesListFeature({
 
   return (
     <>
+      {/* Page heading */}
+      <div className="mb-6 text-center">
+        <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">Allergies</h1>
+      </div>
+      
       <ListView<AllergyItem>
         items={items}
         loading={loading || deleteAllergy.isPending}
