@@ -11,6 +11,9 @@ export function getOrigin() {
 }
 
 export function getCookieHeader(): string | undefined {
+  // Highest priority: explicit cookie header from env
+  const envCookie = process.env.TEST_COOKIE
+  if (envCookie && envCookie.trim()) return envCookie.trim()
   // Reuse Playwright storage state if present
   const storagePath = path.join(process.cwd(), 'tests/e2e/storageState.json')
   if (!fs.existsSync(storagePath)) return undefined
@@ -32,4 +35,3 @@ export function authHeaders(extra: Record<string, string> = {}) {
     ...extra,
   }
 }
-
