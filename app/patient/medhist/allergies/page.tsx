@@ -57,7 +57,7 @@ export default async function AllergiesListPage({ searchParams }: { searchParams
   const { data, error, count } = await query
 
   return (
-    <ListPageLayout sidebarItems={patientNavItems} headerTitle="Allergies">
+    <ListPageLayout sidebarItems={patientNavItems} headerTitle="Scrypto">
       <AllergiesListFeature
         initialData={error ? [] : (data || [])}
         total={error ? 0 : (count || 0)}

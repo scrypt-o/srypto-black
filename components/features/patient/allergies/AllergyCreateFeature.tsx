@@ -91,6 +91,7 @@ export default function AllergyCreateFeature() {
         </div>
       </div>
 
+
       {/* Form content with layout options */}
       <div className="pb-24">
         <form onSubmit={handleSubmit(onSubmit)}>

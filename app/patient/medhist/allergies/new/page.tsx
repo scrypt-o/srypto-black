@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 export default function NewAllergyPage() {
   return (
-    <DetailPageLayout sidebarItems={patientNavItems} headerTitle="Allergies">
+    <DetailPageLayout sidebarItems={patientNavItems} headerTitle="Scrypto">
       <AllergyCreateFeature />
     </DetailPageLayout>
   )
