@@ -65,8 +65,8 @@
         "api": "/api/patient/medical-history/conditions"
       },
       "page_open_test": true,
-      "crud_tests": { "create": false, "list": false, "get": false, "update": false, "delete": false },
-      "status": "pending-tests"
+      "crud_tests": { "create": true, "list": true, "get": true, "update": true, "delete": true },
+      "status": "ready"
     },
     {
       "key": "patient__medhist__immunizations",
@@ -104,8 +104,8 @@
         "api": "/api/patient/medical-history/family-history"
       },
       "page_open_test": true,
-      "crud_tests": { "create": true, "list": true, "get": true, "update": false, "delete": false },
-      "status": "partial"
+      "crud_tests": { "create": true, "list": true, "get": true, "update": true, "delete": true },
+      "status": "ready"
     },
     {
       "key": "patient__vitality__vital_signs",
@@ -122,4 +122,3 @@
     }
   ]
 }
-
