@@ -72,7 +72,7 @@ export const patientNavItems: NavItem[] = [
       { id: 'nutrition-diet', label: 'Nutrition & Diet', icon: 'UtensilsCrossed' },
       { id: 'reproductive-health', label: 'Reproductive Health', icon: 'Baby' },
       { id: 'mental-health', label: 'Mental Health', icon: 'Brain' },
-      { id: 'vital-signs', label: 'Vital Signs', icon: 'ActivitySquare' },
+      { id: 'vital-signs', label: 'Vital Signs', icon: 'ActivitySquare', href: '/patient/vitality/vital-signs' },
       { id: 'activity-fitness', label: 'Activity & Fitness', icon: 'Dumbbell' },
     ],
   },
