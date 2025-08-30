@@ -1,0 +1,125 @@
+{
+  "generated_at": "{{NOW}}",
+  "base_url_env": "BASE_URL",
+  "notes": "Green = page opens (SSR) and API CRUD tests exist and pass when run; Pending = tests to add/enable.",
+  "streams": [
+    {
+      "key": "patient__carenet__caregivers",
+      "domain": "patient",
+      "group": "carenet",
+      "item": "caregivers",
+      "routes": {
+        "page": "/patient/care-network/caregivers",
+        "api": "/api/patient/care-network/caregivers"
+      },
+      "page_open_test": true,
+      "crud_tests": { "create": true, "list": true, "get": true, "update": true, "delete": true },
+      "status": "ready"
+    },
+    {
+      "key": "patient__persinfo__dependents",
+      "domain": "patient",
+      "group": "persinfo",
+      "item": "dependents",
+      "routes": {
+        "page": "/patient/persinfo/dependents",
+        "api": "/api/patient/personal-info/dependents"
+      },
+      "page_open_test": true,
+      "crud_tests": { "create": true, "list": true, "get": true, "update": true, "delete": true },
+      "status": "ready"
+    },
+    {
+      "key": "patient__persinfo__emrg_contacts",
+      "domain": "patient",
+      "group": "persinfo",
+      "item": "emergency-contacts",
+      "routes": {
+        "page": "/patient/persinfo/emergency-contacts",
+        "api": "/api/patient/personal-info/emergency-contacts"
+      },
+      "page_open_test": true,
+      "crud_tests": { "create": true, "list": true, "get": true, "update": true, "delete": true },
+      "status": "ready"
+    },
+    {
+      "key": "patient__medhist__allergies",
+      "domain": "patient",
+      "group": "medhist",
+      "item": "allergies",
+      "routes": {
+        "page": "/patient/medhist/allergies",
+        "api": "/api/patient/medical-history/allergies"
+      },
+      "page_open_test": true,
+      "crud_tests": { "create": true, "list": true, "get": true, "update": true, "delete": true },
+      "status": "ready"
+    },
+    {
+      "key": "patient__medhist__conditions",
+      "domain": "patient",
+      "group": "medhist",
+      "item": "conditions",
+      "routes": {
+        "page": "/patient/medhist/conditions",
+        "api": "/api/patient/medical-history/conditions"
+      },
+      "page_open_test": true,
+      "crud_tests": { "create": false, "list": false, "get": false, "update": false, "delete": false },
+      "status": "pending-tests"
+    },
+    {
+      "key": "patient__medhist__immunizations",
+      "domain": "patient",
+      "group": "medhist",
+      "item": "immunizations",
+      "routes": {
+        "page": "/patient/medhist/immunizations",
+        "api": "/api/patient/medical-history/immunizations"
+      },
+      "page_open_test": true,
+      "crud_tests": { "create": true, "list": true, "get": true, "update": true, "delete": true },
+      "status": "ready"
+    },
+    {
+      "key": "patient__medhist__surgeries",
+      "domain": "patient",
+      "group": "medhist",
+      "item": "surgeries",
+      "routes": {
+        "page": "/patient/medhist/surgeries",
+        "api": "/api/patient/medical-history/surgeries"
+      },
+      "page_open_test": true,
+      "crud_tests": { "create": true, "list": true, "get": true, "update": true, "delete": true },
+      "status": "ready"
+    },
+    {
+      "key": "patient__medhist__family_hist",
+      "domain": "patient",
+      "group": "medhist",
+      "item": "family-history",
+      "routes": {
+        "page": "/patient/medhist/family-history",
+        "api": "/api/patient/medical-history/family-history"
+      },
+      "page_open_test": true,
+      "crud_tests": { "create": true, "list": true, "get": true, "update": false, "delete": false },
+      "status": "partial"
+    },
+    {
+      "key": "patient__vitality__vital_signs",
+      "domain": "patient",
+      "group": "vitality",
+      "item": "vital-signs",
+      "routes": {
+        "page": "/patient/vitality/vital-signs",
+        "api": "/api/patient/vitality/vital-signs"
+      },
+      "page_open_test": true,
+      "crud_tests": { "create": true, "list": true, "get": true, "update": true, "delete": true },
+      "status": "ready"
+    }
+  ]
+}
+
