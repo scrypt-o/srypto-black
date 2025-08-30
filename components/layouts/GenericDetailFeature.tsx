@@ -14,7 +14,7 @@ import { FieldValues } from 'react-hook-form'
 export interface DetailField {
   key: string
   label: string
-  type: 'text' | 'textarea' | 'select' | 'date'
+  type: 'text' | 'textarea' | 'select' | 'date' | 'checkbox'
   required?: boolean
   placeholder?: string
   description?: string
@@ -32,7 +32,7 @@ export interface DetailFeatureConfig<TRow = any, TFormData extends FieldValues =
   listPath: string
   
   // Form handling
-  formSchema: z.ZodSchema<TFormData>
+  formSchema: z.ZodSchema<any>
   transformRowToFormData: (row: TRow) => TFormData
   transformFormDataToApiInput: (formData: TFormData) => any
   
@@ -178,6 +178,22 @@ export default function GenericDetailFeature<TRow extends { [key: string]: any }
             disabled={mode === 'view'}
             className={`w-full ${commonClasses}`}
           />
+        )
+      case 'checkbox':
+        return (
+          <label className="flex items-center gap-2">
+            <input
+              {...register(field.key as any)}
+              type="checkbox"
+              disabled={mode === 'view'}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            {field.description && (
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {field.description}
+              </span>
+            )}
+          </label>
         )
       default:
         return (

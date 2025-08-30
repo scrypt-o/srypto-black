@@ -1,6 +1,6 @@
 /**
  * Enforce that server pages read from RLS views (v_*) when using supabase.from().
- * Applies to any app/**/page.tsx file.
+ * Applies to any app/.../page.tsx file (glob form).
  */
 module.exports = {
   meta: {
@@ -46,4 +46,3 @@ module.exports = {
     };
   },
 };
-

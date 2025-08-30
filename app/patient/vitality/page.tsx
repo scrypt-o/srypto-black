@@ -17,7 +17,7 @@ export default function VitalityPage() {
         title: 'Vital Signs',
         description: 'Blood pressure, heart rate, temperature',
         icon: 'Heart',
-        href: '/patient/vitality/vitals',
+        href: '/patient/vitality/vital-signs',
         variant: 'highlighted' as const,
         color: 'bg-rose-50 hover:bg-rose-100 border-rose-200'
       },

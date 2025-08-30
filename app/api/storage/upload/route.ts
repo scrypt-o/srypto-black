@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { verifyCsrf } from '@/lib/api-helpers'
 import { getAuthenticatedApiClient } from '@/lib/supabase-api'
 
 export async function POST(request: NextRequest) {
   try {
+    const csrf = verifyCsrf(request)
+    if (csrf) return csrf
     // Authentication required
     const { supabase, user } = await getAuthenticatedApiClient()
     

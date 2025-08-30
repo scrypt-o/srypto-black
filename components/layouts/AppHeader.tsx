@@ -176,11 +176,11 @@ export default function AppHeader({
           </div>
         )}
 
-        {/* Back at far right (hidden on Home) */}
+        {/* Back button moved to absolute end of right section */}
         {!isHome && (
           <button
             onClick={() => router.back()}
-            className="inline-flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10"
+            className="inline-flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10 ml-2"
             aria-label="Back"
           >
             <Icons.ArrowLeft className="h-5 w-5 text-white" />

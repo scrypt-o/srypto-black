@@ -9,7 +9,7 @@ export const SurgeryRowSchema = z.object({
   surgery_id: z.string().uuid(),
   user_id: z.string().uuid(),
   surgery_name: z.string().nullable(),
-  surgery_type: z.string().nullable(),
+  surgery_type: SurgeryTypeEnum.nullable(),
   surgery_date: z.string().nullable(), // Date as ISO string
   hospital_name: z.string().nullable(),
   surgeon_name: z.string().nullable(),
@@ -18,7 +18,7 @@ export const SurgeryRowSchema = z.object({
   procedure_code: z.string().nullable(),
   complications: z.string().nullable(),
   recovery_notes: z.string().nullable(),
-  outcome: z.string().nullable(),
+  outcome: OutcomeEnum.nullable(),
   related_condition_id: z.string().uuid().nullable(),
   is_active: z.boolean().nullable().default(true),
   created_at: z.string(), // Timestamp as ISO string

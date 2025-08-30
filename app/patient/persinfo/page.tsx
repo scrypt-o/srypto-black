@@ -47,6 +47,15 @@ export default function PersonalInfoPage() {
         href: '/patient/persinfo/documents',
         variant: 'default' as const,
         color: 'bg-green-50 hover:bg-green-100 border-green-200'
+      },
+      {
+        id: 'dependents',
+        title: 'Dependents',
+        description: 'Family members and dependents',
+        icon: 'Users',
+        href: '/patient/persinfo/dependents',
+        variant: 'default' as const,
+        color: 'bg-purple-50 hover:bg-purple-100 border-purple-200'
       }
     ]
   }

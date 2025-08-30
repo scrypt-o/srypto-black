@@ -1,5 +1,5 @@
 /**
- * Ensure verifyCsrf(request) is used in non-GET API handlers in app/api/**/route.ts.
+ * Ensure verifyCsrf(request) is used in non-GET API handlers in app/api/.../route.ts (glob form).
  */
 module.exports = {
   meta: {
@@ -26,21 +26,10 @@ module.exports = {
       );
     }
 
-    function containsVerifyCsrf(body) {
-      return body.body.some(stmt => {
-        if (stmt.type === 'VariableDeclaration') {
-          return stmt.declarations.some(dec =>
-            dec.init &&
-            dec.init.type === 'CallExpression' &&
-            dec.init.callee.type === 'Identifier' &&
-            dec.init.callee.name === 'verifyCsrf'
-          );
-        }
-        if (stmt.type === 'ExpressionStatement' && stmt.expression.type === 'CallExpression') {
-          return stmt.expression.callee.type === 'Identifier' && stmt.expression.callee.name === 'verifyCsrf';
-        }
-        return false;
-      });
+    function containsVerifyCsrf(node) {
+      const src = context.getSourceCode().getText(node);
+      // Simple textual check is robust across nested try/catch and blocks
+      return /verifyCsrf\s*\(\s*request\s*\)/.test(src);
     }
 
     return {
@@ -56,4 +45,3 @@ module.exports = {
     };
   },
 };
-
