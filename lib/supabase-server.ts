@@ -19,15 +19,13 @@ export async function getServerClient() {
         // and let Route Handlers perform writes when needed.
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              try {
-                cookieStore.set(name, value, options)
-              } catch (_err) {
-                // Ignore mutation attempts outside Server Actions/Route Handlers
-              }
-            })
-          } catch (_outer) {
-            // No-op
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {
+            // The `setAll` method was called from a Server Component.
+            // This can be ignored if you have middleware refreshing
+            // user sessions.
           }
         },
       },

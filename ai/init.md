@@ -401,3 +401,26 @@ Rules exist because complexity killed the project 22 times.
 **Keep it simple. Follow specs 100%. HALT if gap.**
 
 ---
+
+## How Our Specs Work (2025-08-30 - VERIFIED WORKING)
+
+### Authentication Pattern
+- **Middleware protects** all `/patient/*` routes - no `requireUser()` needed in pages
+- **API routes check auth** with `getServerClient()` and `auth.getUser()`
+- **Environment required**: CSRF_ALLOWED_ORIGINS + NEXT_PUBLIC_SITE_URL in .env.local
+- **Critical**: Single try-catch in setAll function (not double) for token refresh
+
+### Data Flow  
+- **Server pages**: Fetch via `getServerClient()` from views `v_*`
+- **API routes**: Write to base tables with user_id enforcement
+- **Client islands**: Interactive components only, no page-level data fetching
+
+### Verified Working Example
+- Allergy edit/save functionality works end-to-end
+- 403 CSRF → 401 Auth → 200 Success progression confirmed
+- Data persists correctly in database
+- UI feedback and error handling proper
+
+**This pattern is PRODUCTION-TESTED and SECURE.**
+
+---

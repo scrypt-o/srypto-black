@@ -130,25 +130,67 @@ export default function ListPageLayoutClient({ children, sidebarItems, headerTit
 4. On success: Keep local state
 5. On error: Rollback and show error
 
-## Authentication Pattern
+## Authentication Pattern (WORKING IMPLEMENTATION)
+
+### Critical Setup Requirements
+```env
+# .env.local - REQUIRED for authentication to work
+NEXT_PUBLIC_SUPABASE_URL=https://project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+NEXT_PUBLIC_SITE_URL=http://localhost:4569
+CSRF_ALLOWED_ORIGINS=http://localhost:4569,https://qa.scrypto.online
+```
+
+### Server Client Implementation (lib/supabase-server.ts)
+```typescript
+export async function getServerClient() {
+  const cookieStore = await cookies()
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll() },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {
+            // CRITICAL: Single try-catch only - allows token refresh in API routes
+          }
+        },
+      },
+    }
+  )
+}
+```
 
 ### Server-Side (Pages)
 ```typescript
 // Always at the top of page components
 await requireUser()
+const supabase = await getServerClient()
+// Data fetching here
 ```
 
-### Client-Side (API Calls)
+### API Routes (Critical Pattern)
 ```typescript
-const supabase = getBrowserClient()
-// Already has user context from cookies
+// app/api/*/route.ts
+export async function PUT(request: NextRequest) {
+  const csrf = verifyCsrf(request); if (csrf) return csrf
+  const supabase = await getServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  // WORKS: Token refresh succeeds due to corrected setAll function
+}
 ```
 
 ### Middleware Protection
 ```typescript
 // middleware.ts
-const PUBLIC_PATHS = ['/login', '/signup', '/reset-password']
-// All other paths require auth
+const PUBLIC_PATHS = ['/login', '/signup', '/reset-password', '/api/auth']
+// All other paths require auth; session refresh handled by updateSession()
 ```
 
 ## State Management

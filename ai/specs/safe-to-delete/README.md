@@ -1,22 +1,37 @@
-# Safe To Delete — Staged Legacy/Contradictory Specs
+# Revised Approach — Index & Principles
 
-Purpose
-- This folder quarantines older, superseded, or example-only materials so the main specs remain clean and authoritative. Nothing in here is consulted for current implementation decisions.
+**READ CORE SPECS ONLY** - Everything else is archived or implementation-specific.
 
-Contents
-- old/: Older drafts and patterns that predate the revised approach.
-- _archived/: Archived historical references, not maintained.
-- v2/: Pre–revised-approach navigation/parallel patterns; superseded by current SSR-first and checklists.
-- ui-examples/: Visual examples and mockups; not normative specs.
+## Core Specs (ai/specs/core/)
+**Read these 7 specs in order to build any Scrypto stream:**
 
-Deletion Policy
-- Safe to delete anytime once you confirm no open job cards or docs link to these assets.
-- If you need to reference history, prefer Git history over restoring these files into the active spec tree.
+1. **01-Authentication.md** - Middleware protection, CSRF, environment
+2. **02-API-Patterns.md** - Status codes, error handling, patterns
+3. **03-Database-Access.md** - Views, tables, RLS, ownership  
+4. **04-Zod-Validation.md** - Schemas, validation patterns
+5. **05-Layout-Components.md** - Page layouts, component hierarchy
+6. **06-SSR-Architecture.md** - Server components, client islands
+7. **07-Navigation-URL-State.md** - Routing, search params, state
 
-Current Canonical Locations
-- Core specs and standards: ai/specs/
-- Implementation guides (per-feature): ai/specs/implementation/
-- Test and CI guidance: ai/specs/test-specs/
+## Reference Materials  
+- **database-ddl/** - Database schemas for each stream
+- **ALLERGIES-END-TO-END-AUDIT.md** - Working implementation example
 
-Notes
-- If you find a broken link pointing here, update it to the canonical spec (usually in ai/specs/) or remove the reference if it was example-only.
+## Implementation Specs
+- **implementation/** - Branch-specific implementation guides (do not modify)
+
+## Non‑negotiables
+- Server‑first pages and shells; no “islands/chrome” nomenclature.
+- Standard components only: `ListPageLayout`, `DetailPageLayout`, `TilePageLayout` (server) compose `ListViewLayout`, `DetailViewLayout`, `TileGridLayout` (client).
+- Reads from RLS‑scoped views `v_*`; writes via API routes to base tables.
+- URL is source of truth for list state; hydrate store from URL.
+- `<Link prefetch>` by default; limit imperative prefetch to islands.
+- Error semantics: 422 validation, 400 bad JSON, 401/403 auth, 404 not found, 500 unexpected.
+- Inputs: trim server‑side; empty strings → `undefined` for optional fields.
+- A11y: form labels, aria‑sort on sortable headers, clear empty/error states.
+
+## Canonical Example
+- Module: app/patient/medhist/allergies/*
+- Islands: components/features/patient/allergies/*
+- API: app/api/patient/medical-history/allergies/*
+- Schemas: schemas/allergies.ts
