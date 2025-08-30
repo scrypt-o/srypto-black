@@ -3,7 +3,7 @@ import type { NavItem } from '@/components/layouts/PatientSidebar'
 // Sidebar index order (static; no links wired)
 export const patientNavItems: NavItem[] = [
   // Home (no active highlight even when current)
-  { id: 'home', label: 'Home', icon: 'Home' },
+  { id: 'home', label: 'Home', icon: 'Home', href: '/patient' },
 
   // Communications
   {
@@ -29,8 +29,8 @@ export const patientNavItems: NavItem[] = [
       { id: 'addresses', label: 'Addresses', icon: 'MapPin' },
       { id: 'medical-aid', label: 'Medical Aid', icon: 'ShieldHeart' },
       { id: 'documents', label: 'Documents', icon: 'FileText' },
-      { id: 'emergency-contacts', label: 'Emergency Contacts', icon: 'PhoneCall' },
-      { id: 'dependents', label: 'Dependents', icon: 'Users' },
+      { id: 'emergency-contacts', label: 'Emergency Contacts', icon: 'PhoneCall', href: '/patient/persinfo/emergency-contacts' },
+      { id: 'dependents', label: 'Dependents', icon: 'Users', href: '/patient/persinfo/dependents' },
     ],
   },
 
@@ -84,7 +84,7 @@ export const patientNavItems: NavItem[] = [
     icon: 'UsersRound',
     type: 'group',
     children: [
-      { id: 'caregivers', label: 'Caregivers', icon: 'UserCheck' },
+      { id: 'caregivers', label: 'Caregivers', icon: 'UserCheck', href: '/patient/care-network/caregivers' },
       { id: 'caretakers', label: 'Caretakers', icon: 'User' },
     ],
   },
@@ -96,11 +96,11 @@ export const patientNavItems: NavItem[] = [
     icon: 'HeartPulse',
     type: 'group',
     children: [
-      { id: 'allergies', label: 'Allergies', icon: 'AlertTriangle' },
-      { id: 'medical-conditions', label: 'Medical Conditions', icon: 'Stethoscope' },
-      { id: 'immunizations', label: 'Immunizations', icon: 'Syringe' },
-      { id: 'surgeries', label: 'Surgeries', icon: 'Hospital' },
-      { id: 'family-history', label: 'Family History', icon: 'Users' },
+      { id: 'allergies', label: 'Allergies', icon: 'AlertTriangle', href: '/patient/medhist/allergies' },
+      { id: 'medical-conditions', label: 'Medical Conditions', icon: 'Stethoscope', href: '/patient/medhist/conditions' },
+      { id: 'immunizations', label: 'Immunizations', icon: 'Syringe', href: '/patient/medhist/immunizations' },
+      { id: 'surgeries', label: 'Surgeries', icon: 'Hospital', href: '/patient/medhist/surgeries' },
+      { id: 'family-history', label: 'Family History', icon: 'Users', href: '/patient/medhist/family-history' },
     ],
   },
 
