@@ -61,7 +61,7 @@ const letterBadgeStyles = [
   'bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-700 ring-1 ring-indigo-200',
 ]
 
-export default function ListView<T extends ListItem>({
+export default function ListViewLayout<T extends ListItem>({
   items,
   loading,
   onItemClick,

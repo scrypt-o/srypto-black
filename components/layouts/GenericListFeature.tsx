@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import ListView, { ListItem } from '@/components/layouts/ListViewLayout'
+import ListViewLayout, { ListItem } from '@/components/layouts/ListViewLayout'
 import ConfirmDialog from '@/components/patterns/ConfirmDialog'
 import FilterModal, { type FilterField } from '@/components/patterns/FilterModal'
 import { useToast } from '@/components/patterns/Toast'
@@ -216,7 +216,7 @@ export default function GenericListFeature<TRow = any, TItem extends ListItem = 
 
   return (
     <>
-      <ListView<TItem>
+      <ListViewLayout<TItem>
         items={items}
         loading={loading || deleteHook.isPending}
         onItemClick={handleItemClick}
