@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyCsrf } from '@/lib/api-helpers'
 import { getServerClient } from '@/lib/supabase-server'
-import { FamilyHistoryUpdateInputSchema } from '@/schemas/familyHistory'
+import { FamilyHistoryUpdateInputSchema } from '@/schemas/family-history'
 
 type RouteParams = { params: Promise<{ id: string }> }
 

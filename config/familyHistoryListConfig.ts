@@ -1,6 +1,6 @@
 import type { ListFeatureConfig } from '@/components/layouts/GenericListFeature'
-import type { FamilyHistoryRow, Relationship } from '@/schemas/familyHistory'
-import { RelationshipEnum } from '@/schemas/familyHistory'
+import type { FamilyHistoryRow, Relationship } from '@/schemas/family-history'
+import { RelationshipEnum } from '@/schemas/family-history'
 import { useDeleteFamilyHistory } from '@/hooks/usePatientFamilyHistory'
 import type { ListItem } from '@/components/layouts/ListViewLayout'
 

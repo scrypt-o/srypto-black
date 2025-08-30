@@ -5,7 +5,7 @@ import {
   FamilyHistoryCreateInputSchema, 
   FamilyHistoryListQuerySchema,
   type FamilyHistoryListResponse 
-} from '@/schemas/familyHistory'
+} from '@/schemas/family-history'
 import { z } from 'zod'
 
 // GET /api/patient/medical-history/family-history - List family history records
