@@ -1,12 +1,13 @@
 'use client'
 
 import * as React from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { useLayoutStore } from '@/lib/stores/layout-store'
 import * as Icons from 'lucide-react'
 import PatientSidebar, { type NavItem } from '@/components/layouts/PatientSidebar'
+import PharmacySidebar from '@/components/layouts/PharmacySidebar'
 import AppHeader from './AppHeader'
 import TileGridLayout, { type TileGridLayoutProps } from './TileGridLayout'
 import MobileFooter from './MobileFooter'
@@ -80,6 +81,9 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
   } = props
 
   const router = useRouter()
+  const pathname = usePathname()
+  const isPharmacyRoute = pathname.startsWith('/pharmacy')
+  
   const {
     sidebarCollapsed,
     mobileSidebarOpen,
@@ -108,11 +112,14 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
     }
   }
 
+  // Choose sidebar component based on route
+  const SidebarComponent = isPharmacyRoute ? PharmacySidebar : PatientSidebar
+
   return (
     <div className="h-screen w-screen overflow-hidden flex bg-gray-50 dark:bg-gray-950">
       {/* Desktop Sidebar */}
       {showSidebar && (
-        <PatientSidebar
+        <SidebarComponent
           title={sidebarTitle}
           items={sidebarItems}
           isCollapsed={sidebarCollapsed}
@@ -125,7 +132,7 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
       
       {/* Mobile Sidebar */}
       {showSidebar && showMobileMenu && (
-        <PatientSidebar
+        <SidebarComponent
           title={sidebarTitle}
           items={sidebarItems}
           isCollapsed={false}
