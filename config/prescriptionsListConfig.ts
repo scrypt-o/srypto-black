@@ -55,7 +55,7 @@ const transformRowToItem = (row: PrescriptionRow): PrescriptionItem => ({
   scan_quality_score: row.scan_quality_score,
   status: row.status,
   created_at: row.created_at,
-  thirdColumn: row.prescription_date,
+  thirdColumn: row.prescription_date || row.created_at,
   data: row
 })
 

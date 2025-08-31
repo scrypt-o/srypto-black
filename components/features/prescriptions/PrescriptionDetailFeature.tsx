@@ -116,10 +116,10 @@ export default function PrescriptionDetailFeature({ prescription }: Prescription
                 </p>
               </div>
             )}
-            {prescription.practice_number && (
+            {(prescription as any).practice_number && (
               <div>
                 <label className="block text-sm font-medium text-purple-700 mb-1">Practice Number</label>
-                <p className="text-purple-900">{prescription.practice_number}</p>
+                <p className="text-purple-900">{(prescription as any).practice_number}</p>
               </div>
             )}
           </div>
