@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "supabase-scrypto": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--access-token",
+        "sbp_063db88621e45c95fcacb17c383ae2a815d3b175",
+        "--project-ref",
+        "hyufvcwzuaihmyohvwpv"
+      ]
+    },
+    "playwright": {
+      "command": "xvfb-run",
+      "args": [
+        "-a",
+        "npx",
+        "-y",
+        "@playwright/mcp",
+        "--isolated"
+      ],
+      "env": {
+        "PLAYWRIGHT_HEADLESS": "true",
+        "PLAYWRIGHT_BROWSER": "chromium"
+      }
+    }
+  }
+}
+

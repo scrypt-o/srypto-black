@@ -1,0 +1,14 @@
+Diagnose MCP servers and run smoke tests
+
+1) List MCP servers
+"List available MCP servers and their tools. Confirm 'supabase-scrypto' and 'playwright' are online."
+
+2) Supabase SQL smoke
+"Using Supabase MCP, run: SELECT 1 AS ok; Return rows."
+
+3) Supabase view-read (optional, RLS aware)
+"Using Supabase MCP, run: SELECT * FROM v_patient__medhist__allergies LIMIT 1; Return rows (expect empty if no session)."
+
+4) Playwright screenshot
+"With Playwright MCP, navigate to https://qa.scrypto.online, wait for network idle, then capture a full-page screenshot and return it."
+

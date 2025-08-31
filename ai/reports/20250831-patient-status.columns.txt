@@ -1,0 +1,13 @@
+|col-display-name="Domain";col-stat-type="pie";col-stat-groupby="domain,group"|
+|col-display-name="Sidebar Wired %";col-stat-type="percentage";col-stat-groupby="domain,group"|
+|col-display-name="Routes Wired %";col-stat-type="percentage";col-stat-groupby="domain,group"|
+|col-display-name="Page 200 %";col-stat-type="percentage";col-stat-groupby="domain,group"|
+|col-display-name="API CRUD Coverage";col-stat-type="pie";col-stat-groupby="domain,group"|
+|col-display-name="TanStack Usage";col-stat-type="pie";col-stat-groupby="domain,group"|
+|col-display-name="Zod Coverage";col-stat-type="pie";col-stat-groupby="domain,group"|
+|col-display-name="API Implementation";col-stat-type="pie";col-stat-groupby="domain,group"|
+|col-display-name="DB/View Coverage";col-stat-type="pie";col-stat-groupby="domain,group"|
+|col-display-name="Ready (MVP) %";col-stat-type="percentage";col-stat-groupby="domain,group"|
+|col-display-name="Ready (Prod) %";col-stat-type="percentage";col-stat-groupby="domain,group"|
+|col-display-name="Total Items";col-stat-type="count";col-stat-groupby="domain,group"|
+
