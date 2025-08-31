@@ -6,7 +6,7 @@ import { Check, X, Camera, User, Stethoscope, Pill, Calendar, AlertTriangle, Loa
 
 interface PrescriptionResultsFeatureProps {
   analysisResult: any
-  onSave: () => void
+  onSave?: () => void
   onRetake: () => void
 }
 
@@ -17,16 +17,49 @@ export default function PrescriptionResultsFeature({
 }: PrescriptionResultsFeatureProps) {
   const router = useRouter()
   const [isSaving, setIsSaving] = useState(false)
+  const [savedId, setSavedId] = useState<string | null>(null)
 
-  const handleSave = async () => {
+  async function saveDraft() {
     setIsSaving(true)
     try {
-      await onSave()
-      // Navigate to prescriptions list after save
-      router.push('/patient/prescriptions')
-    } catch (error) {
-      console.error('Save failed:', error)
+      const res = await fetch('/api/patient/prescriptions/prescriptions', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          analysis: analysisResult.data,
+          uploadedPath: analysisResult.uploadedPath,
+          sessionId: analysisResult.sessionId,
+        }),
+      })
+      if (!res.ok) throw new Error('Save failed')
+      const json = await res.json()
+      setSavedId(json.prescription_id)
+      router.push('/patient/presc/active')
+    } catch (e) {
+      console.error('Save failed:', e)
+    } finally {
       setIsSaving(false)
+    }
+  }
+
+  async function submitNow() {
+    try {
+      // Ensure we have a saved record id
+      let id = savedId
+      if (!id) {
+        await saveDraft()
+        return
+      }
+      const res = await fetch(`/api/patient/prescriptions/prescriptions/${id}/submit`, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      if (!res.ok) throw new Error('Submit failed')
+      router.push('/patient/presc/active')
+    } catch (e) {
+      console.error(e)
     }
   }
 
@@ -223,7 +256,7 @@ export default function PrescriptionResultsFeature({
           </button>
           
           <button
-            onClick={handleSave}
+            onClick={saveDraft}
             disabled={isSaving}
             className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white rounded-lg"
           >
@@ -238,6 +271,12 @@ export default function PrescriptionResultsFeature({
                 Save Prescription
               </>
             )}
+          </button>
+          <button
+            onClick={submitNow}
+            className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+          >
+            Submit to Pharmacy
           </button>
         </div>
       </div>

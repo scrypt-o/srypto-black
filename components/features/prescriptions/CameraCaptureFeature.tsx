@@ -154,6 +154,25 @@ export default function CameraCaptureFeature({
     }
   }, [stream, hasFlash, isFlashOn])
 
+  // Upload fallback: allow selecting an image file when camera is not available
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const handleUploadClick = useCallback(() => fileInputRef.current?.click(), [])
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const result = reader.result as string
+        onImageCaptured(result)
+      }
+      reader.onerror = () => onError('Failed to read selected image')
+      reader.readAsDataURL(file)
+    } catch (err) {
+      onError('Failed to process selected image')
+    }
+  }, [onError, onImageCaptured])
+
   // Re-start camera when camera direction changes
   useEffect(() => {
     if (hasPermission !== null) {
@@ -256,11 +275,26 @@ export default function CameraCaptureFeature({
           >
             <Camera className="w-8 h-8 text-gray-800" />
           </button>
+          {/* Upload fallback button */}
+          <button
+            onClick={handleUploadClick}
+            disabled={isCapturing}
+            className="ml-6 px-4 py-2 bg-white rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+          >
+            Upload Image
+          </button>
         </div>
       )}
 
       {/* Hidden canvas for image capture */}
       <canvas ref={canvasRef} className="hidden" />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
     </div>
   )
 }
