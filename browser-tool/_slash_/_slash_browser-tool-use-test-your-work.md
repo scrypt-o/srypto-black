@@ -1,0 +1,1 @@
+Please use the browser-tool to test your latest work. The tool is located in ./browser-tool and you will find the user guide in the same folder. It the browser-tool folder does not exist, HALT and inform user. 

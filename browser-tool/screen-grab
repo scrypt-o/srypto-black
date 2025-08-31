@@ -1,0 +1,212 @@
+#!/usr/bin/env node
+
+/**
+ * Universal Screen Grab Utility
+ * Usage: ./screen-grab <url> [options]
+ * 
+ * Examples:
+ *   ./screen-grab http://localhost:3000/dashboard
+ *   ./screen-grab http://localhost:3000/login --auth-cookies="session=abc123"
+ *   ./screen-grab http://localhost:3000/admin --auth-header="Bearer token123"
+ *   ./screen-grab http://localhost:3000/app --mobile
+ *   ./screen-grab http://localhost:3000/page --fullpage
+ */
+
+const puppeteer = require('puppeteer');
+const fs = require('fs');
+const path = require('path');
+
+class ScreenGrab {
+    constructor() {
+        this.screenshotDir = this.findScreenshotDir();
+        this.ensureDirectoryExists();
+    }
+
+    findScreenshotDir() {
+        // Standard locations to check
+        const locations = [
+            './docs/testing/screen-grabs',
+            './docs/screenshots', 
+            './screenshots',
+            './docs/testing',
+            './docs'
+        ];
+        
+        for (const location of locations) {
+            if (fs.existsSync(location)) {
+                return location;
+            }
+        }
+        
+        // Create default location
+        return './docs/testing/screen-grabs';
+    }
+
+    ensureDirectoryExists() {
+        if (!fs.existsSync(this.screenshotDir)) {
+            fs.mkdirSync(this.screenshotDir, { recursive: true });
+        }
+    }
+
+    generateFilename(url, options = {}) {
+        const date = new Date();
+        const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
+        const timeStr = date.toTimeString().slice(0, 8).replace(/:/g, '');
+        
+        // Extract page name from URL
+        const urlObj = new URL(url);
+        const pageName = urlObj.pathname
+            .split('/')
+            .filter(p => p)
+            .join('-') || 'homepage';
+        
+        const viewport = options.mobile ? 'mobile' : 
+                        options.tablet ? 'tablet' : 'desktop';
+        
+        return `${dateStr}-${timeStr}-${pageName}-${viewport}.png`;
+    }
+
+    async grab(url, options = {}) {
+        console.log(`📸 Grabbing: ${url}`);
+        const startTime = Date.now();
+        
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+                '--disable-web-security',
+                '--disable-features=VizDisplayCompositor'
+            ]
+        });
+
+        const page = await browser.newPage();
+        
+        try {
+            // Set viewport
+            if (options.mobile) {
+                await page.setViewport({ width: 390, height: 844 });
+            } else if (options.tablet) {
+                await page.setViewport({ width: 768, height: 1024 });
+            } else {
+                await page.setViewport({ width: 1920, height: 1080 });
+            }
+
+            // Handle authentication
+            if (options.authCookies) {
+                const cookies = this.parseCookies(options.authCookies);
+                await page.setCookie(...cookies);
+            }
+
+            if (options.authHeader) {
+                await page.setExtraHTTPHeaders({
+                    'Authorization': options.authHeader
+                });
+            }
+
+            // Navigate
+            await page.goto(url, { 
+                waitUntil: 'networkidle0', 
+                timeout: 10000 
+            });
+
+            // Wait for content
+            await page.waitForSelector('body', { timeout: 5000 });
+
+            // Take screenshot
+            const filename = this.generateFilename(url, options);
+            const filepath = path.join(this.screenshotDir, filename);
+            
+            await page.screenshot({
+                path: filepath,
+                fullPage: options.fullpage || false,
+                type: 'png'
+            });
+
+            const duration = Date.now() - startTime;
+            
+            console.log(`✅ Screenshot saved: ${filepath}`);
+            console.log(`⚡ Duration: ${duration}ms`);
+            
+            return {
+                success: true,
+                filepath,
+                duration,
+                filename
+            };
+
+        } catch (error) {
+            console.error(`❌ Error: ${error.message}`);
+            return {
+                success: false,
+                error: error.message
+            };
+        } finally {
+            await browser.close();
+        }
+    }
+
+    parseCookies(cookieString) {
+        return cookieString.split(';').map(cookie => {
+            const [name, value] = cookie.split('=');
+            return {
+                name: name.trim(),
+                value: value.trim(),
+                domain: 'localhost'
+            };
+        });
+    }
+}
+
+// CLI Interface
+async function main() {
+    const args = process.argv.slice(2);
+    if (args.length === 0) {
+        console.log(`
+Usage: ./screen-grab <url> [options]
+
+Options:
+  --mobile              Use mobile viewport (390x844)
+  --tablet              Use tablet viewport (768x1024) 
+  --fullpage            Capture full page (not just viewport)
+  --auth-cookies="..."  Set authentication cookies
+  --auth-header="..."   Set authorization header
+
+Examples:
+  ./screen-grab http://localhost:3000/dashboard
+  ./screen-grab http://localhost:3000/app --mobile --fullpage
+  ./screen-grab http://localhost:3000/admin --auth-header="Bearer abc123"
+        `);
+        process.exit(1);
+    }
+
+    const url = args[0];
+    const options = {};
+    
+    // Parse options
+    args.slice(1).forEach(arg => {
+        if (arg === '--mobile') options.mobile = true;
+        if (arg === '--tablet') options.tablet = true;
+        if (arg === '--fullpage') options.fullpage = true;
+        if (arg.startsWith('--auth-cookies=')) {
+            options.authCookies = arg.split('=')[1].replace(/"/g, '');
+        }
+        if (arg.startsWith('--auth-header=')) {
+            options.authHeader = arg.split('=')[1].replace(/"/g, '');
+        }
+    });
+
+    const grabber = new ScreenGrab();
+    const result = await grabber.grab(url, options);
+    
+    if (!result.success) {
+        process.exit(1);
+    }
+}
+
+if (require.main === module) {
+    main();
+}
+
+module.exports = ScreenGrab;

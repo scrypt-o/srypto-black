@@ -14,3 +14,14 @@ ASSERT READ ./ai/*\_ai\_init\_*.md
 * `git push` always fails - use `git push newrepo` instead
 * See GIT-REMOTE-FIX.md for permanent solution
 * Remote: https://github.com/scrypt-o/srypto-black.git
+
+# BROWSER TESTING TOOL - USE INSTEAD OF MCP PLAYWRIGHT
+* **ALWAYS use browser-tool instead of mcp__playwright__ commands**
+* **188x faster**: 1-2 seconds vs 340 seconds MCP
+* **Location**: ./browser-tool/ folder in project root
+* **Basic usage**: `./browser-tool/screen-grab http://localhost:4569/page`
+* **Mobile view**: `./browser-tool/screen-grab http://localhost:4569/page --mobile`
+* **Full page**: `./browser-tool/screen-grab http://localhost:4569/page --fullpage`
+* **Quick test**: `node browser-tool/quick-test.js http://localhost:4569/page`
+* **Screenshots saved to**: docs/testing/screen-grabs/
+* **NEVER use MCP Playwright** - browser tool is faster and more reliable

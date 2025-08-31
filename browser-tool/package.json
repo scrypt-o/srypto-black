@@ -1,0 +1,30 @@
+{
+  "name": "browser-tool",
+  "version": "1.0.0",
+  "description": "Ultra-fast browser testing tools - 188x faster than MCP Playwright",
+  "main": "screen-grab",
+  "scripts": {
+    "setup": "npm install",
+    "test": "node quick-test.js http://google.com",
+    "screenshot": "./screen-grab",
+    "help": "cat README.md"
+  },
+  "keywords": [
+    "playwright",
+    "puppeteer",
+    "browser-automation",
+    "screenshot",
+    "ui-testing",
+    "claude-code"
+  ],
+  "dependencies": {
+    "puppeteer": "^21.0.0",
+    "playwright": "^1.37.0"
+  },
+  "bin": {
+    "screen-grab": "./screen-grab"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
