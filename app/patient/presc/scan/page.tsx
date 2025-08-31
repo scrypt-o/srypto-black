@@ -37,16 +37,11 @@ export default function PrescriptionScanPage() {
   }
 
   const handleSave = async () => {
-    // TODO: Implement save to database
-    console.log('Saving prescription:', analysisResult)
-    // For now, just navigate back
-    setTimeout(() => {
-      window.location.href = '/patient/prescriptions'
-    }, 1000)
+    // handled inside PrescriptionResultsFeature now
   }
 
   const handleCancel = () => {
-    window.location.href = '/patient/prescriptions'
+    window.location.href = '/patient/presc'
   }
 
   // Error state

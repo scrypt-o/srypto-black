@@ -98,7 +98,7 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
         router.push('/patient/persinfo/profile')
         break
       case 'scan-prescription':
-        router.push('/patient/presc/scanning') 
+        router.push('/patient/presc/scan') 
         break
       case 'find-pharmacy':
         router.push('/patient/location/nearest-services')
