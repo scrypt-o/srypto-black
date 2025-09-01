@@ -1,8 +1,7 @@
 import { getServerClient } from '@/lib/supabase-server'
 import PageShell from '@/components/layouts/PageShell'
 import { patientNavItems } from '@/config/patientNav'
-import ProfilePictureUpload from '@/components/uploads/ProfilePictureUpload'
-import ProfileImage from '@/components/features/patient/persinfo/ProfileImage'
+import ProfilePhotoSection from '@/components/features/patient/persinfo/ProfilePhotoSection'
 import ProfileEditForm from '@/components/features/patient/persinfo/ProfileEditForm'
 import React from 'react'
 
@@ -19,27 +18,7 @@ export default async function ProfilePage() {
     <PageShell sidebarItems={patientNavItems} headerTitle="Profile">
       <div className="p-4 space-y-4">
         {error && <div className="text-red-600 mb-3">Failed to load profile</div>}
-        <div className="flex items-center gap-4">
-          <ProfileImage path={(data as any)?.profile_picture_url} size={96} />
-          {/* Client uploader triggers secure upload; on success, update profile via API */}
-          {/* Note: This is a minimal integration; full form editing is out-of-scope here */}
-          <ProfilePictureUpload
-            currentImageUrl={undefined}
-            onImageChange={async (result) => {
-              if (!result) return
-              try {
-                await fetch('/api/patient/personal-info/profile', {
-                  method: 'PUT',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ profile_picture_url: result.path })
-                })
-                // Trigger a soft reload of the page to refresh signed URL
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ;(window as any).location?.reload()
-              } catch {}
-            }}
-          />
-        </div>
+        <ProfilePhotoSection currentPath={(data as any)?.profile_picture_url} />
 
         {data ? (
           <div className="bg-white border rounded p-4 space-y-2 text-sm">
