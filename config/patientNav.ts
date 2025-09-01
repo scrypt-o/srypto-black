@@ -12,9 +12,9 @@ export const patientNavItems: NavItem[] = [
     icon: 'MessageSquare',
     type: 'group',
     children: [
-      { id: 'alerts', label: 'Alerts', icon: 'AlertOctagon' },
-      { id: 'messages', label: 'Messages', icon: 'Mail' },
-      { id: 'notifications', label: 'Notifications', icon: 'Bell' },
+      { id: 'alerts', label: 'Alerts', icon: 'AlertOctagon', href: '/patient/comm/alerts' },
+      { id: 'messages', label: 'Messages', icon: 'Mail', href: '/patient/comm/inbox' },
+      { id: 'notifications', label: 'Notifications', icon: 'Bell', href: '/patient/comm/notifications' },
     ],
   },
 
@@ -41,6 +41,7 @@ export const patientNavItems: NavItem[] = [
     label: 'Prescriptions',
     icon: 'FileText',
     type: 'group',
+    href: '/patient/presc',
     children: [
       { id: 'scan-prescription', label: 'Scan Prescription', icon: 'Scan', href: '/patient/presc/scan' },
       { id: 'my-prescriptions', label: 'My Prescriptions', icon: 'FilePrescription', href: '/patient/presc/active' },
@@ -54,10 +55,11 @@ export const patientNavItems: NavItem[] = [
     label: 'Medications',
     icon: 'Pill',
     type: 'group',
+    href: '/patient/medications',
     children: [
-      { id: 'my-medications', label: 'My Medications', icon: 'Pill' },
-      { id: 'medication-history', label: 'Medication History', icon: 'History' },
-      { id: 'medication-adherence', label: 'Medication Adherence', icon: 'CheckCircle2' },
+      { id: 'my-medications', label: 'My Medications', icon: 'Pill', href: '/patient/medications/active' },
+      { id: 'medication-history', label: 'Medication History', icon: 'History', href: '/patient/medications/history' },
+      { id: 'medication-adherence', label: 'Medication Adherence', icon: 'CheckCircle2', href: '/patient/medications/adherence' },
     ],
   },
 
@@ -67,6 +69,7 @@ export const patientNavItems: NavItem[] = [
     label: 'Vitality',
     icon: 'Heart',
     type: 'group',
+    href: '/patient/vitality',
     children: [
       { id: 'body-measurements', label: 'Body Measurements', icon: 'Ruler' },
       { id: 'sleep-tracking', label: 'Sleep Tracking', icon: 'Moon' },
@@ -84,6 +87,7 @@ export const patientNavItems: NavItem[] = [
     label: 'Care Network',
     icon: 'UsersRound',
     type: 'group',
+    // No landing page yet; only children
     children: [
       { id: 'caregivers', label: 'Caregivers', icon: 'UserCheck', href: '/patient/care-network/caregivers' },
       { id: 'caretakers', label: 'Caretakers', icon: 'User' },
@@ -96,6 +100,7 @@ export const patientNavItems: NavItem[] = [
     label: 'Medical History',
     icon: 'HeartPulse',
     type: 'group',
+    href: '/patient/medhist',
     children: [
       { id: 'allergies', label: 'Allergies', icon: 'AlertTriangle', href: '/patient/medhist/allergies' },
       { id: 'medical-conditions', label: 'Medical Conditions', icon: 'Stethoscope', href: '/patient/medhist/conditions' },
@@ -111,6 +116,7 @@ export const patientNavItems: NavItem[] = [
     label: 'Lab Results',
     icon: 'FlaskRound',
     type: 'group',
+    href: '/patient/labresults',
     children: [
       { id: 'view-results', label: 'View Results', icon: 'FileBarChart2' },
     ],
