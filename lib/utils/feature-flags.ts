@@ -25,21 +25,19 @@ export function isFeatureEnabled(feature: FeatureFlag): boolean {
   return featureFlags[feature]
 }
 
-// Feature gate HOC for components
-export function withFeatureFlag<T extends object>(
+// Feature gate function for conditional rendering
+export function renderWithFeatureFlag<T>(
   feature: FeatureFlag,
-  Component: React.ComponentType<T>,
-  Fallback?: React.ComponentType<T>
-) {
-  return function FeatureGatedComponent(props: T) {
-    if (isFeatureEnabled(feature)) {
-      return <Component {...props} />
-    }
-    
-    if (Fallback) {
-      return <Fallback {...props} />
-    }
-    
-    return null
+  renderFn: () => T,
+  fallbackFn?: () => T
+): T | null {
+  if (isFeatureEnabled(feature)) {
+    return renderFn()
   }
+  
+  if (fallbackFn) {
+    return fallbackFn()
+  }
+  
+  return null
 }
