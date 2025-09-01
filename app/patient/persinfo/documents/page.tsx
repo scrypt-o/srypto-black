@@ -1,6 +1,7 @@
 import { getServerClient } from '@/lib/supabase-server'
 import PageShell from '@/components/layouts/PageShell'
 import { patientNavItems } from '@/config/patientNav'
+import DocumentsUploader from '@/components/features/patient/persinfo/DocumentsUploader'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,8 +16,9 @@ export default async function DocumentsPage() {
 
   return (
     <PageShell sidebarItems={patientNavItems} headerTitle="Documents">
-      <div className="p-4">
+      <div className="p-4 space-y-4">
         {error && <div className="text-red-600 mb-3">Failed to load documents</div>}
+        <DocumentsUploader />
         <div className="overflow-x-auto bg-white border rounded">
           <table className="min-w-full text-sm">
             <thead>
@@ -44,4 +46,3 @@ export default async function DocumentsPage() {
     </PageShell>
   )
 }
-
