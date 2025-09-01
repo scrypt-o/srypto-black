@@ -36,19 +36,21 @@ export const DEFAULT_MAP_OPTIONS: google.maps.MapOptions = {
 }
 
 /**
- * React hook for loading Google Maps
+ * React hook for loading Google Maps (centralized)
+ * Addresses audit finding: "Multiple useJsApiLoader usages instead of shared hook"
  */
 export const useGoogleMaps = () => {
   const { isLoaded, loadError } = useJsApiLoader({
-    id: 'google-map-script',
+    id: 'scrypto-google-maps', // Single ID across entire app
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
     libraries: LIBRARIES,
     version: 'weekly'
   })
 
   return {
-    isLoaded,
-    loadError
+    isLoaded: isLoaded && !!GOOGLE_MAPS_API_KEY,
+    loadError: loadError || (!GOOGLE_MAPS_API_KEY ? new Error('Google Maps API key not configured') : null),
+    isReady: isLoaded && !loadError && !!GOOGLE_MAPS_API_KEY
   }
 }
 

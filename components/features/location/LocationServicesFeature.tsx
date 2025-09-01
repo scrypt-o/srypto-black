@@ -10,9 +10,9 @@ import {
   MEDICAL_PLACE_TYPES, 
   MedicalPlaceType, 
   calculateDistance, 
-  formatDistance, 
-  searchNearbyPlaces 
+  formatDistance 
 } from '@/lib/google-maps'
+import { googleServices } from '@/lib/services/google-services'
 import { useGeolocation } from '@/hooks/useGeolocation'
 
 interface Place extends google.maps.places.PlaceResult {
@@ -21,7 +21,7 @@ interface Place extends google.maps.places.PlaceResult {
 
 export default function LocationServicesFeature() {
   const { isLoaded, loadError } = useGoogleMaps()
-  const { position, loading: locationLoading, error: locationError, retry } = useGeolocation()
+  const { position, loading: locationLoading, error: locationError, retry, getCurrentPosition } = useGeolocation()
   
   // Map state
   const [map, setMap] = useState<google.maps.Map | null>(null)
@@ -70,11 +70,29 @@ export default function LocationServicesFeature() {
     setPlaces([])
     
     try {
-      const results = await searchNearbyPlaces(map, searchCenter, placeType, 10000) // 10km radius
-      setPlaces(results)
+      // Use centralized Google services to eliminate direct API calls
+      const results = await googleServices.searchNearbyPlaces(map, searchCenter, placeType, 10000)
+      
+      // Add distance calculation to results
+      const resultsWithDistance = results.map(place => ({
+        ...place,
+        distance: place.geometry?.location 
+          ? calculateDistance(
+              searchCenter.lat,
+              searchCenter.lng,
+              place.geometry.location.lat(),
+              place.geometry.location.lng()
+            )
+          : undefined
+      }))
+      
+      // Sort by distance
+      resultsWithDistance.sort((a, b) => (a.distance || 0) - (b.distance || 0))
+      
+      setPlaces(resultsWithDistance)
       
       // Auto-show list if results found
-      if (results.length > 0) {
+      if (resultsWithDistance.length > 0) {
         setShowList(true)
       }
       

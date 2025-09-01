@@ -72,10 +72,8 @@ export const useGeolocation = (): UseGeolocationReturn => {
     getLocation()
   }, [getLocation])
 
-  // Auto-get location on mount
-  useEffect(() => {
-    getLocation()
-  }, [getLocation])
+  // Addresses audit finding: "useGeolocation requests location on mount; spec prefers explicit user consent"
+  // Location is now requested explicitly, not automatically on mount
 
   return {
     ...state,
