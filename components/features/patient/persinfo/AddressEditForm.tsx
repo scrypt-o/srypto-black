@@ -1,7 +1,8 @@
 "use client"
 import * as React from 'react'
-import AddressAutocomplete from './AddressAutocomplete'
-import AddressMap from './AddressMap'
+import dynamic from 'next/dynamic'
+const AddressAutocomplete = dynamic(() => import('./AddressAutocomplete'), { ssr: false })
+const AddressMap = dynamic(() => import('./AddressMap'), { ssr: false })
 
 type AddressType = 'home' | 'postal' | 'delivery'
 

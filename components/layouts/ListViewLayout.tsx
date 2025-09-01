@@ -138,14 +138,14 @@ export default function ListViewLayout<T extends ListItem>({
   const formatThirdColumn = (value: string | Date | undefined) => {
     if (!value) return '-'
     if (value instanceof Date) {
-      return value.toLocaleDateString('en-US', dateFormat === 'short' 
-        ? { month: 'short', day: 'numeric' }
-        : { month: 'short', day: 'numeric', year: 'numeric' })
+      return value.toLocaleDateString('en-US', dateFormat === 'short'
+        ? { month: 'short', day: 'numeric', timeZone: 'UTC' }
+        : { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
     }
     if (typeof value === 'string' && !isNaN(Date.parse(value))) {
-      return new Date(value).toLocaleDateString('en-US', dateFormat === 'short' 
-        ? { month: 'short', day: 'numeric' }
-        : { month: 'short', day: 'numeric', year: 'numeric' })
+      return new Date(value).toLocaleDateString('en-US', dateFormat === 'short'
+        ? { month: 'short', day: 'numeric', timeZone: 'UTC' }
+        : { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
     }
     return value
   }
