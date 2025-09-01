@@ -24,6 +24,12 @@ const complexFields = {
   complex_name: z.string().max(200).optional(),
 }
 
+// Coordinate fields for geocoding storage
+const coordinateFields = {
+  latitude: z.number().min(-90).max(90).optional(),
+  longitude: z.number().min(-180).max(180).optional(),
+}
+
 const TypeEnum = z.enum(['home','postal','delivery'])
 
 const UpdateSchema = z.object({
@@ -35,6 +41,8 @@ const UpdateSchema = z.object({
   ...baseFields,
   // complex/estate fields (required by DDL spec)
   ...complexFields,
+  // coordinate fields for geocoding (addresses audit finding)
+  ...coordinateFields,
 })
 
 export async function GET() {
@@ -75,6 +83,10 @@ export async function PUT(request: NextRequest) {
   if (typeof payload.live_in_complex === 'boolean') map['live_in_complex'] = payload.live_in_complex
   if (payload.complex_no !== undefined) map['complex_no'] = payload.complex_no
   if (payload.complex_name !== undefined) map['complex_name'] = payload.complex_name
+  
+  // Coordinate storage (addresses audit finding: geodata gap)
+  if (typeof payload.latitude === 'number') map[`${prefix}_latitude`] = payload.latitude
+  if (typeof payload.longitude === 'number') map[`${prefix}_longitude`] = payload.longitude
 
   // normalized -> table columns (e.g., home_address1, postal_city, delivery_postal_code)
   const assign = (key: keyof typeof baseFields) => {

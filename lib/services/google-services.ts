@@ -24,7 +24,7 @@ export class GoogleServicesProvider {
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
       libraries: ['places', 'geometry'],
       region: 'ZA',
-      enabled: !!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+      enabled: process.env.GOOGLE_PLACES_API_ENABLED === 'true' && !!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
     }
   }
 
