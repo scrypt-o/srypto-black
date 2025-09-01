@@ -43,6 +43,23 @@ const UpdateSchema = z.object({
   ...complexFields,
   // coordinate fields for geocoding (addresses audit finding)
   ...coordinateFields,
+}).superRefine((data, ctx) => {
+  // South African province soft validation (case-insensitive) when provided
+  const SA_PROVINCES = [
+    'Eastern Cape','Free State','Gauteng','KwaZulu-Natal','Limpopo','Mpumalanga','Northern Cape','North West','Western Cape'
+  ]
+  if (typeof data.province === 'string' && data.province.trim()) {
+    const ok = SA_PROVINCES.some(p => p.toLowerCase() === data.province!.toLowerCase())
+    if (!ok) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['province'], message: 'Invalid South African province' })
+    }
+  }
+  // South African postal code validation when provided (4 digits)
+  if (typeof data.postal_code === 'string' && data.postal_code.trim()) {
+    if (!/^\d{4}$/.test(data.postal_code)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['postal_code'], message: 'Invalid postal code (expect 4 digits)' })
+    }
+  }
 })
 
 export async function GET() {
@@ -107,4 +124,3 @@ export async function PUT(request: NextRequest) {
   if (error) return NextResponse.json({ error: 'Failed to update address' }, { status: 500 })
   return NextResponse.json(data)
 }
-

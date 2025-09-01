@@ -7,19 +7,10 @@ export const dynamic = 'force-dynamic'
 
 export default async function DeliveryAddressPage() {
   const supabase = await getServerClient()
-  let { data, error } = await supabase
+  const { data, error } = await supabase
     .from('v_patient__persinfo__address')
     .select('*')
     .single()
-  if (error) {
-    const res = await supabase
-      .from('v_patient__persinfo__addresses')
-      .select('*')
-      .eq('address_type', 'delivery')
-      .single()
-    data = res.data
-    error = null
-  }
 
   return (
     <PageShell sidebarItems={patientNavItems} headerTitle="Delivery Address">

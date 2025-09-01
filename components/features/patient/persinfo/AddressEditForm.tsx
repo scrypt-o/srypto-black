@@ -49,7 +49,8 @@ export default function AddressEditForm({
       address2: form.address2,
       street_no: get('street_number') || form.street_no,
       street_name: get('route') || form.street_name,
-      suburb: get('sublocality') || get('neighborhood') || form.suburb,
+      // Prefer South African sublocality level with safe fallbacks
+      suburb: get('sublocality_level_1') || get('sublocality') || get('neighborhood') || form.suburb,
       city: get('locality') || get('postal_town') || form.city,
       province: get('administrative_area_level_1') || form.province,
       postal_code: get('postal_code') || form.postal_code,

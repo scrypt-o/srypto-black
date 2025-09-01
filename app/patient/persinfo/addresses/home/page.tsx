@@ -7,20 +7,11 @@ export const dynamic = 'force-dynamic'
 
 export default async function HomeAddressPage() {
   const supabase = await getServerClient()
-  // Try DDL-aligned singular view, fallback to legacy plural
-  let { data, error } = await supabase
+  // Use singular view only, per DDL spec (no legacy fallback)
+  const { data, error } = await supabase
     .from('v_patient__persinfo__address')
     .select('*')
     .single()
-  if (error) {
-    const res = await supabase
-      .from('v_patient__persinfo__addresses')
-      .select('*')
-      .eq('address_type', 'home')
-      .single()
-    data = res.data
-    error = null
-  }
 
   return (
     <PageShell sidebarItems={patientNavItems} headerTitle="Home Address">

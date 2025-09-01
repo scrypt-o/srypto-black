@@ -37,7 +37,17 @@ export default async function RootLayout({
         <script
           nonce={nonce}
           dangerouslySetInnerHTML={{
-            __html: `!function(){try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.classList.add('dark');document.cookie='theme=dark; path=/; max-age=31536000';}else{document.documentElement.classList.remove('dark');if(!t){localStorage.setItem('theme','light');document.cookie='theme=light; path=/; max-age=31536000';}}}catch(e){}}();`,
+            __html: `!function(){try{
+  var cookieThemeMatch = document.cookie.match(/(?:^|; )theme=([^;]+)/);
+  var cookieTheme = cookieThemeMatch ? decodeURIComponent(cookieThemeMatch[1]) : null;
+  var lsTheme = localStorage.getItem('theme');
+  // Prefer cookie (server-rendered truth) to avoid SSR/CSR mismatch
+  var theme = cookieTheme || lsTheme || 'light';
+  if (theme !== lsTheme) localStorage.setItem('theme', theme);
+  document.cookie = 'theme=' + theme + '; path=/; max-age=31536000';
+  if (theme === 'dark') { document.documentElement.classList.add('dark'); }
+  else { document.documentElement.classList.remove('dark'); }
+}catch(e){}}();`,
           }}
         />
       </head>

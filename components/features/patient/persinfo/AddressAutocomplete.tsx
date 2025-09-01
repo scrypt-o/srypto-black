@@ -14,10 +14,14 @@ export default function AddressAutocomplete({
   placeholder?: string
   onSelect: (place: google.maps.places.PlaceResult) => void
 }) {
-  const { isLoaded } = useJsApiLoader({ id: 'gmaps-places', googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '', libraries: ['places'] })
+  // Use a single loader id to avoid duplicate script loads
+  const { isLoaded } = useJsApiLoader({ id: 'scrypto-google-maps', googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '', libraries: ['places'] })
   const [input, setInput] = React.useState('')
   const [suggestions, setSuggestions] = React.useState<Suggestion[]>([])
   const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Feature flag gating: allow disabling Places via NEXT_PUBLIC flag
+  const placesDisabled = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_ENABLED === 'false'
 
   const fetchSuggestions = React.useCallback((query: string) => {
     if (!isLoaded || !('google' in window) || !query) { setSuggestions([]); return }
@@ -47,11 +51,11 @@ export default function AddressAutocomplete({
     })
   }
 
-  if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+  if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || placesDisabled) {
     return (
       <input
         className="w-full border rounded px-3 py-2"
-        placeholder="Google Maps API key not configured"
+        placeholder={placesDisabled ? 'Address autocomplete disabled' : 'Google Maps API key not configured'}
         disabled
       />
     )
@@ -77,4 +81,3 @@ export default function AddressAutocomplete({
     </div>
   )
 }
-
