@@ -15,7 +15,8 @@ export async function getAuthenticatedApiClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set({ name, value, ...options })
+              // Align with supabase-server.ts: ensure correct signature for token refresh flows
+              cookieStore.set(name, value, options)
             })
           } catch {
             // Ignore - called from Server Component

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvE - Patient Status Report</title>
+    <link rel="stylesheet" href="pipe-table-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            min-height: 100vh;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 20px;
+            padding-bottom: 20px;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 12px;
+            background: #dc2626;
+            z-index: 1000;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            height: 12px;
+            background: #dc2626;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 24px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+        }
+        
+        .logo-letter {
+            width: 32px;
+            height: 32px;
+            background: #dc2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            font-size: 18px;
+        }
+        
+        .logo-letter.v {
+            width: 24px;
+            height: 24px;
+            transform: rotate(-8deg);
+            background: #000000;
+            font-size: 16px;
+            text-transform: lowercase;
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #666666;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        .updated-time {
+            text-align: center;
+            color: #666666;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666666;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #ef4444;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Override for better column sizing */
+        .pipe-table td:first-child {
+            min-width: 80px;
+        }
+        
+        .pipe-table td:nth-child(2) {
+            min-width: 100px;
+        }
+        
+        .pipe-table td:nth-child(3) {
+            min-width: 120px;
+        }
+        
+        .pipe-table td:nth-child(4) {
+            min-width: 120px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <div class="logo">
+                    <div class="logo-letter">E</div>
+                    <div class="logo-letter v">v</div>
+                    <div class="logo-letter">E</div>
+                </div>
+                Patient Status Report
+            </h1>
+            <div class="subtitle">Live Data from AI Reports with Column Definitions</div>
+        </header>
+
+        <div id="patientReport" class="loading">Loading patient status data...</div>
+
+        <div class="updated-time">
+            Source: /_eve_/projects/scrypto/main-branch/ai/reports/20250831-patient-status.md
+        </div>
+    </div>
+
+    <script src="pipe-table-renderer.js"></script>
+    <script>
+        async function loadPatientReport() {
+            try {
+                // Embedded data since file access is restricted
+                const colDefs = `|col-display-name="Domain";col-stat-type="pie";col-stat-groupby="domain,group"|
+|col-display-name="Routes Wired %";col-stat-type="percentage";col-stat-groupby="domain,group"|
+|col-display-name="Page 200 %";col-stat-type="percentage";col-stat-groupby="domain,group"|
+|col-display-name="API CRUD Coverage";col-stat-type="pie";col-stat-groupby="domain,group"|
+|col-display-name="Ready (MVP) %";col-stat-type="percentage";col-stat-groupby="domain,group"|
+|col-display-name="Total Items";col-stat-type="count";col-stat-groupby="domain,group"|`;
+
+                const reportData = `| Domain | Group | Item | Label | Route (href) | Sidebar | Page 200 | API CRUD | TanStack | Zod | API Impl | DB | Page Layouts | Tech Debt | Ready MVP | Ready Prod |
+| patient | personal-info | profile | Profile | Yes@green | Yes@green | No@orange | N/A | No@red | No@red | No@red | Yes@green | Yes@green | Yes@orange | Yes@green | Partial@orange |
+| patient | personal-info | medical-aid | Medical Aid | Yes@green | Yes@green | No@orange | N/A | No@red | No@red | No@red | Yes@green | Yes@green | Yes@orange | Yes@green | Partial@orange |
+| patient | personal-info | addresses | Addresses (hub) | Yes@green | Yes@green | No@orange | N/A | No@red | No@red | No@red | Yes@green | Yes@green | Yes@orange | Yes@green | Partial@orange |
+| patient | personal-info | addresses/home | Home Address | Yes@green | Yes@green | No@orange | N/A | No@red | No@red | No@red | Yes@green | Yes@green | Yes@orange | Yes@green | Partial@orange |
+| patient | personal-info | addresses/postal | Postal Address | Yes@green | Yes@green | No@orange | N/A | No@red | No@red | No@red | Yes@green | Yes@green | Yes@orange | Yes@green | Partial@orange |
+| patient | personal-info | addresses/delivery | Delivery Address | Yes@green | Yes@green | No@orange | N/A | No@red | No@red | No@red | Yes@green | Yes@green | No@red | Yes@green | Partial@orange |
+| patient | personal-info | documents | Documents | Yes@green | Yes@green | No@orange | N/A | No@red | No@red | No@red | Yes@green | Yes@green | Yes@orange | Yes@green | Partial@orange |
+| patient | personal-info | emergency-contacts | Emergency Contacts | Yes@green | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@orange | Yes@green | Yes@green | Yes@green | No@red | Yes@green | Partial@orange |
+| patient | personal-info | dependents | Dependents | Yes@green | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@orange | Yes@green | Yes@green | Yes@green | No@red | Yes@green | Partial@orange |
+| patient | prescriptions | scan-prescription | Scan Prescription | Yes@green | Yes@green | No@orange | Yes@green | N/A | Yes@green | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@green | Partial@orange |
+| patient | prescriptions | my-prescriptions | My Prescriptions | Yes@green | Yes@green | No@orange | Yes@orange | N/A | N/A | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@green | Partial@orange |
+| patient | prescriptions | prescription-medications | Prescription Medications | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | care-network | caregivers | Caregivers | Yes@green | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@orange | Yes@green | Yes@green | Yes@green | No@red | Yes@green | Partial@orange |
+| patient | care-network | caretakers | Caretakers | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | medhist | allergies | Allergies | Yes@green | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@green | Yes@green | Yes@green | Yes@green | No@red | Yes@green | Partial@orange |
+| patient | medhist | conditions | Medical Conditions | Yes@green | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@orange | Yes@green | Yes@green | Yes@green | No@red | Yes@green | Partial@orange |
+| patient | medhist | immunizations | Immunizations | Yes@green | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@orange | Yes@green | Yes@green | Yes@green | No@red | Yes@green | Partial@orange |
+| patient | medhist | surgeries | Surgeries | Yes@green | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@orange | Yes@green | Yes@green | Yes@green | No@red | Yes@green | Partial@orange |
+| patient | medhist | family-history | Family History | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@orange | Yes@orange | Yes@orange | Yes@green | Yes@green | Yes@orange | Yes@green | Partial@orange |
+| patient | vitality | vital-signs | Vital Signs | Yes@green | Yes@green | Yes@green | Yes@green | Yes@orange | Yes@orange | Yes@green | Yes@green | Yes@green | No@red | Yes@green | Partial@orange |
+| patient | vitality | (hub) | Vitality (Hub) | Yes@green | Yes@green | Yes@green | N/A | N/A | N/A | N/A | N/A | Yes@green | No@red | Yes@green | Partial@orange |
+| patient | communications | alerts | Alerts | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | communications | messages | Messages | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | communications | notifications | Notifications | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | medications | my-medications | My Medications | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | medications | medication-history | Medication History | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | medications | medication-adherence | Medication Adherence | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | lab-results | view-results | View Results | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | location | healthcare-map | Healthcare Map | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | location | nearest-services | Nearest Services | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | location | find-loved-ones | Find Loved Ones | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | deals | pharmacy-specials | Pharmacy Specials | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |
+| patient | rewards | rewards-dashboard | Rewards Dashboard | No@red | No@red | No@red | No@red | No@red | No@red | No@red | N/A | N/A | No@red | No@red | No@red |`;
+                
+                // Combine column definitions with report data
+                const combinedData = colDefs + '\n' + reportData;
+                
+                // Initialize and load table
+                const table = new PipeTableRenderer('patientReport');
+                table.update(combinedData);
+                
+            } catch (error) {
+                console.error('Error loading patient report:', error);
+                document.getElementById('patientReport').innerHTML = 
+                    '<div class="error">Error loading patient status data. Please check file paths.</div>';
+            }
+        }
+
+        // Load the report on page load
+        loadPatientReport();
+    </script>
+</body>
+</html>

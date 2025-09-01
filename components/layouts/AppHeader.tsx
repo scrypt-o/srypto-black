@@ -53,9 +53,13 @@ export default function AppHeader({
   const pathname = usePathname()
   const router = useRouter()
   const isHome = pathname === '/patient'
+  const isPharmacy = pathname.startsWith('/pharmacy')
+  const isPharmacyHome = pathname === '/pharmacy'
   
-  // Style mappings
-  const headerBg = (accent === 'emerald' || accent === 'healthcare')
+  // Style mappings - gray header for pharmacy, blue for patient
+  const headerBg = isPharmacy
+    ? 'bg-gray-900 text-white'
+    : (accent === 'emerald' || accent === 'healthcare')
     ? 'bg-healthcare-primary text-white'
     : 'bg-gradient-to-r from-blue-700 to-indigo-600 text-white dark:from-blue-600 dark:to-indigo-500'
   
@@ -159,6 +163,19 @@ export default function AppHeader({
                   'opacity-100 transform transition-all duration-150 ease-out'
                 )}
               >
+                <button
+                  onClick={() => {
+                    setUserMenuOpen(false)
+                    if (isPharmacy) {
+                      router.push('/patient')
+                    } else {
+                      router.push('/pharmacy')
+                    }
+                  }}
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  {isPharmacy ? 'Switch to Patient View' : 'Switch to Pharmacy View'}
+                </button>
                 <button
                   onClick={() => onUserMenuClick?.('profile')}
                   className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-white/10"

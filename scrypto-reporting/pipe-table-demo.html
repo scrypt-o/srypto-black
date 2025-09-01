@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipe Table Renderer Demo</title>
+    <link rel="stylesheet" href="pipe-table-styles.css">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+            margin: 0;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+            color: #1a1a1a;
+        }
+        
+        h2 {
+            margin: 40px 0 20px 0;
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .data-input {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'SF Mono', monospace;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .btn:hover {
+            background: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🔧 Pipe Table Renderer Demo</h1>
+        
+        <h2>Sample Data Input</h2>
+        <textarea class="data-input" id="pipeData">| Item Name | Location | Status | Progress | Alert |
+| Server Setup | AWS East | Yes | 95% | !(green) |
+| Database | Local | No | 23% | !(red) |
+| API Tests | Development | ongoing | 78% | YES@blue |
+| Cache Layer | Redis | ticked | 100% | noooooooo@orange |
+| Security | Production | wrong | 0% | err |
+| Integration | Staging | checked | 88% | Custom Text#ff6b35 |</textarea>
+
+        <button class="btn" onclick="renderDemo()">Render Table</button>
+        
+        <h2>Rendered Output</h2>
+        <div id="demoTable"></div>
+        
+        <h2>Color Format Examples</h2>
+        <div id="colorExamples"></div>
+        
+        <h2>Status Format Examples</h2>
+        <div id="statusExamples"></div>
+    </div>
+
+    <script src="pipe-table-renderer.js"></script>
+    <script>
+        // Initialize demo tables
+        const demoTable = new PipeTableRenderer('demoTable');
+        const colorTable = new PipeTableRenderer('colorExamples');
+        const statusTable = new PipeTableRenderer('statusExamples');
+
+        function renderDemo() {
+            const data = document.getElementById('pipeData').value;
+            demoTable.update(data);
+        }
+
+        // Color examples
+        const colorData = `| Color Name | Example Text | Hex Code |
+| Red | Text@red | #ef4444 |
+| Blue | Text@blue | #3b82f6 |
+| Green | Text@green | #22c55e |
+| Orange | Text@orange | #f97316 |
+| Purple | Text@purple | #a855f7 |
+| Custom Hex | Custom#ff1493 | #ff1493 |`;
+
+        // Status examples
+        const statusData = `| Input | Output | Description |
+| Yes | Yes | Green checkmark |
+| No | No | Red X |
+| ticked | ticked | Green checkmark |
+| checked | checked | Green checkmark |
+| x | x | Red X |
+| err | err | Red X |
+| wrong | wrong | Red X |
+| ongoing | ongoing | Blue circle |
+| !(red) | !(red) | Red exclamation |
+| YES@blue | YES@blue | Blue YES text |
+| noooooooo@orange | noooooooo@orange | Orange text |`;
+
+        // Load examples
+        colorTable.update(colorData);
+        statusTable.update(statusData);
+        
+        // Load initial demo
+        renderDemo();
+    </script>
+</body>
+</html>

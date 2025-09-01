@@ -11,6 +11,7 @@ import PharmacySidebar from '@/components/layouts/PharmacySidebar'
 import AppHeader from './AppHeader'
 import TileGridLayout, { type TileGridLayoutProps } from './TileGridLayout'
 import MobileFooter from './MobileFooter'
+import PharmacyMobileFooter from './PharmacyMobileFooter'
 import ChatDock from '@/components/patterns/ChatDock'
 
 export type TilePageLayoutClientProps = {
@@ -112,8 +113,9 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
     }
   }
 
-  // Choose sidebar component based on route
+  // Choose sidebar and mobile footer components based on route
   const SidebarComponent = isPharmacyRoute ? PharmacySidebar : PatientSidebar
+  const MobileFooterComponent = isPharmacyRoute ? PharmacyMobileFooter : MobileFooter
 
   return (
     <div className="h-screen w-screen overflow-hidden flex bg-gray-50 dark:bg-gray-950">
@@ -256,7 +258,7 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
           </div>
         </main>
         {/* Mobile bottom navigation */}
-        <MobileFooter />
+        <MobileFooterComponent />
         {/* Chat dock */}
         <ChatDock />
       </div>

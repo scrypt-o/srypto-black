@@ -169,6 +169,10 @@ export default function PharmacyValidationWorkstation({
   const [imageModalOpen, setImageModalOpen] = useState(false)
   const [editingMedication, setEditingMedication] = useState<string | null>(null)
   const [medicationNotes, setMedicationNotes] = useState<Record<string, string>>({})
+  const [patientEmail, setPatientEmail] = useState('')
+  const [messageBody, setMessageBody] = useState('')
+  const [sending, setSending] = useState(false)
+  const [sendResult, setSendResult] = useState<string | null>(null)
 
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 90) return 'bg-green-100 text-green-800 border-green-200'
@@ -193,6 +197,33 @@ export default function PharmacyValidationWorkstation({
   const handleSaveValidation = () => {
     // Save validation and proceed to next step
     console.log('Save validation for workflow:', workflowId)
+  }
+
+  const handleSendMessage = async () => {
+    setSending(true)
+    setSendResult(null)
+    try {
+      const res = await fetch('/api/comm/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: patientEmail,
+          type: 'message',
+          subject: `Prescription ${workflowId}`,
+          body: messageBody,
+          context_type: 'prescription',
+          context_id: workflowId,
+        })
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json?.error || 'Send failed')
+      setSendResult('Message sent')
+      setMessageBody('')
+    } catch (e:any) {
+      setSendResult(e.message || 'Error sending')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -472,6 +503,37 @@ export default function PharmacyValidationWorkstation({
             </table>
           </div>
         </div>
+      </div>
+
+      {/* Inline messaging for patient (tagged to workflow) */}
+      <div className="border-t border-gray-200 p-6">
+        <h3 className="text-sm font-semibold text-gray-800 mb-3">Contact Patient</h3>
+        <div className="flex flex-col md:flex-row md:items-center gap-3">
+          <input
+            type="email"
+            placeholder="Patient email"
+            value={patientEmail}
+            onChange={(e) => setPatientEmail(e.target.value)}
+            className="w-full md:w-80 px-3 py-2 border rounded"
+          />
+          <input
+            type="text"
+            placeholder="Type a message..."
+            value={messageBody}
+            onChange={(e) => setMessageBody(e.target.value)}
+            className="flex-1 px-3 py-2 border rounded"
+          />
+          <button
+            onClick={handleSendMessage}
+            disabled={sending || !patientEmail || !messageBody}
+            className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+          >
+            {sending ? 'Sending...' : 'Send'}
+          </button>
+        </div>
+        {sendResult && (
+          <div className="mt-2 text-sm text-gray-600">{sendResult}</div>
+        )}
       </div>
 
       {/* Medication Detail Modal */}

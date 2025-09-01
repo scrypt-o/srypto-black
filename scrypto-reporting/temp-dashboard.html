@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvE - Entity Validation Engine - Temp Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #dc2626;
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 20px;
+            padding-bottom: 20px;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 12px;
+            background: #dc2626;
+            z-index: 1000;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            height: 12px;
+            background: #dc2626;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 24px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+        }
+        
+        .logo-letter {
+            width: 32px;
+            height: 32px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #dc2626;
+            font-size: 18px;
+        }
+        
+        .logo-letter.v {
+            width: 24px;
+            height: 24px;
+            transform: rotate(-8deg);
+            background: #000000;
+            font-size: 16px;
+            text-transform: lowercase;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-message {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .updated-time {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minMax(150px, 1fr));
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <div class="logo">
+                    <div class="logo-letter">E</div>
+                    <div class="logo-letter v">v</div>
+                    <div class="logo-letter">E</div>
+                </div>
+                EvE - Entity Validation Engine - Temp Dashboard
+            </h1>
+            <div class="subtitle">Temporary Zero State Dashboard</div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Total Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Partial</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Not Started</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">Unknown</div>
+                <div class="stat-label">Est. Time Left</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0%</div>
+                <div class="stat-label">Overall Progress</div>
+            </div>
+        </div>
+
+        <div class="status-message">
+            🔴 Temporary Dashboard - All Statistics Reset to Zero
+        </div>
+
+        <div class="updated-time">
+            Last Updated: <span id="lastUpdated">-</span>
+        </div>
+    </div>
+
+    <script>
+        function updateLastUpdated() {
+            const now = new Date();
+            const timeString = now.toLocaleString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            });
+            document.getElementById('lastUpdated').textContent = timeString;
+        }
+
+        // Initialize
+        updateLastUpdated();
+    </script>
+</body>
+</html>

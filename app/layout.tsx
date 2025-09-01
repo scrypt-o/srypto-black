@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ToastProvider } from '@/components/patterns/Toast'
@@ -26,12 +26,16 @@ export default async function RootLayout({
   const cookieStore = await cookies()
   const themeCookie = cookieStore.get('theme')?.value
   const isDark = themeCookie === 'dark'
+  // Prefer Next's standard x-nonce (used by internals); fallback to legacy header
+  const hdrs = headers()
+  const nonce = hdrs.get('x-nonce') || hdrs.get('x-csp-nonce') || undefined
   return (
     <html lang="en" suppressHydrationWarning className={isDark ? 'dark' : undefined}>
       <head>
         <meta name="color-scheme" content="light dark" />
         {/* Apply persisted theme before hydration to avoid FOUC */}
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `!function(){try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.classList.add('dark');document.cookie='theme=dark; path=/; max-age=31536000';}else{document.documentElement.classList.remove('dark');if(!t){localStorage.setItem('theme','light');document.cookie='theme=light; path=/; max-age=31536000';}}}catch(e){}}();`,
           }}

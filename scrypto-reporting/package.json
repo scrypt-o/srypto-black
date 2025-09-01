@@ -1,0 +1,31 @@
+{
+  "name": "scrypto-reporting",
+  "version": "1.0.0",
+  "description": "Scrypto Intelligence & Reporting System",
+  "main": "index.js",
+  "scripts": {
+    "verify": "node tests/verify-scrypto.js",
+    "verify-e2e": "node tests/playwright-verification.js", 
+    "status-report": "node tools/generate-status-report.js",
+    "full-verification": "./tools/run-verification.sh",
+    "setup-vector-db": "python3 embeddings/setup-vector-db.py",
+    "chat-demo": "python3 chatbot/scrypto-assistant.py",
+    "gatekeeper-demo": "python3 agents/change-gatekeeper.py",
+    "serve-reports": "python3 -m http.server 8080 --directory reports",
+    "install-deps": "npm install playwright && pip3 install openai"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0",
+    "puppeteer": "^24.17.1"
+  },
+  "keywords": [
+    "scrypto",
+    "medical-software", 
+    "project-intelligence",
+    "ai-assistant",
+    "verification",
+    "reporting"
+  ],
+  "author": "Scrypto Intelligence System",
+  "license": "PRIVATE"
+}

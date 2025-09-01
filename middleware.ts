@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { updateSession } from '@/lib/supabase/middleware'
+import { buildCsp } from '@/lib/security/csp'
 
 export async function middleware(request: NextRequest) {
   // Public routes (do not require auth)
@@ -39,20 +40,21 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Minimal, safe security headers (keep conservative to avoid breakage)
+  // Security headers
   res.headers.set('X-Content-Type-Options', 'nosniff')
   res.headers.set('Referrer-Policy', 'no-referrer')
   res.headers.set('X-Frame-Options', 'DENY')
-  // Very simple CSP for an SSR-first app; adjust if needed when adding external assets
-  const csp = [
-    "default-src 'self'",
-    "img-src 'self' data:",
-    "style-src 'self' 'unsafe-inline'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-    "connect-src 'self' https:",
-    "frame-ancestors 'none'",
-  ].join('; ')
+
+  // Build CSP (dev permissive; prod uses nonce)
+  // Use a stable per-request nonce so RSC can attach it to inline scripts
+  const nonce = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`
+  const env = (process.env.NODE_ENV === 'production' ? 'production' : 'development') as 'development' | 'production'
+  const csp = buildCsp({ env, nonce })
   res.headers.set('Content-Security-Policy', csp)
+  // Expose nonce using Next's standard header so internals can pick it up
+  res.headers.set('x-nonce', nonce)
+  // Back-compat while we migrate any consumers
+  res.headers.set('x-csp-nonce', nonce)
   return res
 }
 

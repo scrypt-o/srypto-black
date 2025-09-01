@@ -58,6 +58,35 @@ export default function PageShellClient(props: PageShellClientProps) {
   const openMobileSidebar = () => setMobileSidebarOpen(true)
   const closeMobileSidebar = () => setMobileSidebarOpen(false)
 
+  const [notifCount, setNotifCount] = React.useState<number | undefined>(props.notifications)
+
+  React.useEffect(() => {
+    let timer: any
+    const fetchCount = async () => {
+      try {
+        const res = await fetch('/api/comm/unread-count', { cache: 'no-store' })
+        const json = await res.json()
+        if (typeof json.count === 'number') setNotifCount(json.count)
+      } catch {}
+    }
+    fetchCount()
+    timer = setInterval(fetchCount, 15000)
+    const onFocus = () => fetchCount()
+    window.addEventListener('focus', onFocus)
+    return () => { clearInterval(timer); window.removeEventListener('focus', onFocus) }
+  }, [])
+
+  const defaultOnNotif = React.useCallback(() => {
+    try {
+      const path = window.location.pathname
+      if (path.startsWith('/pharmacy')) {
+        window.location.href = '/pharmacy/comm'
+      } else {
+        window.location.href = '/patient/comm/inbox'
+      }
+    } catch {}
+  }, [])
+
   return (
     <div className="h-screen w-screen overflow-hidden flex bg-gray-50 dark:bg-gray-950">
       {showSidebar && (
@@ -99,8 +128,8 @@ export default function PageShellClient(props: PageShellClientProps) {
             onMobileMenuClick={openMobileSidebar}
             {...(user ? { user } : {})}
             {...(onUserMenuClick ? { onUserMenuClick } : {})}
-            {...(notifications != null ? { notifications } : {})}
-            {...(onNotificationClick ? { onNotificationClick } : {})}
+            notifications={notifCount ?? 0}
+            onNotificationClick={onNotificationClick ?? defaultOnNotif}
             style={style}
             accent={accent}
           />
@@ -117,4 +146,3 @@ export default function PageShellClient(props: PageShellClientProps) {
     </div>
   )
 }
-
