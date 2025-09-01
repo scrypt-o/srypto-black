@@ -16,6 +16,10 @@ type FormState = {
   province?: string
   postal_code?: string
   country?: string
+  // Complex/estate fields (addresses audit finding)
+  live_in_complex?: boolean
+  complex_no?: string
+  complex_name?: string
 }
 
 export default function AddressEditForm({
@@ -119,6 +123,38 @@ export default function AddressEditForm({
         <Field label="Postal code" value={form.postal_code || ''} onChange={v => onChange('postal_code', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
         <Field label="Country" value={form.country || ''} onChange={v => onChange('country', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
       </div>
+
+      {/* Complex/Estate Fields (addresses audit finding: missing fields in UI) */}
+      {type === 'home' && (
+        <div className="mt-4 p-4 bg-gray-50 rounded">
+          <h3 className="font-medium text-gray-900 mb-3">Complex/Estate Information</h3>
+          <div className="space-y-3">
+            <label className="inline-flex items-center gap-2 text-sm">
+              <input 
+                type="checkbox" 
+                checked={form.live_in_complex || false} 
+                onChange={(e) => onChange('live_in_complex', e.target.checked)}
+              />
+              Live in complex or estate
+            </label>
+            
+            {form.live_in_complex && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Field 
+                  label="Unit/Apartment Number" 
+                  value={form.complex_no || ''} 
+                  onChange={v => onChange('complex_no', v)} 
+                />
+                <Field 
+                  label="Complex/Estate Name" 
+                  value={form.complex_name || ''} 
+                  onChange={v => onChange('complex_name', v)} 
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {error && <div className="text-sm text-red-600">{error}</div>}
       <div className="text-right">
