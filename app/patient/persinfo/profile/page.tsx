@@ -3,6 +3,7 @@ import PageShell from '@/components/layouts/PageShell'
 import { patientNavItems } from '@/config/patientNav'
 import ProfilePictureUpload from '@/components/uploads/ProfilePictureUpload'
 import ProfileImage from '@/components/features/patient/persinfo/ProfileImage'
+import ProfileEditForm from '@/components/features/patient/persinfo/ProfileEditForm'
 import React from 'react'
 
 export const dynamic = 'force-dynamic'
@@ -52,6 +53,24 @@ export default async function ProfilePage() {
         ) : (
           <div className="text-gray-600">No profile data.</div>
         )}
+
+        {/* Edit form */}
+        <ProfileEditForm initial={{
+          first_name: (data as any)?.first_name,
+          last_name: (data as any)?.last_name,
+          title: (data as any)?.title,
+          middle_name: (data as any)?.middle_name,
+          nick_name: (data as any)?.nick_name,
+          id_number: (data as any)?.id_number,
+          passport_number: (data as any)?.passport_number,
+          citizenship: (data as any)?.citizenship,
+          date_of_birth: (data as any)?.date_of_birth,
+          gender: (data as any)?.gender,
+          marital_status: (data as any)?.marital_status,
+          phone: (data as any)?.phone,
+          email: (data as any)?.email,
+          primary_language: (data as any)?.primary_language,
+        }} />
       </div>
     </PageShell>
   )

@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { verifyCsrf } from '@/lib/api-helpers'
+import { ProfileUpdateSchema } from '@/schemas/profile'
 import { getServerClient } from '@/lib/supabase-server'
 
-const UpdateSchema = z.object({
-  profile_picture_url: z.string().min(1).optional(), // stores storage path or external URL
+const UpdateSchema = ProfileUpdateSchema.extend({
+  profile_picture_url: z.string().min(1).optional(),
 })
 
 export async function PUT(request: NextRequest) {
@@ -19,7 +20,9 @@ export async function PUT(request: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: 'Validation', details: parsed.error.flatten() }, { status: 422 })
 
   const updates: Record<string, any> = {}
-  if (parsed.data.profile_picture_url) updates.profile_picture_url = parsed.data.profile_picture_url
+  Object.entries(parsed.data).forEach(([k, v]) => {
+    if (v !== undefined) updates[k] = v
+  })
   updates.updated_at = new Date().toISOString()
 
   // Upsert by user_id (single profile per user)
@@ -32,4 +35,3 @@ export async function PUT(request: NextRequest) {
   if (error) return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 })
   return NextResponse.json(data)
 }
-
