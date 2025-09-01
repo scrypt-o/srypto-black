@@ -32,6 +32,7 @@ export interface ListFeatureConfig<TRow = any, TItem extends ListItem = ListItem
   }
   
   // Display customization
+  allowDelete?: boolean
   searchPlaceholder?: string
   pageTitle?: string
   thirdColumnLabel?: string
@@ -221,7 +222,7 @@ export default function GenericListFeature<TRow = any, TItem extends ListItem = 
         loading={loading || deleteHook.isPending}
         onItemClick={handleItemClick}
         onEditClick={handleEditClick}
-        onDelete={handleDelete}
+        onDelete={config.allowDelete === false ? undefined : handleDelete}
         onExport={handleExport}
         onSearch={handleSearch}
         onFilter={handleFilter}

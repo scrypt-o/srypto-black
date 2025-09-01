@@ -108,6 +108,7 @@ export const prescriptionsListConfig: ListFeatureConfig<PrescriptionRow, Prescri
   filterFields,
   
   // No delete functionality for prescriptions
+  allowDelete: false,
   hooks: {
     useDelete: mockDeleteHook
   },

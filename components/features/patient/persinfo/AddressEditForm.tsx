@@ -28,6 +28,8 @@ export default function AddressEditForm({
 }) {
   const [form, setForm] = React.useState<FormState>({ ...(initial || {}) })
   const [manual, setManual] = React.useState(false)
+  const [postalSame, setPostalSame] = React.useState(false)
+  const [deliverySame, setDeliverySame] = React.useState(false)
   const [coords, setCoords] = React.useState<{ lat: number; lng: number } | null>(null)
   const [saving, setSaving] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
@@ -58,6 +60,9 @@ export default function AddressEditForm({
   const onSave = async () => {
     setSaving(true); setError(null)
     try {
+      const payload: any = { type, ...form }
+      if (type === 'postal') payload.postal_same_as_home = postalSame
+      if (type === 'delivery') payload.delivery_same_as_home = deliverySame
       const res = await fetch('/api/patient/personal-info/address', {
         method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, ...form })
       })
@@ -81,6 +86,20 @@ export default function AddressEditForm({
       {/* Autocomplete */}
       <AddressAutocomplete onSelect={onSelectPlace} />
 
+      {/* Toggles */}
+      {type === 'postal' && (
+        <label className="inline-flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={postalSame} onChange={(e) => setPostalSame(e.target.checked)} />
+          Postal address same as Home
+        </label>
+      )}
+      {type === 'delivery' && (
+        <label className="inline-flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={deliverySame} onChange={(e) => setDeliverySame(e.target.checked)} />
+          Delivery address same as Home
+        </label>
+      )}
+
       {/* Manual toggle */}
       <label className="inline-flex items-center gap-2 text-sm">
         <input type="checkbox" checked={manual} onChange={(e) => setManual(e.target.checked)} />
@@ -89,15 +108,15 @@ export default function AddressEditForm({
 
       {/* Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <Field label="Address line 1" value={form.address1 || ''} onChange={v => onChange('address1', v)} disabled={!manual} />
-        <Field label="Address line 2" value={form.address2 || ''} onChange={v => onChange('address2', v)} disabled={!manual} />
-        <Field label="Street number" value={form.street_no || ''} onChange={v => onChange('street_no', v)} disabled={!manual} />
-        <Field label="Street name" value={form.street_name || ''} onChange={v => onChange('street_name', v)} disabled={!manual} />
-        <Field label="Suburb" value={form.suburb || ''} onChange={v => onChange('suburb', v)} disabled={!manual} />
-        <Field label="City" value={form.city || ''} onChange={v => onChange('city', v)} disabled={!manual} />
-        <Field label="Province" value={form.province || ''} onChange={v => onChange('province', v)} disabled={!manual} />
-        <Field label="Postal code" value={form.postal_code || ''} onChange={v => onChange('postal_code', v)} disabled={!manual} />
-        <Field label="Country" value={form.country || ''} onChange={v => onChange('country', v)} disabled={!manual} />
+        <Field label="Address line 1" value={form.address1 || ''} onChange={v => onChange('address1', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
+        <Field label="Address line 2" value={form.address2 || ''} onChange={v => onChange('address2', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
+        <Field label="Street number" value={form.street_no || ''} onChange={v => onChange('street_no', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
+        <Field label="Street name" value={form.street_name || ''} onChange={v => onChange('street_name', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
+        <Field label="Suburb" value={form.suburb || ''} onChange={v => onChange('suburb', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
+        <Field label="City" value={form.city || ''} onChange={v => onChange('city', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
+        <Field label="Province" value={form.province || ''} onChange={v => onChange('province', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
+        <Field label="Postal code" value={form.postal_code || ''} onChange={v => onChange('postal_code', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
+        <Field label="Country" value={form.country || ''} onChange={v => onChange('country', v)} disabled={!manual || (type==='postal'&&postalSame) || (type==='delivery'&&deliverySame)} />
       </div>
 
       {error && <div className="text-sm text-red-600">{error}</div>}
@@ -116,4 +135,3 @@ function Field({ label, value, onChange, disabled }: { label: string; value: str
     </label>
   )
 }
-
