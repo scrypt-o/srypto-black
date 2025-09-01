@@ -4,6 +4,7 @@ import { getServerClient } from '@/lib/supabase-server'
 import { verifyCsrf } from '@/lib/api-helpers'
 
 // Normalized address fields for a given type (home|postal|delivery)
+// Addresses audit finding: "Missing fields: No live_in_complex/complex_no/complex_name"
 const baseFields = {
   address1: z.string().min(1).max(200).optional(),
   address2: z.string().max(200).optional(),
@@ -16,6 +17,13 @@ const baseFields = {
   country: z.string().max(120).optional(),
 }
 
+// Complex/estate fields (South African addressing)
+const complexFields = {
+  live_in_complex: z.boolean().optional(),
+  complex_no: z.string().max(50).optional(),
+  complex_name: z.string().max(200).optional(),
+}
+
 const TypeEnum = z.enum(['home','postal','delivery'])
 
 const UpdateSchema = z.object({
@@ -25,6 +33,8 @@ const UpdateSchema = z.object({
   delivery_same_as_home: z.boolean().optional(),
   // normalized fields (will be mapped to table columns by type)
   ...baseFields,
+  // complex/estate fields (required by DDL spec)
+  ...complexFields,
 })
 
 export async function GET() {
@@ -57,8 +67,14 @@ export async function PUT(request: NextRequest) {
   const map: Record<string, any> = { updated_at: new Date().toISOString(), user_id: user.id }
 
   // same-as toggles
-  if (typeof payload.postal_same_as_home === 'boolean') map['postal_same_as_home'] = String(payload.postal_same_as_home)
+  // Addresses audit finding: same-as flags with proper boolean persistence
+  if (typeof payload.postal_same_as_home === 'boolean') map['postal_same_as_home'] = payload.postal_same_as_home
   if (typeof payload.delivery_same_as_home === 'boolean') map['delivery_same_as_home'] = payload.delivery_same_as_home
+  
+  // Complex/estate fields (addresses audit finding: missing required fields)
+  if (typeof payload.live_in_complex === 'boolean') map['live_in_complex'] = payload.live_in_complex
+  if (payload.complex_no !== undefined) map['complex_no'] = payload.complex_no
+  if (payload.complex_name !== undefined) map['complex_name'] = payload.complex_name
 
   // normalized -> table columns (e.g., home_address1, postal_city, delivery_postal_code)
   const assign = (key: keyof typeof baseFields) => {
