@@ -68,8 +68,13 @@ export default function AddressEditForm({
       const payload: any = { type, ...form }
       if (type === 'postal') payload.postal_same_as_home = postalSame
       if (type === 'delivery') payload.delivery_same_as_home = deliverySame
+      // Include coordinates if available
+      if (coords) {
+        payload.latitude = coords.lat
+        payload.longitude = coords.lng
+      }
       const res = await fetch('/api/patient/personal-info/address', {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, ...form })
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
       })
       if (!res.ok) throw new Error('Save failed')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
