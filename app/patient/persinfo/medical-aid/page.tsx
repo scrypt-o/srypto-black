@@ -1,6 +1,7 @@
 import { getServerClient } from '@/lib/supabase-server'
 import PageShell from '@/components/layouts/PageShell'
 import { patientNavItems } from '@/config/patientNav'
+import MedicalAidForm from '@/components/features/patient/persinfo/MedicalAidForm'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,22 +14,10 @@ export default async function MedicalAidPage() {
 
   return (
     <PageShell sidebarItems={patientNavItems} headerTitle="Medical Aid">
-      <div className="p-4">
+      <div className="p-4 space-y-4">
         {error && <div className="text-red-600 mb-3">Failed to load medical aid</div>}
-        {data ? (
-          <div className="bg-white border rounded p-4 space-y-2 text-sm">
-            {Object.entries(data).map(([k, v]) => (
-              <div key={k} className="grid grid-cols-3 gap-2">
-                <div className="font-medium text-gray-600">{k}</div>
-                <div className="col-span-2 text-gray-900 break-words">{String(v ?? '')}</div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-gray-600">No medical aid data.</div>
-        )}
+        <MedicalAidForm initial={data as any} />
       </div>
     </PageShell>
   )
 }
-
