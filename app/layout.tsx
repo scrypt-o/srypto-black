@@ -27,7 +27,7 @@ export default async function RootLayout({
   const themeCookie = cookieStore.get('theme')?.value
   const isDark = themeCookie === 'dark'
   // Prefer Next's standard x-nonce (used by internals); fallback to legacy header
-  const hdrs = headers()
+  const hdrs = await headers()
   const nonce = hdrs.get('x-nonce') || hdrs.get('x-csp-nonce') || undefined
   return (
     <html lang="en" suppressHydrationWarning className={isDark ? 'dark' : undefined}>

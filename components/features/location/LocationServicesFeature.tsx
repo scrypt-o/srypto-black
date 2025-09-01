@@ -83,7 +83,7 @@ export default function LocationServicesFeature() {
               place.geometry.location.lat(),
               place.geometry.location.lng()
             )
-          : undefined
+          : 0
       }))
       
       // Sort by distance

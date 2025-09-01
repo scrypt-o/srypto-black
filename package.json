@@ -15,7 +15,7 @@
     "start:4570": "next start -p 4570",
     "start:4571": "next start -p 4571",
     "start:4572": "next start -p 4572",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run lint",
     "test": "jest",
