@@ -12,19 +12,17 @@
       ]
     },
     "playwright": {
-      "command": "xvfb-run",
+      "type": "stdio",
+      "command": "npx",
       "args": [
-        "-a",
-        "npx",
         "-y",
-        "@playwright/mcp",
-        "--isolated"
-      ],
-      "env": {
-        "PLAYWRIGHT_HEADLESS": "true",
-        "PLAYWRIGHT_BROWSER": "chromium"
-      }
+        "@executeautomation/playwright-mcp-server",
+        "--headless",
+        "--browser", "chromium",
+        "--ignore-https-errors",
+        "--isolated",
+        "--block-service-workers"
+      ]
     }
   }
 }
-

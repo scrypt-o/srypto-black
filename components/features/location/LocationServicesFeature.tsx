@@ -13,6 +13,7 @@ import {
   formatDistance 
 } from '@/lib/google-maps'
 import { googleServices } from '@/lib/services/google-services'
+import { isFeatureEnabled } from '@/lib/utils/feature-flags'
 import { useGeolocation } from '@/hooks/useGeolocation'
 
 interface Place extends google.maps.places.PlaceResult {
@@ -20,6 +21,19 @@ interface Place extends google.maps.places.PlaceResult {
 }
 
 export default function LocationServicesFeature() {
+  // Feature gating (env + API key)
+  const mapsEnabled = !!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY && (isFeatureEnabled as any)?.('googleMaps') !== false
+  const placesEnabled = (process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_ENABLED !== 'false')
+  if (!mapsEnabled || !placesEnabled) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center max-w-md">
+          <p className="text-sm text-gray-700 dark:text-gray-300">Location services are currently disabled.</p>
+          <p className="text-xs text-gray-500 mt-1">Enable Maps/Places in configuration to use this feature.</p>
+        </div>
+      </div>
+    )
+  }
   const { isLoaded, loadError } = useGoogleMaps()
   const { position, loading: locationLoading, error: locationError, retry, getCurrentPosition } = useGeolocation()
   
@@ -34,10 +48,22 @@ export default function LocationServicesFeature() {
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPlaceType, setSelectedPlaceType] = useState<MedicalPlaceType>('pharmacy')
+  const [otherMode, setOtherMode] = useState(false)
   const [places, setPlaces] = useState<Place[]>([])
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null)
   const [searching, setSearching] = useState(false)
   const [showList, setShowList] = useState(false)
+  const [radiusKm, setRadiusKm] = useState<number>(10)
+
+  // Auto-request location if configured
+  React.useEffect(() => {
+    try {
+      if ((featureFlags as any)?.locationAutoRequest && !position) {
+        getCurrentPosition().catch(() => {/* ignore */})
+      }
+    } catch {/* ignore */}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Update center when user location is available
   React.useEffect(() => {
@@ -62,7 +88,8 @@ export default function LocationServicesFeature() {
 
   const performSearch = useCallback(async (
     searchCenter: google.maps.LatLngLiteral = center,
-    placeType: MedicalPlaceType = selectedPlaceType
+    placeType: MedicalPlaceType = selectedPlaceType,
+    keyword?: string
   ) => {
     if (!map) return
 
@@ -71,7 +98,13 @@ export default function LocationServicesFeature() {
     
     try {
       // Use centralized Google services to eliminate direct API calls
-      const results = await googleServices.searchNearbyPlaces(map, searchCenter, placeType, 10000)
+      const results = await googleServices.searchNearbyPlaces(
+        map,
+        searchCenter,
+        placeType,
+        (radiusKm || 10) * 1000,
+        keyword && keyword.trim() ? keyword.trim() : undefined
+      )
       
       // Add distance calculation to results
       const resultsWithDistance = results.map(place => ({
@@ -101,9 +134,10 @@ export default function LocationServicesFeature() {
     } finally {
       setSearching(false)
     }
-  }, [map, center, selectedPlaceType])
+  }, [map, center, selectedPlaceType, radiusKm])
 
   const handlePlaceTypeChange = useCallback((newType: MedicalPlaceType) => {
+    setOtherMode(false)
     setSelectedPlaceType(newType)
     setSelectedPlace(null)
     performSearch(center, newType)
@@ -130,6 +164,9 @@ export default function LocationServicesFeature() {
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2 text-blue-600" />
           <p className="text-gray-600">Loading maps...</p>
         </div>
+
+        {/* Privacy note */}
+        <p className="text-[12px] text-gray-500">We only use your location to find nearby pharmacies and services. Nothing is stored.</p>
       </div>
     )
   }
@@ -172,13 +209,13 @@ export default function LocationServicesFeature() {
         </div>
 
         {/* Place Type Selector */}
-        <div className="flex gap-2 overflow-x-auto">
-          {Object.keys(MEDICAL_PLACE_TYPES).map(type => (
+        <div className="flex gap-2 overflow-x-auto items-center">
+          {(['hospital','doctor','pharmacy'] as MedicalPlaceType[]).map(type => (
             <button
               key={type}
-              onClick={() => handlePlaceTypeChange(type as MedicalPlaceType)}
+              onClick={() => handlePlaceTypeChange(type)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap ${
-                selectedPlaceType === type
+                !otherMode && selectedPlaceType === type
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
@@ -186,12 +223,37 @@ export default function LocationServicesFeature() {
               {type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           ))}
+          <button
+            onClick={() => { setOtherMode(true); setSelectedPlaceType('health') }}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap ${
+              otherMode ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Other
+          </button>
+          {otherMode && (
+            <div className="flex items-center gap-2">
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search other medical services"
+                className="px-3 py-1.5 border rounded-lg text-sm"
+              />
+              <button
+                onClick={() => performSearch(center, selectedPlaceType, searchQuery)}
+                disabled={searching || !map || !searchQuery.trim()}
+                className="px-3 py-1.5 rounded-lg text-sm font-medium bg-blue-600 text-white disabled:opacity-50"
+              >
+                Search
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Search Button */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <button
-            onClick={() => performSearch()}
+            onClick={() => otherMode ? performSearch(center, selectedPlaceType, searchQuery) : performSearch()}
             disabled={searching || !map}
             className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg"
           >
@@ -200,9 +262,23 @@ export default function LocationServicesFeature() {
             ) : (
               <Search className="w-4 h-4" />
             )}
-            Find {selectedPlaceType}s
+            {otherMode ? 'Search' : `Find ${selectedPlaceType}s`}
           </button>
-          
+
+          {/* Radius selector */}
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            <span>Radius</span>
+            <select
+              value={radiusKm}
+              onChange={(e) => setRadiusKm(Number(e.target.value))}
+              className="px-2 py-1 border rounded"
+            >
+              <option value={5}>5 km</option>
+              <option value={10}>10 km</option>
+              <option value={20}>20 km</option>
+            </select>
+          </label>
+
           <button
             onClick={() => setShowList(!showList)}
             className="px-4 py-2 border border-gray-300 hover:bg-gray-50 rounded-lg"
@@ -289,11 +365,34 @@ export default function LocationServicesFeature() {
                     ⭐ {selectedPlace.rating}/5 ({selectedPlace.user_ratings_total} reviews)
                   </p>
                 )}
-                {selectedPlace.formatted_phone_number && (
-                  <p className="text-sm text-green-600">
-                    📞 {selectedPlace.formatted_phone_number}
-                  </p>
-                )}
+                <div className="flex items-center gap-2 mt-2">
+                  {/* Call link if phone available */}
+                  {selectedPlace.formatted_phone_number && (
+                    <a href={`tel:${selectedPlace.formatted_phone_number}`} className="text-blue-600 text-sm underline">Call</a>
+                  )}
+                  {/* Directions link */}
+                  {selectedPlace.geometry?.location && (
+                    <a
+                      className="text-blue-600 text-sm underline"
+                      target="_blank"
+                      rel="noreferrer"
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.geometry.location.lat()},${selectedPlace.geometry.location.lng()}`}
+                    >
+                      Directions
+                    </a>
+                  )}
+                  {/* Open in Google Maps */}
+                  {selectedPlace.place_id && (
+                    <a
+                      className="text-blue-600 text-sm underline"
+                      target="_blank"
+                      rel="noreferrer"
+                      href={`https://www.google.com/maps/search/?api=1&query_place_id=${selectedPlace.place_id}`}
+                    >
+                      Open
+                    </a>
+                  )}
+                </div>
               </div>
             </InfoWindow>
           )}

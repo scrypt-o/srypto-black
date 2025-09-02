@@ -1,6 +1,6 @@
 /** @type {import('jest').Config} */
 module.exports = {
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'jest-environment-node',
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.json', diagnostics: false }],
   },
@@ -17,5 +17,5 @@ module.exports = {
   ],
   // Polyfills and globals for Node/Web APIs used in tests
   setupFiles: ['<rootDir>/jest.setup.js'],
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: [],
 }

@@ -87,15 +87,17 @@ export default function AddressEditForm({
 
   return (
     <div className="space-y-4">
-      {/* Map */}
-      {coords ? (
-        <AddressMap lat={coords.lat} lng={coords.lng} />
-      ) : (
-        <div className="h-48 bg-gray-100 rounded flex items-center justify-center text-gray-500">No coordinates</div>
-      )}
-
-      {/* Autocomplete */}
-      <AddressAutocomplete onSelect={onSelectPlace} />
+      {/* Map with prominent search overlay */}
+      <div className="relative">
+        {coords ? (
+          <AddressMap lat={coords.lat} lng={coords.lng} />
+        ) : (
+          <div className="h-56 md:h-72 bg-gray-100 rounded flex items-center justify-center text-gray-500">No coordinates</div>
+        )}
+        <div className="absolute left-1/2 -translate-x-1/2 top-3 w-[calc(100%-2rem)] md:w-2/3 z-10">
+          <AddressAutocomplete onSelect={onSelectPlace} size="lg" />
+        </div>
+      </div>
 
       {/* Toggles */}
       {type === 'postal' && (

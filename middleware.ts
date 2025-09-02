@@ -43,10 +43,10 @@ export async function middleware(request: NextRequest) {
   }
 
   // Build a single per-request nonce and forward to SSR via request headers
-  const nonce = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`
+  const nonce = globalThis.crypto.randomUUID()
   const requestHeaders = new Headers(request.headers)
+  // Use a single canonical header for nonce
   requestHeaders.set('x-nonce', nonce)
-  requestHeaders.set('x-csp-nonce', nonce)
 
   // Create the final response, forwarding headers to SSR and re-emitting any Set-Cookie from session refresh
   const res = NextResponse.next({ request: { headers: requestHeaders } })
@@ -63,7 +63,6 @@ export async function middleware(request: NextRequest) {
   const csp = buildCsp({ env, nonce })
   res.headers.set('Content-Security-Policy', csp)
   res.headers.set('x-nonce', nonce)
-  res.headers.set('x-csp-nonce', nonce)
   return res
 }
 

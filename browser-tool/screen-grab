@@ -69,7 +69,8 @@ class ScreenGrab {
     async grab(url, options = {}) {
         console.log(`📸 Grabbing: ${url}`);
         const startTime = Date.now();
-        
+        const urlObj = new URL(url);
+
         const browser = await puppeteer.launch({
             headless: true,
             args: [
@@ -95,7 +96,7 @@ class ScreenGrab {
 
             // Handle authentication
             if (options.authCookies) {
-                const cookies = this.parseCookies(options.authCookies);
+                const cookies = this.parseCookies(options.authCookies, urlObj.hostname);
                 await page.setCookie(...cookies);
             }
 
@@ -147,13 +148,16 @@ class ScreenGrab {
         }
     }
 
-    parseCookies(cookieString) {
+    parseCookies(cookieString, domain) {
         return cookieString.split(';').map(cookie => {
-            const [name, value] = cookie.split('=');
+            const eqIdx = cookie.indexOf('=');
+            const name = cookie.slice(0, eqIdx).trim();
+            const value = cookie.slice(eqIdx + 1).trim();
             return {
-                name: name.trim(),
-                value: value.trim(),
-                domain: 'localhost'
+                name,
+                value,
+                domain: domain || 'localhost',
+                path: '/',
             };
         });
     }

@@ -8,11 +8,15 @@ type Suggestion = {
 }
 
 export default function AddressAutocomplete({
-  placeholder = 'Start typing your address…',
+  placeholder = 'Search address…',
   onSelect,
+  className,
+  size = 'md',
 }: {
   placeholder?: string
   onSelect: (place: google.maps.places.PlaceResult) => void
+  className?: string
+  size?: 'md' | 'lg'
 }) {
   // Use a single loader id to avoid duplicate script loads
   const { isLoaded } = useJsApiLoader({ id: 'scrypto-google-maps', googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '', libraries: ['places'] })
@@ -54,7 +58,7 @@ export default function AddressAutocomplete({
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || placesDisabled) {
     return (
       <input
-        className="w-full border rounded px-3 py-2"
+        className={"w-full border rounded px-3 py-2 " + (className || '')}
         placeholder={placesDisabled ? 'Address autocomplete disabled' : 'Google Maps API key not configured'}
         disabled
       />
@@ -62,15 +66,18 @@ export default function AddressAutocomplete({
   }
 
   return (
-    <div className="relative">
+    <div className={"relative " + (className || '')}>
       <input
         value={input}
         onChange={handleChange}
         placeholder={placeholder}
-        className="w-full border rounded px-3 py-2"
+        className={
+          'w-full border rounded outline-none transition ring-1 ring-inset ring-gray-200 focus:ring-blue-500 bg-white ' +
+          (size === 'lg' ? 'px-4 py-3 text-base rounded-full shadow-md' : 'px-3 py-2 text-sm')
+        }
       />
       {suggestions.length > 0 && (
-        <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
+        <div className="absolute z-20 mt-1 w-full bg-white border rounded shadow">
           {suggestions.map((s) => (
             <button key={s.place_id} type="button" className="w-full text-left px-3 py-2 hover:bg-gray-50" onClick={() => handleSelect(s)}>
               {s.description}

@@ -1,0 +1,11 @@
+[mcp_servers.playwright]
+command = "npx"
+args = [
+    "-y",
+    "@executeautomation/playwright-mcp-server",
+    "--headless",
+    "--browser", "chromium",
+    "--ignore-https-errors",
+    "--isolated",
+    "--block-service-workers"
+]

@@ -24,6 +24,13 @@ try {
   }
 } catch {}
 
+// MessagePort polyfill for undici compatibility 
+global.MessagePort = class MessagePort extends EventTarget {
+  postMessage() {}
+  start() {}
+  close() {}
+}
+
 // Ensure fetch exists for tests that may call it (unit-level only).
 if (typeof global.fetch === 'undefined') {
   try {
@@ -48,3 +55,28 @@ if (typeof global.fetch === 'undefined') {
     }
   }
 }
+
+// Supabase mocks for API testing
+jest.mock('@/lib/supabase-server', () => ({
+  getServerClient: jest.fn(() => ({
+    auth: {
+      getUser: jest.fn(() => Promise.resolve({
+        data: { user: { id: 'test-user-id', email: 't@t.com' } },
+        error: null
+      }))
+    },
+    from: jest.fn(() => ({
+      select: jest.fn().mockReturnThis(),
+      insert: jest.fn().mockReturnThis(),
+      update: jest.fn().mockReturnThis(),
+      delete: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      single: jest.fn(() => Promise.resolve({ data: {}, error: null })),
+    }))
+  }))
+}))
+
+// CSRF verification mock
+jest.mock('@/lib/api-helpers', () => ({
+  verifyCsrf: jest.fn(() => null)
+}))

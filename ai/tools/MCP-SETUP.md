@@ -13,10 +13,9 @@ How to use (Claude Desktop / Claude for VS Code)
 Servers
 - supabase-scrypto:
   - Command: `npx -y @supabase/mcp-server-supabase@latest --access-token <token> --project-ref hyufvcwzuaihmyohvwpv`
-  - Uses the provided Supabase personal access token; scope is limited to this project.
+  - Uses a Supabase Personal Access Token with project scope.
 - playwright:
-  - Command: `xvfb-run -a npx -y @playwright/mcp --isolated`
-  - Env: `PLAYWRIGHT_HEADLESS=true`, `PLAYWRIGHT_BROWSER=chromium`
+  - Command: `npx -y @executeautomation/playwright-mcp-server --headless --browser chromium --ignore-https-errors --isolated --block-service-workers`
 
 Quick sanity checks (run via your MCP client)
 1) List tools
@@ -27,10 +26,10 @@ Quick sanity checks (run via your MCP client)
    - Optionally: "Select 1 row from v_patient__medhist__allergies (limit 1)."
 
 3) Playwright screenshot test
-   - Ask: "Playwright: open https://qa.scrypto.online, wait for network idle, take a full-page screenshot, and return it."
+   - Ask: "Playwright: open https://qa.scrypto.online/login, wait for network idle, take a screenshot."
+   - Then: "Set cookie sb-hyufvcwzuaihmyohvwpv-auth-token=<BASE64_TOKEN> for domain qa.scrypto.online; open https://qa.scrypto.online/patient/persinfo/profile and screenshot."
 
 Notes
 - The Supabase MCP server does not support `--help`; it starts immediately and expects an MCP client over stdio.
 - Tokens are test/QA scope for this project. Rotate if needed.
 - If Playwright install fails, restart the client session (per ai/init.md workflow).
-

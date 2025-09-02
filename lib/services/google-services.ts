@@ -150,7 +150,8 @@ export class GoogleServicesProvider {
     map: google.maps.Map,
     center: google.maps.LatLngLiteral,
     type: string,
-    radius: number = 5000
+    radius: number = 5000,
+    keyword?: string
   ): Promise<google.maps.places.PlaceResult[]> {
     if (!this.isEnabled()) {
       throw new Error('Google Places API not enabled')
@@ -166,7 +167,8 @@ export class GoogleServicesProvider {
           {
             location: center,
             radius,
-            type: type as any
+            type: type as any,
+            keyword: keyword && keyword.trim().length > 0 ? keyword.trim() : undefined,
           },
           (results, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK && results) {
