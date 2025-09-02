@@ -45,17 +45,7 @@ export async function POST(request: NextRequest) {
 
     const { imageBase64, fileName } = validatedInput.data
 
-    // Check AI usage limits
-    const costControl = new AICostControlService()
-    const usageCheck = await costControl.checkUsageLimits(user.id)
-    
-    if (!usageCheck.allowed) {
-      return NextResponse.json({ 
-        error: 'Usage limit exceeded', 
-        reason: usageCheck.reason,
-        details: usageCheck
-      }, { status: 429 })
-    }
+    // Removed usage limits blocking - let users scan prescriptions freely
 
     // Generate session ID for tracking
     const sessionId = `scan_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -69,15 +59,8 @@ export async function POST(request: NextRequest) {
       sessionId
     })
 
-    // Log usage for cost control
-    if (analysisResult.success) {
-      await costControl.logUsage(
-        user.id, 
-        'prescription_analysis', 
-        true, 
-        analysisResult.cost || 0
-      )
-    }
+    // Keep simple logging without blocking
+    // TODO: Add basic logging if needed for admin monitoring
 
     if (!analysisResult.success) {
       return NextResponse.json({ 
