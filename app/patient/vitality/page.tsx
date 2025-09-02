@@ -22,6 +22,15 @@ export default function VitalityPage() {
         color: 'bg-rose-50 hover:bg-rose-100 border-rose-200'
       },
       {
+        id: 'sleep',
+        title: 'Sleep',
+        description: 'Sleep duration & quality',
+        icon: 'Moon',
+        href: '/patient/vitality/sleep',
+        variant: 'default' as const,
+        color: 'bg-indigo-50 hover:bg-indigo-100 border-indigo-200'
+      },
+      {
         id: 'metrics',
         title: 'Health Metrics',
         description: 'Weight, BMI, glucose levels',
