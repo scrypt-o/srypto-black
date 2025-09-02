@@ -36,8 +36,8 @@ export default async function DocumentsPage() {
                   <td className="p-2">{r.document_number ?? '-'}</td>
                   <td className="p-2">{r.issued_at ? new Date(r.issued_at).toLocaleDateString() : '-'}</td>
                   <td className="p-2 text-right">
-                    <a className="text-blue-600 hover:underline mr-3" href={`/api/patient/personal-info/documents/${r.document_id}/download`}>Download</a>
-                    <form method="post" action={`/api/patient/personal-info/documents/${r.document_id}`} onSubmit={(e) => { e.preventDefault(); fetch(`/api/patient/personal-info/documents/${r.document_id}`, { method: 'DELETE' }).then(() => (window as any).location?.reload()); }} className="inline">
+                    <a className="text-blue-600 hover:underline mr-3" href={`/api/patient/persinfo/documents/${r.document_id}/download`}>Download</a>
+                    <form method="post" action={`/api/patient/persinfo/documents/${r.document_id}`} onSubmit={(e) => { e.preventDefault(); fetch(`/api/patient/persinfo/documents/${r.document_id}`, { method: 'DELETE' }).then(() => (window as any).location?.reload()); }} className="inline">
                       <button type="submit" className="text-red-600 hover:underline">Delete</button>
                     </form>
                   </td>
