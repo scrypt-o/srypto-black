@@ -28,9 +28,10 @@ Scrypto is a medical portal built with **Next.js 15**, **TypeScript**, **Supabas
 - **Pattern**: useList, useById, useCreate, useUpdate, useDelete
 
 #### 4. PAGES LAYER (SERVER COMPONENTS)
-- **Files**: `app/patient/medhist/allergies/page.tsx` (list, detail, create)
-- **Purpose**: Server-side data fetching, SSR with initial data
-- **Pattern**: Fetch from views, pass data to client features
+ - **Files**: `app/patient/medhist/allergies/page.tsx` (list, detail, create)
+ - **Purpose**: Server-side data fetching, SSR with initial data
+ - **Pattern**: Fetch from views, pass data to client features
+ - **Shells**: Use `ListPageLayout` for lists, `DetailPageLayout` for details, `TilePageLayout` for hubs. Do not use `PageShell` directly.
 
 #### 5. FEATURES LAYER (CLIENT COMPONENTS)  
 - **Files**: `components/features/patient/allergies/AllergiesListFeature.tsx`
@@ -678,3 +679,10 @@ Use this to verify any stream implementation:
 - [ ] Accessibility attributes on forms
 
 **If any checkbox is unchecked, the implementation is incomplete and must be fixed before marking as done.**
+### Page Verification Checklist (UI rules)
+- Header: Back (nested) vs Hamburger (top-level) — never both; no user menu.
+- Single H1: title rendered by ListViewLayout/DetailViewLayout; header is chrome only.
+- Sticky offsets: list/detail sticky bars at `top-14 md:top-16`.
+- Lists: may enable polish (`previewPolish`) or via Settings; no behavior changes.
+- Tiles: optional `expressive` and `composition='hero'` where appropriate; icons are Lucide.
+- No inline SVGs in tiles; use components/assets.

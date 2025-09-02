@@ -47,11 +47,34 @@ This is the concise source of truth for how Scrypto is built today. Treat it as 
 
 ## Pages & Layouts
 
-- Content layouts:
-  - `ListViewLayout` for list/search/pagination.
-  - `DetailViewLayout` for create/edit/view (sticky actions, ConfirmDialog, Toast).
-  - `TileGridLayout` for tile dashboards.
-- Page shells (consolidation target): a single `PageShell` (server) + `PageShellClient` (client) that render Sidebar/Header/Footer/Chat and embed the content layout above.
+- Page shells (Server):
+  - `ListPageLayout` for list pages (server shell + client list view).
+  - `DetailPageLayout` for detail pages (server shell + client detail view).
+  - `TilePageLayout` for tile hubs (server shell + `TileGridLayout`).
+  - `PageShell` is an internal primitive; do not use directly in app pages.
+- Content view layouts (Client):
+  - `ListViewLayout` for list/search/pagination (owns page H1, sticky list header, actions).
+  - `DetailViewLayout` for create/edit/view (owns page H1, sections, sticky action bar via `formId`).
+  - `TileGridLayout` for tile dashboards (supports `expressive` and `composition`).
+  - Title ownership: The view layout renders the H1. The header is chrome only.
+
+### Header Rules
+- Left slot shows one control: Back (nested pages) or Hamburger (top-level). Never both.
+- Hamburger toggles/closes the mobile sidebar on top-level pages.
+- No account controls in header. Context switch + Sign out live in sidebar footers.
+- Sticky offsets: List/Detail sticky bars must offset below header `top-14 md:top-16`.
+
+### Tiles — Composition & Styling
+- Two compositions: `'classic'` (icon left, text right) and `'hero'` (title → large centered icon → description).
+- `expressive?: boolean` increases icon size, applies brighter icon color, and an optional watermark glyph.
+- Icons: single pack (Lucide). Do not inline SVG icons.
+- Color policy: icons are brighter; card backgrounds are soft accent tints. Tiles cycle accents if none provided.
+
+### User Preferences (UI)
+- Prototype settings at `/patient/settings/ui` save:
+  - Tiles: `expressive`, `composition: 'classic'|'hero'`
+  - Lists: `polish` (zebra, border, focus)
+- Persistence: localStorage today. Future: Zustand store + optional per-user DB prefs.
 
 ## Sidebar
 
@@ -89,6 +112,10 @@ This is the concise source of truth for how Scrypto is built today. Treat it as 
 - `scrypto/prefer-enum-options`: Prefer Zod enum `.options` over `Object.values(Enum.enum)`.
 - `scrypto/prefer-view-layout-names`: Prefer `*ViewLayout` names over `*View`.
 - `scrypto/prefetch-guidance` (warn): Prefer `<Link prefetch>` over `router.push('/internal')`.
+
+Additional UI Guardrails
+- `scrypto/no-inline-svg-in-tiles`: Use icon components/assets; no inline SVG in tiles/hubs.
+- `scrypto/single-h1-per-view`: H1 must be rendered by the view layout; header must not duplicate page titles.
 
 ---
 
