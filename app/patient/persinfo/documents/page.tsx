@@ -1,5 +1,5 @@
 import { getServerClient } from '@/lib/supabase-server'
-import PageShell from '@/components/layouts/PageShell'
+import ListPageLayout from '@/components/layouts/ListPageLayout'
 import { patientNavItems } from '@/config/patientNav'
 import DocumentsUploader from '@/components/features/patient/persinfo/DocumentsUploader'
 
@@ -15,7 +15,7 @@ export default async function DocumentsPage() {
   const rows = data ?? []
 
   return (
-    <PageShell sidebarItems={patientNavItems} headerTitle="Documents">
+    <ListPageLayout sidebarItems={patientNavItems} headerTitle="Documents">
       <div className="p-4 space-y-4">
         {error && <div className="text-red-600 mb-3">Failed to load documents</div>}
         <DocumentsUploader />
@@ -50,6 +50,6 @@ export default async function DocumentsPage() {
           </table>
         </div>
       </div>
-    </PageShell>
+    </ListPageLayout>
   )
 }

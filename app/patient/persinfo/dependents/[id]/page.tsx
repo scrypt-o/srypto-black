@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getServerClient } from '@/lib/supabase-server'
-import PageShell from '@/components/layouts/PageShell'
+import DetailPageLayout from '@/components/layouts/DetailPageLayout'
 import { patientNavItems } from '@/config/patientNav'
 import DependentDetailFeature from '@/components/features/patient/persinfo/DependentDetailFeature'
 export const dynamic = 'force-dynamic'
@@ -20,8 +20,8 @@ export default async function ViewDependentPage({ params }: { params: Promise<{ 
   }
 
   return (
-    <PageShell sidebarItems={patientNavItems} headerTitle="Scrypto">
+    <DetailPageLayout sidebarItems={patientNavItems} headerTitle="Dependent">
       <DependentDetailFeature dependent={data} />
-    </PageShell>
+    </DetailPageLayout>
   )
 }

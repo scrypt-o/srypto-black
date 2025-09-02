@@ -1,12 +1,15 @@
-'use client'
-
-import React from 'react'
+import DetailPageLayout from '@/components/layouts/DetailPageLayout'
+import { patientNavItems } from '@/config/patientNav'
 import LocationServicesFeature from '@/components/features/location/LocationServicesFeature'
 
-export default function NearestServicesPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function NearestServicesPage() {
   return (
-    <div className="h-screen">
-      <LocationServicesFeature />
-    </div>
+    <DetailPageLayout sidebarItems={patientNavItems} headerTitle="Location">
+      <div className="h-[calc(100vh-12rem)]">
+        <LocationServicesFeature />
+      </div>
+    </DetailPageLayout>
   )
 }

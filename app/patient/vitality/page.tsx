@@ -1,8 +1,7 @@
 import React from 'react'
 export const dynamic = 'force-dynamic'
  
-import PageShell from '@/components/layouts/PageShell'
-import TileGridLayout from '@/components/layouts/TileGridLayout'
+import TilePageLayout from '@/components/layouts/TilePageLayout'
 import { patientNavItems } from '@/config/patientNav'
 
 export default function VitalityPage() {
@@ -53,12 +52,11 @@ export default function VitalityPage() {
   }
   
   return (
-    <PageShell
+    <TilePageLayout
       sidebarItems={patientNavItems}
       headerTitle="Vitality"
       headerSubtitle="Health metrics & wellness"
-    >
-      <TileGridLayout {...vitalityConfig} />
-    </PageShell>
+      tileConfig={vitalityConfig as any}
+    />
   )
 }

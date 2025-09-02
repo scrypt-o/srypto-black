@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getServerClient } from '@/lib/supabase-server'
-import PageShell from '@/components/layouts/PageShell'
+import DetailPageLayout from '@/components/layouts/DetailPageLayout'
 import { patientNavItems } from '@/config/patientNav'
 import EmergencyContactDetailFeature from '@/components/features/patient/emergency-contacts/EmergencyContactDetailFeature'
 
@@ -21,8 +21,8 @@ export default async function ViewEmergencyContactPage({ params }: { params: Pro
   }
 
   return (
-    <PageShell sidebarItems={patientNavItems} headerTitle="Scrypto">
+    <DetailPageLayout sidebarItems={patientNavItems} headerTitle="Emergency Contact">
       <EmergencyContactDetailFeature emergencyContact={data} />
-    </PageShell>
+    </DetailPageLayout>
   )
 }
