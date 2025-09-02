@@ -1,5 +1,5 @@
 import { getServerClient } from '@/lib/supabase-server'
-import PageShell from '@/components/layouts/PageShell'
+import AddressPageLayout from '@/components/layouts/AddressPageLayout'
 import { patientNavItems } from '@/config/patientNav'
 import AddressEditForm from '@/components/features/patient/persinfo/AddressEditForm'
 
@@ -13,7 +13,7 @@ export default async function PostalAddressPage() {
     .single()
 
   return (
-    <PageShell sidebarItems={patientNavItems} headerTitle="Postal Address">
+    <AddressPageLayout sidebarItems={patientNavItems} headerTitle="Postal Address">
       {error && <div className="p-4 text-red-600">Failed to load postal address</div>}
       <AddressEditForm 
         title="Postal Address"
@@ -30,6 +30,6 @@ export default async function PostalAddressPage() {
           country: (data as any)?.postal_country || (data as any)?.country,
         }}
       />
-    </PageShell>
+    </AddressPageLayout>
   )
 }

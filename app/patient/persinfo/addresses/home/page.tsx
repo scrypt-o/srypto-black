@@ -1,5 +1,5 @@
 import { getServerClient } from '@/lib/supabase-server'
-import PageShell from '@/components/layouts/PageShell'
+import AddressPageLayout from '@/components/layouts/AddressPageLayout'
 import { patientNavItems } from '@/config/patientNav'
 import AddressEditForm from '@/components/features/patient/persinfo/AddressEditForm'
 
@@ -14,7 +14,7 @@ export default async function HomeAddressPage() {
     .single()
 
   return (
-    <PageShell sidebarItems={patientNavItems} headerTitle="Home Address">
+    <AddressPageLayout sidebarItems={patientNavItems} headerTitle="Home Address">
       {error && <div className="p-4 text-red-600">Failed to load home address</div>}
       <AddressEditForm 
         title="Home Address"
@@ -31,6 +31,6 @@ export default async function HomeAddressPage() {
           country: (data as any)?.home_country || (data as any)?.country,
         }}
       />
-    </PageShell>
+    </AddressPageLayout>
   )
 }
