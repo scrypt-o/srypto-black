@@ -60,6 +60,16 @@ export default function PatientSidebar({
   const [user, setUser] = React.useState<any>(null)
   const [isLoading, setIsLoading] = React.useState(true)
 
+  // Derive display name (first + last), fallback to full_name/name, then email
+  const displayName = React.useMemo(() => {
+    const meta = user?.user_metadata || {}
+    const given = meta.given_name || meta.first_name || meta.firstname || ''
+    const family = meta.family_name || meta.last_name || meta.lastname || ''
+    const full = `${given} ${family}`.trim()
+    const alt = meta.full_name || meta.name || ''
+    return (full || alt || user?.email || '').trim()
+  }, [user])
+
   // Get current user
   React.useEffect(() => {
     const supabase = createClient()
@@ -270,13 +280,18 @@ export default function PatientSidebar({
           <div className="fixed inset-0 z-[100] md:hidden animate-fadeIn">
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
             <aside className={clsx('absolute inset-y-0 left-0 w-80 p-0 animate-slideInLeft', shell[style])}>
-                {/* Header (match AppHeader height, no icon/title) */}
+                {/* Header (match AppHeader height) */}
                 <div className={clsx('flex h-14 md:h-16 items-center justify-between px-4', 
                   accent === 'emerald' || accent === 'healthcare' 
                     ? 'bg-healthcare-primary text-white' 
                     : 'bg-gradient-to-r from-blue-700 to-indigo-600 text-white dark:from-blue-600 dark:to-indigo-500'
                 )}>
-                  <div />
+                  {/* Show signed-in user name */}
+                  <div className="min-w-0 mr-2">
+                    {!isLoading && displayName && (
+                      <span className="block truncate text-sm font-medium text-white/90" title={displayName}>{displayName}</span>
+                    )}
+                  </div>
                   <button onClick={onClose} className="rounded-lg p-2 hover:bg-white/10" aria-label="Close menu">
                     <Icons.X className="h-5 w-5" />
                   </button>
@@ -355,7 +370,12 @@ export default function PatientSidebar({
         <button onClick={onToggleCollapse} className="rounded-lg p-2 hover:bg-white/10" aria-label="Toggle sidebar">
           <Icons.Menu className="h-5 w-5" />
         </button>
-        {/* Intentionally no title or icon */}
+        {/* Show signed-in user name when expanded */}
+        {!isCollapsed && !isLoading && displayName && (
+          <div className="ml-1 truncate text-sm font-medium text-white/90" title={displayName}>
+            {displayName}
+          </div>
+        )}
       </div>
 
       {/* Nav */}

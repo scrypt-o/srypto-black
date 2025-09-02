@@ -42,6 +42,8 @@ export interface ListViewProps<T extends ListItem> {
   titleWrap?: 'single' | 'wrap'
   showSecondaryLine?: boolean
   showInlineEdit?: boolean
+  // Non-destructive visual polish preview (opt-in)
+  previewPolish?: boolean
 }
 
 // Color mapping for severity
@@ -85,7 +87,8 @@ export default function ListViewLayout<T extends ListItem>({
   rightColumns,
   titleWrap = 'single',
   showSecondaryLine = true,
-  showInlineEdit = true
+  showInlineEdit = true,
+  previewPolish = false
 }: ListViewProps<T>) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectMode, setSelectMode] = useState(false)
@@ -157,7 +160,12 @@ export default function ListViewLayout<T extends ListItem>({
   return (
     <div className="flex flex-col h-full">
       {/* Sticky header with search and actions */}
-      <div className="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-white/10 flex flex-col gap-3 pb-4 px-4 -mx-4 md:-mx-6 md:px-6">
+      <div className={clsx(
+        'sticky top-14 md:top-16 z-30 flex flex-col gap-3 pb-4 px-4 -mx-4 md:-mx-6 md:px-6 border-b',
+        previewPolish
+          ? 'bg-white/90 backdrop-blur dark:bg-gray-900/80 border-gray-200/80 dark:border-white/10'
+          : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-white/10'
+      )}>
         {/* Page heading with top spacing inside container */}
         <div className="text-center pt-6">
           <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">{pageTitle}</h1>
@@ -171,7 +179,10 @@ export default function ListViewLayout<T extends ListItem>({
             value={searchQuery}
             onChange={handleSearch}
             placeholder={searchPlaceholder}
-            className="w-full pl-9 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={clsx(
+              'w-full pl-9 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+              previewPolish ? 'bg-gray-50 border-gray-200 dark:bg-gray-900 dark:border-white/10' : ''
+            )}
           />
         </div>
 
@@ -199,7 +210,10 @@ export default function ListViewLayout<T extends ListItem>({
             No items found
           </div>
         ) : (
-          <div className="divide-y">
+          <div className={clsx(
+            'divide-y',
+            previewPolish && 'rounded-xl border border-gray-200 overflow-hidden bg-white dark:bg-gray-900'
+          )}>
             {items.map((item, index) => {
               const letter = item.letter || item.title.slice(0, 2).toUpperCase() || '??'
               const badgeStyle = letterBadgeStyles[index % letterBadgeStyles.length]
@@ -210,7 +224,8 @@ export default function ListViewLayout<T extends ListItem>({
                 <div
                   key={item.id}
                   className={clsx(
-                    'flex gap-3 hover:bg-gray-50 active:bg-gray-100 active:scale-[0.995] transition-all',
+                    'flex gap-3 hover:bg-gray-50 active:bg-gray-100 active:scale-[0.995] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
+                    previewPolish && 'odd:bg-gray-50/70 dark:odd:bg-white/5',
                     titleWrap === 'wrap' ? 'items-start' : 'items-center',
                     padding,
                     'cursor-pointer'

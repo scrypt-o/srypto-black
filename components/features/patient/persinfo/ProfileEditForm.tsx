@@ -18,7 +18,7 @@ type ProfileForm = {
   primary_language?: string
 }
 
-export default function ProfileEditForm({ initial }: { initial: Partial<ProfileForm> & { first_name?: string; last_name?: string } }) {
+export default function ProfileEditForm({ initial, formId }: { initial: Partial<ProfileForm> & { first_name?: string; last_name?: string }; formId?: string }) {
   const [form, setForm] = React.useState<ProfileForm>({
     first_name: initial.first_name || '',
     last_name: initial.last_name || '',
@@ -54,8 +54,13 @@ export default function ProfileEditForm({ initial }: { initial: Partial<ProfileF
     } finally { setSaving(false) }
   }
 
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault()
+    await onSave()
+  }
+
   return (
-    <div className="space-y-3 bg-white border rounded p-4">
+    <form className="space-y-3 bg-white border rounded p-4" {...(formId ? { id: formId, onSubmit } : {})}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <Field label="First name" value={form.first_name} onChange={v => onChange('first_name', v)} required />
         <Field label="Last name" value={form.last_name} onChange={v => onChange('last_name', v)} required />
@@ -73,10 +78,12 @@ export default function ProfileEditForm({ initial }: { initial: Partial<ProfileF
         <Field label="Primary language" value={form.primary_language || ''} onChange={v => onChange('primary_language', v)} />
       </div>
       {error && <div className="text-sm text-red-600">{error}</div>}
-      <div className="text-right">
-        <button onClick={onSave} disabled={saving} className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50">{saving ? 'Saving…' : 'Save'}</button>
-      </div>
-    </div>
+      {!formId && (
+        <div className="text-right">
+          <button onClick={onSave} type="button" disabled={saving} className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50">{saving ? 'Saving…' : 'Save'}</button>
+        </div>
+      )}
+    </form>
   )
 }
 
@@ -88,4 +95,3 @@ function Field({ label, value, onChange, type, required }: { label: string; valu
     </label>
   )
 }
-

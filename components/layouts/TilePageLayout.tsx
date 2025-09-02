@@ -2,6 +2,7 @@ import * as React from 'react'
 import TilePageLayoutClient, { type TilePageLayoutClientProps } from './TilePageLayoutClient'
 import { type NavItem } from '@/components/layouts/PatientSidebar'
 import { type TileGridLayoutProps } from './TileGridLayout'
+import { getUserOrNull } from '@/lib/supabase-server'
 
 export type TilePageLayoutProps = {
   // Navigation props
@@ -39,9 +40,20 @@ export type TilePageLayoutProps = {
   style?: 'flat' | 'elevated' | 'glass'
   motion?: 'none' | 'subtle'
   accent?: 'blue' | 'emerald' | 'healthcare'
+  // Tile visuals (threaded to TileGridLayout)
+  tilesExpressive?: boolean
+  tileComposition?: 'classic' | 'hero'
 }
 
 // Server component wrapper that delegates to client component
-export default function TilePageLayout(props: TilePageLayoutProps) {
-  return <TilePageLayoutClient {...props} />
+export default async function TilePageLayout(props: TilePageLayoutProps) {
+  const u = await getUserOrNull()
+  const user = u
+    ? {
+        email: u.email || '',
+        name: (u.user_metadata as any)?.name || (u.user_metadata as any)?.full_name || undefined,
+        avatar: (u.user_metadata as any)?.avatar_url || (u.user_metadata as any)?.picture || undefined,
+      }
+    : undefined
+  return <TilePageLayoutClient {...({ ...props, ...(user ? { user } : {}) } as TilePageLayoutClientProps)} />
 }

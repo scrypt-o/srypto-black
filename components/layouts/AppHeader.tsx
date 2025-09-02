@@ -17,8 +17,10 @@ export type AppHeaderProps = {
   // Mobile
   showMobileMenu?: boolean
   onMobileMenuClick?: () => void
+  mobileSidebarOpen?: boolean
   
   // User
+  showUserMenu?: boolean
   user?: { email: string; name?: string; avatar?: string }
   onUserMenuClick?: (action: string) => void
   
@@ -41,6 +43,8 @@ export default function AppHeader({
   searchPlaceholder = 'Search...',
   showMobileMenu = true,
   onMobileMenuClick,
+  mobileSidebarOpen = false,
+  showUserMenu = false,
   user,
   onUserMenuClick,
   notifications = 0,
@@ -55,6 +59,7 @@ export default function AppHeader({
   const isHome = pathname === '/patient'
   const isPharmacy = pathname.startsWith('/pharmacy')
   const isPharmacyHome = pathname === '/pharmacy'
+  const isTopLevel = isHome || isPharmacyHome
   
   // Style mappings - gray header for pharmacy, blue for patient
   const headerBg = isPharmacy
@@ -66,42 +71,55 @@ export default function AppHeader({
   // Simple div with CSS transitions for animations
   
   return (
-    <header 
+    <header
       className={clsx(
-        'h-14 md:h-16 w-full flex items-center gap-4 flex-shrink-0 overflow-hidden px-4 md:px-6 relative',
+        'h-14 md:h-16 w-full flex items-center flex-shrink-0 overflow-hidden px-4 md:px-6',
         headerBg
       )}
     >
-      {/* LEFT SECTION - Mobile menu only */}
-      <div className="flex items-center gap-3 min-w-0 z-10">
-        {/* Mobile Menu - Fixed Size */}
-        {showMobileMenu && (
+      {/* LEFT: Either Back (nested) or Mobile menu (top-level) */}
+      <div className="flex items-center gap-2">
+        {!isTopLevel ? (
           <button
-            onClick={onMobileMenuClick}
-            className={clsx(
-              'md:hidden',
-              'p-2 rounded-lg',
-              'hover:bg-white/10',
-              'flex-shrink-0' // Never shrinks
-            )}
-            aria-label="Menu"
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10"
+            aria-label="Back"
           >
-            <Icons.Menu className="h-5 w-5 text-white" />
+            <Icons.ArrowLeft className="h-5 w-5 text-white" />
+            <span className="hidden sm:inline text-sm text-white">Back</span>
           </button>
+        ) : (
+          showMobileMenu && (
+            <button
+              onClick={onMobileMenuClick}
+              className={clsx(
+                'md:hidden p-2 rounded-lg transition-colors',
+                mobileSidebarOpen ? 'bg-white/15 ring-1 ring-white/20' : 'hover:bg-white/10'
+              )}
+              aria-label={mobileSidebarOpen ? 'Close menu' : 'Open menu'}
+              aria-pressed={mobileSidebarOpen}
+            >
+              {mobileSidebarOpen ? (
+                <Icons.X className="h-5 w-5 text-white" />
+              ) : (
+                <Icons.Menu className="h-5 w-5 text-white" />
+              )}
+            </button>
+          )
         )}
       </div>
 
-      {/* CENTERED TITLE */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      {/* MIDDLE: Title (in-flow, truncates, no overlap) */}
+      <div className="flex-1 min-w-0 flex items-center justify-center">
         {title && (
-          <h1 className="text-base md:text-lg font-semibold text-white truncate">
+          <h1 className="text-base md:text-lg font-semibold text-white truncate text-center">
             {title}
           </h1>
         )}
       </div>
-      
-      {/* RIGHT SECTION - Actions */}
-      <div className="flex items-center gap-2 flex-shrink-0 z-10">
+
+      {/* RIGHT: Actions */}
+      <div className="flex items-center gap-2 flex-shrink-0">
         {/* Notifications */}
         {onNotificationClick && (
           <button
@@ -119,7 +137,7 @@ export default function AppHeader({
         )}
 
         {/* User Menu */}
-        {user && (
+        {showUserMenu && user && (
           <div className="relative">
             <button
               onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -194,16 +212,7 @@ export default function AppHeader({
         )}
 
         {/* Back button moved to absolute end of right section */}
-        {!isHome && (
-          <button
-            onClick={() => router.back()}
-            className="inline-flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10 ml-2"
-            aria-label="Back"
-          >
-            <Icons.ArrowLeft className="h-5 w-5 text-white" />
-            <span className="text-sm text-white">Back</span>
-          </button>
-        )}
+        {/* Back moved to left when nested; nothing on right */}
       </div>
     </header>
   )

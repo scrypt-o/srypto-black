@@ -1,5 +1,6 @@
 import PatientSidebar, { type NavItem } from '@/components/layouts/PatientSidebar'
 import ListPageLayoutClient from './ListPageLayoutClient'
+import { getUserOrNull } from '@/lib/supabase-server'
 
 export type ListPageLayoutProps<Row> = {
   // Navigation props
@@ -32,6 +33,14 @@ export type ListPageLayoutProps<Row> = {
   accent?: 'blue' | 'emerald' | 'healthcare'
 }
 
-export default function ListPageLayout<Row>(props: ListPageLayoutProps<Row>) {
-  return <ListPageLayoutClient {...props} />
+export default async function ListPageLayout<Row>(props: ListPageLayoutProps<Row>) {
+  const u = await getUserOrNull()
+  const user = u
+    ? {
+        email: u.email || '',
+        name: (u.user_metadata as any)?.name || (u.user_metadata as any)?.full_name || undefined,
+        avatar: (u.user_metadata as any)?.avatar_url || (u.user_metadata as any)?.picture || undefined,
+      }
+    : undefined
+  return <ListPageLayoutClient {...({ ...props, ...(user ? { user } : {}) } as any)} />
 }

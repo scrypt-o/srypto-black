@@ -156,4 +156,13 @@ export const patientNavItems: NavItem[] = [
       { id: 'rewards-dashboard', label: 'Rewards Dashboard', icon: 'Award' },
     ],
   },
+
+  // Settings
+  {
+    id: 'settings',
+    label: 'Settings',
+    icon: 'Settings',
+    type: 'link',
+    href: '/patient/settings/ui',
+  },
 ]

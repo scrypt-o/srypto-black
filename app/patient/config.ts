@@ -108,6 +108,15 @@ export const PatientHomeConfig = {
       href: '/patient/rewards',
       disabled: true,
       variant: 'subtle' as const
+    },
+    {
+      id: 'settings',
+      title: 'Settings',
+      description: 'UI options & preferences',
+      icon: 'Settings',
+      href: '/patient/settings/ui',
+      variant: 'default' as const,
+      color: 'bg-slate-50 hover:bg-slate-100 border-slate-200'
     }
   ],
   // No quick actions on home grid

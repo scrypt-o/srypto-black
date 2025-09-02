@@ -1,6 +1,7 @@
 import PatientSidebar, { type NavItem } from '@/components/layouts/PatientSidebar'
 import { type DetailViewLayoutProps } from './DetailViewLayout'
 import DetailPageLayoutClient from './DetailPageLayoutClient'
+import { getUserOrNull } from '@/lib/supabase-server'
 
 export type DetailPageLayoutProps = {
   // Navigation props
@@ -34,6 +35,14 @@ export type DetailPageLayoutProps = {
   accent?: 'blue' | 'emerald' | 'healthcare'
 }
 
-export default function DetailPageLayout(props: DetailPageLayoutProps) {
-  return <DetailPageLayoutClient {...props} />
+export default async function DetailPageLayout(props: DetailPageLayoutProps) {
+  const u = await getUserOrNull()
+  const user = u
+    ? {
+        email: u.email || '',
+        name: (u.user_metadata as any)?.name || (u.user_metadata as any)?.full_name || undefined,
+        avatar: (u.user_metadata as any)?.avatar_url || (u.user_metadata as any)?.picture || undefined,
+      }
+    : undefined
+  return <DetailPageLayoutClient {...({ ...props, ...(user ? { user } : {}) } as any)} />
 }

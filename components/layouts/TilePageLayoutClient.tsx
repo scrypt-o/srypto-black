@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { useLayoutStore } from '@/lib/stores/layout-store'
@@ -51,6 +51,9 @@ export type TilePageLayoutClientProps = {
   style?: 'flat' | 'elevated' | 'glass'
   motion?: 'none' | 'subtle'
   accent?: 'blue' | 'emerald' | 'healthcare'
+  // Tile visuals
+  tilesExpressive?: boolean
+  tileComposition?: 'classic' | 'hero'
 }
 
 export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
@@ -83,7 +86,23 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
 
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const isPharmacyRoute = pathname.startsWith('/pharmacy')
+  const expressiveTilesQP = searchParams.get('tiles') === 'expressive' || searchParams.get('ui') === 'polish-tiles'
+  const heroTilesQP = searchParams.get('tiles') === 'hero' || searchParams.get('ui') === 'polish-tiles-hero'
+  // Local storage fallback for user pref
+  const [lsTilesExpressive, setLsTilesExpressive] = React.useState<boolean | null>(null)
+  const [lsTileComposition, setLsTileComposition] = React.useState<'classic' | 'hero' | null>(null)
+  React.useEffect(() => {
+    try {
+      const te = localStorage.getItem('ui:tiles:expressive')
+      const tc = localStorage.getItem('ui:tiles:composition') as 'classic' | 'hero' | null
+      setLsTilesExpressive(te === '1')
+      setLsTileComposition(tc === 'hero' ? 'hero' : 'classic')
+    } catch {}
+  }, [])
+  const expressiveTiles = expressiveTilesQP || !!props.tilesExpressive || !!lsTilesExpressive
+  const tileComposition = heroTilesQP ? 'hero' : (props.tileComposition ?? (lsTileComposition ?? 'classic'))
   
   const {
     sidebarCollapsed,
@@ -119,32 +138,36 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
 
   return (
     <div className="h-screen w-screen overflow-hidden flex bg-gray-50 dark:bg-gray-950">
-      {/* Desktop Sidebar */}
+      {/* Desktop Sidebar (hidden on small screens) */}
       {showSidebar && (
-        <SidebarComponent
-          title={sidebarTitle}
-          items={sidebarItems}
-          isCollapsed={sidebarCollapsed}
-          onToggleCollapse={toggleSidebar}
-          isMobile={false}
-          style={style}
-          accent={accent}
-        />
+        <div className="hidden lg:block">
+          <SidebarComponent
+            title={sidebarTitle}
+            items={sidebarItems}
+            isCollapsed={sidebarCollapsed}
+            onToggleCollapse={toggleSidebar}
+            isMobile={false}
+            style={style}
+            accent={accent}
+          />
+        </div>
       )}
       
-      {/* Mobile Sidebar */}
+      {/* Mobile Sidebar (only on small screens) */}
       {showSidebar && showMobileMenu && (
-        <SidebarComponent
-          title={sidebarTitle}
-          items={sidebarItems}
-          isCollapsed={false}
-          onToggleCollapse={() => {}}
-          isMobile={true}
-          isOpen={mobileSidebarOpen}
-          onClose={closeMobileSidebar}
-          style={style}
-          accent={accent}
-        />
+        <div className="lg:hidden">
+          <SidebarComponent
+            title={sidebarTitle}
+            items={sidebarItems}
+            isCollapsed={false}
+            onToggleCollapse={() => {}}
+            isMobile={true}
+            isOpen={mobileSidebarOpen}
+            onClose={closeMobileSidebar}
+            style={style}
+            accent={accent}
+          />
+        </div>
       )}
 
       {/* Main Content */}
@@ -254,6 +277,8 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
               onTileClick={handleTileClick}
               onQuickAction={handleQuickAction}
               style={style}
+              expressive={expressiveTiles}
+              composition={tileComposition}
             />
           </div>
         </main>

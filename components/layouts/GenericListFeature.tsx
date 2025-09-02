@@ -65,6 +65,13 @@ export default function GenericListFeature<TRow = any, TItem extends ListItem = 
   const searchParams = useSearchParams()
   const deleteHook = config.hooks.useDelete()
   const toast = useToast()
+  // Opt-in UI preview via query param: ?ui=polish or ?previewPolish=1
+  const previewPolishQP = (searchParams.get('ui') === 'polish') || (searchParams.get('previewPolish') === '1')
+  const [previewPolishLS, setPreviewPolishLS] = React.useState<boolean | null>(null)
+  React.useEffect(() => {
+    try { setPreviewPolishLS(localStorage.getItem('ui:list:polish') === '1') } catch {}
+  }, [])
+  const previewPolish = previewPolishQP || !!previewPolishLS
   
   // Convert initial data to list items using config transformation
   const [items, setItems] = useState<TItem[]>(
@@ -239,6 +246,7 @@ export default function GenericListFeature<TRow = any, TItem extends ListItem = 
         titleWrap="wrap"
         showSecondaryLine={false}
         showInlineEdit={false}
+        previewPolish={previewPolish}
       />
       
       <ConfirmDialog

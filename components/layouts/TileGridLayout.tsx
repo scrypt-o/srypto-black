@@ -41,6 +41,10 @@ export type TileGridLayoutProps = {
   onTileClick?: (href: string, tile: Tile) => void
   onQuickAction?: (action: string) => void
   orientation?: 'grid' | 'vertical'
+  // Opt-in visual: larger icon, bolder hierarchy, subtle watermark icon
+  expressive?: boolean
+  // Composition: classic (icon left, text right) vs hero (title top, big icon center, desc under)
+  composition?: 'classic' | 'hero'
 }
 
 // For backward compatibility with existing code
@@ -172,7 +176,9 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
     style = 'flat',
     onTileClick,
     onQuickAction,
-    orientation = 'grid'
+    orientation = 'grid',
+    expressive = false,
+    composition = 'classic'
   } = props
 
   const router = useRouter()
@@ -298,11 +304,12 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
           'lg:grid-cols-4'   // desktop
         )}
       >
-        {tiles.map((tile) => {
+        {tiles.map((tile, index) => {
           const variant = tile.variant ?? 'default'
           const v = variantClasses[variant]
           const disabled = !!tile.disabled
           // Determine accent color (prop > id mapping > href heuristics > default)
+          // Accent: explicit > id map > href heuristic > cycled fallback > default
           let hex: string | undefined = tile.accent ? accentByName[tile.accent] : undefined
           if (!hex) hex = (accentHex as any)[tile.id]
           if (!hex && tile.href) {
@@ -320,11 +327,15 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
               : h.includes('/patient/comm') ? accentByName.indigo
               : undefined
           }
-          if (!hex) hex = DEFAULT_ACCENT
+          if (!hex) {
+            const cycle: Array<keyof typeof accentByName> = ['indigo','emerald','rose','amber','blue','purple','teal']
+            const picked = cycle[index % cycle.length]
+            hex = accentByName[picked]
+          }
           const iconWrapStyle: React.CSSProperties = {
-            background: 'conic-gradient(from 210deg, color-mix(in lab, var(--accent) 12%, #fff), white)',
-            borderColor: 'color-mix(in lab, var(--accent) 26%, #dfe8ff)',
-            boxShadow: 'inset 0 1px 0 white, 0 8px 18px rgba(0,0,0,.08)'
+            background: 'conic-gradient(from 210deg, color-mix(in lab, var(--accent) 14%, #fff), white)',
+            borderColor: 'color-mix(in lab, var(--accent) 28%, #dfe8ff)',
+            boxShadow: 'inset 0 1px 0 white, 0 10px 22px rgba(0,0,0,.10)'
           }
           const iconStyle: React.CSSProperties = { color: 'var(--accent)' }
 
@@ -349,8 +360,9 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
               key={tile.id}
               {...commonProps}
               className={clsx(
-                'relative overflow-hidden rounded-lg p-4 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/70',
-                'min-h-[110px] border',
+                'relative overflow-hidden rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/70',
+                expressive || composition === 'hero' ? 'p-5 min-h-[140px]' : 'p-4 min-h-[110px]',
+                'border',
                 tile.color ? tile.color : v.wrapper,
                 styleBase[style],
                 disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer',
@@ -368,25 +380,39 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
                 }} />
               </div>
 
-              <div className="relative z-10 flex flex-col gap-2">
+              {/* Watermark icon for expressive/hero tiles */}
+              {(expressive || composition === 'hero') && tile.icon ? (
+                <div aria-hidden className="absolute -bottom-2 -right-2 opacity-10 z-0">
+                  <LucideIcon name={tile.icon} className="h-16 w-16" />
+                </div>
+              ) : null}
+
+              <div className={clsx('relative z-10 flex gap-2', composition === 'hero' ? 'flex-col items-center text-center' : 'flex-col')}>
+                {/* Title first in hero mode */}
+                {composition === 'hero' && (
+                  <h3 className={clsx('leading-tight', tile.color ? '' : v.text, 'text-base font-semibold')}>{tile.title}</h3>
+                )}
+                {/* Icon */}
                 <div className={clsx(
-                  'relative flex h-10 w-10 items-center justify-center rounded-lg',
+                  'relative flex items-center justify-center rounded-lg',
+                  (expressive || composition === 'hero') ? 'h-14 w-14' : 'h-10 w-10',
                   'bg-white dark:bg-gray-950 border dark:border-white/10'
                 )} style={iconWrapStyle}>
                   {tile.icon ? (
                     <LucideIcon
                       name={tile.icon}
-                      className={clsx('h-5 w-5')}
-                      // Use accent color for icon for a livelier look
-                      // eslint-disable-next-line react/style-prop-object
+                      className={clsx((expressive || composition === 'hero') ? 'h-8 w-8' : 'h-5 w-5')}
                       style={iconStyle}
                     />
                   ) : null}
                 </div>
+                {/* Text block */}
                 <div>
-                  <h3 className={clsx('text-sm font-medium text-gray-900 leading-tight', tile.color ? '' : v.text)}>{tile.title}</h3>
+                  {composition !== 'hero' && (
+                    <h3 className={clsx((expressive ? 'text-base font-semibold' : 'text-sm font-medium'), 'text-gray-900 leading-tight', tile.color ? '' : v.text)}>{tile.title}</h3>
+                  )}
                   {tile.description && (
-                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5 leading-tight">{tile.description}</p>
+                    <p className={clsx((expressive || composition === 'hero') ? 'text-sm' : 'text-xs', 'text-gray-600 dark:text-gray-300 mt-0.5 leading-tight')}>{tile.description}</p>
                   )}
                   {(() => {
                     if (!tile.status) return null
@@ -406,14 +432,19 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
                   })()}
                 </div>
               </div>
-              {tile.badge != null && (
-                <span className={clsx(
-                  'mt-3 inline-flex rounded-full px-2 py-1 text-xs font-medium ring-1',
-                  v.badgeWrap, v.badgeText, 'ring-inset ring-black/5 dark:ring-white/10'
-                )}>
-                  {tile.badge}
-                </span>
-              )}
+              <div className="relative z-10 mt-3 flex items-center justify-between">
+                {tile.badge != null && (
+                  <span className={clsx(
+                    'inline-flex rounded-full px-2 py-1 text-xs font-medium ring-1',
+                    v.badgeWrap, v.badgeText, 'ring-inset ring-black/5 dark:ring-white/10'
+                  )}>
+                    {tile.badge}
+                  </span>
+                )}
+                {!disabled && (
+                  <Icons.ChevronRight className="h-4 w-4 text-gray-400" aria-hidden />
+                )}
+              </div>
             </div>
           )
         })}

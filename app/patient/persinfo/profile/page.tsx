@@ -1,5 +1,6 @@
 import { getServerClient } from '@/lib/supabase-server'
-import PageShell from '@/components/layouts/PageShell'
+import DetailPageLayout from '@/components/layouts/DetailPageLayout'
+import DetailViewLayout, { type DetailViewLayoutProps } from '@/components/layouts/DetailViewLayout'
 import { patientNavItems } from '@/config/patientNav'
 import ProfilePhotoSection from '@/components/features/patient/persinfo/ProfilePhotoSection'
 import ProfileEditForm from '@/components/features/patient/persinfo/ProfileEditForm'
@@ -14,43 +15,97 @@ export default async function ProfilePage() {
     .select('*')
     .single()
 
-  return (
-    <PageShell sidebarItems={patientNavItems} headerTitle="Profile">
-      <div className="p-4 space-y-4">
-        {error && <div className="text-red-600 mb-3">Failed to load profile</div>}
-        <ProfilePhotoSection currentPath={(data as any)?.profile_picture_url} />
-
-        {data ? (
-          <div className="bg-white border rounded p-4 space-y-2 text-sm">
-            {Object.entries(data).map(([k, v]) => (
-              <div key={k} className="grid grid-cols-3 gap-2">
-                <div className="font-medium text-gray-600">{k}</div>
-                <div className="col-span-2 text-gray-900 break-words">{String(v ?? '')}</div>
-              </div>
-            ))}
+  const formId = 'profile-edit-form'
+  const sections: DetailViewLayoutProps['sections'] = [
+    {
+      id: 'profile-header',
+      content: (
+        <div className="flex items-center gap-4">
+          <ProfilePhotoSection currentPath={(data as any)?.profile_picture_url} />
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold text-gray-900">
+              {((data as any)?.first_name || (data as any)?.last_name)
+                ? `${(data as any)?.first_name ?? ''} ${(data as any)?.last_name ?? ''}`.trim()
+                : 'Your Profile'}
+            </h2>
+            <p className="text-sm text-gray-500 truncate">
+              {(data as any)?.email || 'Keep your personal information up to date.'}
+            </p>
           </div>
-        ) : (
-          <div className="text-gray-600">No profile data.</div>
-        )}
+        </div>
+      )
+    },
+    {
+      id: 'details',
+      title: 'Profile details',
+      content: data ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
+          {([
+            ['title', 'Title'],
+            ['first_name', 'First name'],
+            ['middle_name', 'Middle name'],
+            ['last_name', 'Last name'],
+            ['nick_name', 'Nickname'],
+            ['id_number', 'ID number'],
+            ['passport_number', 'Passport number'],
+            ['citizenship', 'Citizenship'],
+            ['date_of_birth', 'Date of birth'],
+            ['gender', 'Gender'],
+            ['marital_status', 'Marital status'],
+            ['phone', 'Phone'],
+            ['email', 'Email'],
+            ['primary_language', 'Primary language'],
+          ] as const).map(([key, label]) => (
+            <div key={key} className="grid grid-cols-3 gap-3">
+              <div className="col-span-1 text-gray-500">{label}</div>
+              <div className="col-span-2 font-medium text-gray-900 break-words">
+                {String(((data as any)?.[key] ?? '') || '—')}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-sm text-gray-600">No profile data yet. Use the form below to add your details.</div>
+      )
+    },
+    {
+      id: 'edit',
+      title: 'Edit profile',
+      content: (
+        <ProfileEditForm
+          formId={formId}
+          initial={{
+            first_name: (data as any)?.first_name,
+            last_name: (data as any)?.last_name,
+            title: (data as any)?.title,
+            middle_name: (data as any)?.middle_name,
+            nick_name: (data as any)?.nick_name,
+            id_number: (data as any)?.id_number,
+            passport_number: (data as any)?.passport_number,
+            citizenship: (data as any)?.citizenship,
+            date_of_birth: (data as any)?.date_of_birth,
+            gender: (data as any)?.gender,
+            marital_status: (data as any)?.marital_status,
+            phone: (data as any)?.phone,
+            email: (data as any)?.email,
+            primary_language: (data as any)?.primary_language,
+          }}
+        />
+      )
+    }
+  ]
 
-        {/* Edit form */}
-        <ProfileEditForm initial={{
-          first_name: (data as any)?.first_name,
-          last_name: (data as any)?.last_name,
-          title: (data as any)?.title,
-          middle_name: (data as any)?.middle_name,
-          nick_name: (data as any)?.nick_name,
-          id_number: (data as any)?.id_number,
-          passport_number: (data as any)?.passport_number,
-          citizenship: (data as any)?.citizenship,
-          date_of_birth: (data as any)?.date_of_birth,
-          gender: (data as any)?.gender,
-          marital_status: (data as any)?.marital_status,
-          phone: (data as any)?.phone,
-          email: (data as any)?.email,
-          primary_language: (data as any)?.primary_language,
-        }} />
-      </div>
-    </PageShell>
+  return (
+    <DetailPageLayout sidebarItems={patientNavItems} headerTitle="Profile"
+      detailProps={{
+        title: 'Profile',
+        mode: 'edit',
+        formId,
+        sections,
+        stickyActions: true,
+        secondaryActionLabel: 'Cancel',
+        onCancel: () => { if (typeof window !== 'undefined') window.location.reload() },
+      }}
+    />
   )
 }

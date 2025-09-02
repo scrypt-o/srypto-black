@@ -2,6 +2,8 @@
 
 import * as React from 'react'
 import PatientSidebar, { type NavItem } from '@/components/layouts/PatientSidebar'
+import PharmacySidebar from '@/components/layouts/PharmacySidebar'
+import { usePathname } from 'next/navigation'
 import AppHeader from './AppHeader'
 import DetailViewLayout, { type DetailViewLayoutProps } from './DetailViewLayout'
 import MobileFooter from './MobileFooter'
@@ -53,6 +55,9 @@ export default function DetailPageLayoutClient(props: DetailPageLayoutClientProp
     motion = 'subtle',
     accent = 'blue',
   } = props
+  const pathname = (typeof window !== 'undefined') ? window.location.pathname : ''
+  const isPharmacyRoute = pathname.startsWith('/pharmacy')
+  const SidebarComponent = isPharmacyRoute ? PharmacySidebar : PatientSidebar
 
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
   const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false)
@@ -60,11 +65,12 @@ export default function DetailPageLayoutClient(props: DetailPageLayoutClientProp
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed)
   const openMobileSidebar = () => setMobileSidebarOpen(true)
   const closeMobileSidebar = () => setMobileSidebarOpen(false)
+  const toggleMobileSidebar = () => setMobileSidebarOpen((o) => !o)
 
   return (
     <div className="h-screen w-screen overflow-hidden flex bg-gray-50 dark:bg-gray-950">
       {showSidebar && (
-        <PatientSidebar
+        <SidebarComponent
           title={sidebarTitle}
           items={sidebarItems}
           isCollapsed={sidebarCollapsed}
@@ -76,7 +82,7 @@ export default function DetailPageLayoutClient(props: DetailPageLayoutClientProp
       )}
 
       {showSidebar && showMobileMenu && (
-        <PatientSidebar
+        <SidebarComponent
           title={sidebarTitle}
           items={sidebarItems}
           isCollapsed={false}
@@ -99,7 +105,8 @@ export default function DetailPageLayoutClient(props: DetailPageLayoutClientProp
             onSearch={onSearch ?? (() => {})}
             searchPlaceholder={searchPlaceholder || 'Search...'}
             showMobileMenu={showMobileMenu && showSidebar}
-            onMobileMenuClick={openMobileSidebar}
+            onMobileMenuClick={toggleMobileSidebar}
+            mobileSidebarOpen={mobileSidebarOpen}
             {...(user ? { user } : {})}
             {...(onUserMenuClick ? { onUserMenuClick } : {})}
             {...(notifications != null ? { notifications } : {})}

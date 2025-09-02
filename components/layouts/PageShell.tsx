@@ -1,5 +1,6 @@
 import type { NavItem } from '@/components/layouts/PatientSidebar'
 import PageShellClient, { type PageShellClientProps } from './PageShellClient'
+import { getUserOrNull } from '@/lib/supabase-server'
 
 export type PageShellProps = {
   sidebarItems: NavItem[]
@@ -23,8 +24,15 @@ export type PageShellProps = {
   accent?: 'blue' | 'emerald' | 'healthcare'
 }
 
-export default function PageShell(props: PageShellProps) {
-  // Thin server wrapper delegating to the client shell
-  return <PageShellClient {...(props as PageShellClientProps)} />
+export default async function PageShell(props: PageShellProps) {
+  // Fetch current user (server-side) to show in header
+  const u = await getUserOrNull()
+  const user = u
+    ? {
+        email: u.email || '',
+        name: (u.user_metadata as any)?.name || (u.user_metadata as any)?.full_name || undefined,
+        avatar: (u.user_metadata as any)?.avatar_url || (u.user_metadata as any)?.picture || undefined,
+      }
+    : undefined
+  return <PageShellClient {...({ ...props, ...(user ? { user } : {}) } as PageShellClientProps)} />
 }
-

@@ -28,7 +28,7 @@ export type PharmacySidebarProps = {
   isOpen?: boolean
   onClose?: () => void
   style?: 'flat' | 'elevated' | 'glass'
-  accent?: 'blue' | 'emerald' | 'healthcare'
+  accent?: 'pharmacy' | 'blue' | 'emerald' | 'healthcare'
 }
 
 /** -------- Helpers -------- */
@@ -53,7 +53,7 @@ export default function PharmacySidebar({
   isOpen = false,
   onClose,
   style = 'flat',
-  accent = 'blue',
+  accent = 'pharmacy',
 }: PharmacySidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
@@ -91,10 +91,12 @@ export default function PharmacySidebar({
   )
 
   const accentColors = {
+    // Gentle pharmacy red (not too saturated), with a soft outline
+    pharmacy: 'text-rose-700 dark:text-rose-300 bg-rose-50/80 dark:bg-rose-900/20 border border-rose-200/80 dark:border-rose-800/30',
     blue: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20',
     emerald: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20',
     healthcare: 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/20',
-  }
+  } as const
 
   return (
     <>
@@ -112,8 +114,8 @@ export default function PharmacySidebar({
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
           {!isCollapsed && (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                <Icons.Building2 className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center ring-1 ring-rose-300 dark:ring-rose-800/50">
+                <Icons.Building2 className="w-5 h-5 text-rose-700 dark:text-rose-300" />
               </div>
               <span className="font-semibold text-gray-900 dark:text-white text-sm">
                 {title}
@@ -122,9 +124,9 @@ export default function PharmacySidebar({
           )}
           <button
             onClick={onToggleCollapse}
-            className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="p-2 text-rose-700/80 dark:text-rose-300/80 hover:text-rose-700 dark:hover:text-rose-300 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/20 ring-1 ring-transparent hover:ring-rose-200/70 dark:hover:ring-rose-800/40"
           >
-            <Icons.Menu className="w-4 h-4" />
+            <Icons.ChevronLeft className="w-4 h-4" />
           </button>
         </div>
 
@@ -180,7 +182,7 @@ export default function PharmacySidebar({
                             <IconByName name={child.icon} className="w-4 h-4 flex-shrink-0" />
                             <span>{child.label}</span>
                             {child.badge && (
-                              <span className="ml-auto bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs px-2 py-0.5 rounded-full">
+                              <span className="ml-auto bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 text-xs px-2 py-0.5 rounded-full ring-1 ring-rose-200/70 dark:ring-rose-800/50">
                                 {child.badge}
                               </span>
                             )}
@@ -208,7 +210,7 @@ export default function PharmacySidebar({
                   <IconByName name={item.icon} className="w-5 h-5 flex-shrink-0" />
                   {!isCollapsed && <span>{item.label}</span>}
                   {!isCollapsed && item.badge && (
-                    <span className="ml-auto bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs px-2 py-0.5 rounded-full">
+                    <span className="ml-auto bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 text-xs px-2 py-0.5 rounded-full ring-1 ring-rose-200/70 dark:ring-rose-800/50">
                       {item.badge}
                     </span>
                   )}
@@ -220,16 +222,15 @@ export default function PharmacySidebar({
 
         {/* Footer */}
         <div className="border-t border-gray-200 dark:border-white/10 p-4 space-y-2">
-          {/* Context Switch Link */}
+          {/* Switch to Patient */}
           <Link
             href="/patient"
-            className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
             onClick={isMobile ? onClose : undefined}
           >
-            <Icons.User className="w-4 h-4 flex-shrink-0" />
+            <Icons.UserCircle2 className="w-4 h-4 flex-shrink-0" />
             {!isCollapsed && <span>Switch to Patient App</span>}
           </Link>
-
           {/* Theme Toggle */}
           <div className="flex items-center gap-3 px-3 py-2">
             <Icons.Palette className="w-4 h-4 flex-shrink-0 text-gray-500" />
