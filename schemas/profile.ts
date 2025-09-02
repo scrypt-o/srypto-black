@@ -37,19 +37,22 @@ export const ProfileRowSchema = z.object({
 export const ProfileUpdateSchema = z.object({
   first_name: z.string().min(1),
   last_name: z.string().min(1),
-  title: z.string().optional(),
-  middle_name: z.string().optional(),
-  nick_name: z.string().optional(),
-  id_number: z.string().optional(),
-  passport_number: z.string().optional(),
-  citizenship: z.string().optional(),
-  date_of_birth: z.string().optional(),
-  gender: GenderEnum.optional(),
-  marital_status: MaritalStatusEnum.optional(),
-  phone: z.string().optional(),
-  email: z.string().email().optional(),
-  primary_language: z.string().optional(),
-  languages_spoken: z.array(z.string()).optional(),
+  title: z.string().optional().nullable(),
+  middle_name: z.string().optional().nullable(),
+  nick_name: z.string().optional().nullable(),
+  id_number: z.string().optional().nullable(),
+  passport_number: z.string().optional().nullable(),
+  citizenship: z.string().optional().nullable(),
+  date_of_birth: z.string().optional().nullable(),
+  gender: z.union([GenderEnum, z.literal('')]).optional().nullable().transform(val => val === '' ? undefined : val),
+  marital_status: z.union([MaritalStatusEnum, z.literal('')]).optional().nullable().transform(val => val === '' ? undefined : val),
+  phone: z.string().optional().nullable(),
+  email: z.string().optional().nullable().refine(
+    (val) => !val || val === '' || z.string().email().safeParse(val).success,
+    { message: 'Invalid email format' }
+  ),
+  primary_language: z.string().optional().nullable(),
+  languages_spoken: z.array(z.string()).optional().nullable(),
 })
 
 export type ProfileRow = z.infer<typeof ProfileRowSchema>

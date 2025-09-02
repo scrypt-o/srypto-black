@@ -43,14 +43,29 @@ export default function ProfileEditForm({ initial, formId }: { initial: Partial<
   const onSave = async () => {
     setSaving(true); setError(null)
     try {
-      const res = await fetch('/api/patient/personal-info/profile', {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form)
+      // Clean up the form data before sending - remove empty strings for optional fields
+      const cleanedForm = Object.entries(form).reduce((acc, [key, value]) => {
+        if (value !== '' && value !== undefined && value !== null) {
+          acc[key as keyof ProfileForm] = value
+        }
+        return acc
+      }, {} as Partial<ProfileForm>)
+      
+      // Ensure required fields are present
+      cleanedForm.first_name = form.first_name || ''
+      cleanedForm.last_name = form.last_name || ''
+      
+      const res = await fetch('/api/patient/persinfo/profile', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cleanedForm)
       })
-      if (!res.ok) throw new Error('Save failed')
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Save failed' }))
+        throw new Error(errorData.error || 'Save failed')
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(window as any).location?.reload()
-    } catch (e) {
-      setError('Failed to save profile')
+    } catch (e: any) {
+      setError(e.message || 'Failed to save profile')
     } finally { setSaving(false) }
   }
 
@@ -71,8 +86,31 @@ export default function ProfileEditForm({ initial, formId }: { initial: Partial<
         <Field label="Passport number" value={form.passport_number || ''} onChange={v => onChange('passport_number', v)} />
         <Field label="Citizenship" value={form.citizenship || ''} onChange={v => onChange('citizenship', v)} />
         <Field type="date" label="Date of birth" value={form.date_of_birth || ''} onChange={v => onChange('date_of_birth', v)} />
-        <Field label="Gender" value={form.gender || ''} onChange={v => onChange('gender', v)} />
-        <Field label="Marital status" value={form.marital_status || ''} onChange={v => onChange('marital_status', v)} />
+        <SelectField 
+          label="Gender" 
+          value={form.gender || ''} 
+          onChange={v => onChange('gender', v)}
+          options={[
+            { value: '', label: 'Select...' },
+            { value: 'male', label: 'Male' },
+            { value: 'female', label: 'Female' },
+            { value: 'non-binary', label: 'Non-binary' },
+            { value: 'prefer-not-to-say', label: 'Prefer not to say' }
+          ]}
+        />
+        <SelectField 
+          label="Marital status" 
+          value={form.marital_status || ''} 
+          onChange={v => onChange('marital_status', v)}
+          options={[
+            { value: '', label: 'Select...' },
+            { value: 'single', label: 'Single' },
+            { value: 'married', label: 'Married' },
+            { value: 'divorced', label: 'Divorced' },
+            { value: 'widowed', label: 'Widowed' },
+            { value: 'separated', label: 'Separated' }
+          ]}
+        />
         <Field label="Phone" value={form.phone || ''} onChange={v => onChange('phone', v)} />
         <Field type="email" label="Email" value={form.email || ''} onChange={v => onChange('email', v)} />
         <Field label="Primary language" value={form.primary_language || ''} onChange={v => onChange('primary_language', v)} />
@@ -92,6 +130,25 @@ function Field({ label, value, onChange, type, required }: { label: string; valu
     <label className="text-sm">
       <div className="text-gray-600 mb-1">{label}{required && <span className="text-red-600"> *</span>}</div>
       <input type={type || 'text'} value={value} onChange={(e) => onChange(e.target.value)} className="w-full border rounded px-3 py-2" />
+    </label>
+  )
+}
+
+function SelectField({ label, value, onChange, options, required }: { 
+  label: string; 
+  value: string; 
+  onChange: (v: string) => void; 
+  options: { value: string; label: string }[];
+  required?: boolean 
+}) {
+  return (
+    <label className="text-sm">
+      <div className="text-gray-600 mb-1">{label}{required && <span className="text-red-600"> *</span>}</div>
+      <select value={value} onChange={(e) => onChange(e.target.value)} className="w-full border rounded px-3 py-2">
+        {options.map(opt => (
+          <option key={opt.value} value={opt.value}>{opt.label}</option>
+        ))}
+      </select>
     </label>
   )
 }
