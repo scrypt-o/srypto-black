@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerClient } from '@/lib/supabase-server'
 import { patientNavItems } from '@/config/patientNav'
-import PageShell from '@/components/layouts/PageShell'
+import ListPageLayout from '@/components/layouts/ListPageLayout'
 import ImmunizationsListFeature from '@/components/features/patient/medhist/ImmunizationsListFeature'
 
 export const dynamic = 'force-dynamic'
@@ -70,7 +70,7 @@ export default async function ImmunizationsListPage({ searchParams }: { searchPa
   const { data, error, count } = await query
 
   return (
-    <PageShell sidebarItems={patientNavItems} headerTitle="Scrypto">
+    <ListPageLayout sidebarItems={patientNavItems} headerTitle="Immunizations">
       <ImmunizationsListFeature
         initialData={error ? [] : (data || [])}
         total={error ? 0 : (count || 0)}
@@ -86,6 +86,6 @@ export default async function ImmunizationsListPage({ searchParams }: { searchPa
           sort_dir: sortDir,
         }}
       />
-    </PageShell>
+    </ListPageLayout>
   )
 }

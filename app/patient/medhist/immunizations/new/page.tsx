@@ -1,4 +1,4 @@
-import PageShell from '@/components/layouts/PageShell'
+import DetailPageLayout from '@/components/layouts/DetailPageLayout'
 import { patientNavItems } from '@/config/patientNav'
 import ImmunizationCreateFeature from '@/components/features/patient/medhist/ImmunizationCreateFeature'
 
@@ -6,8 +6,8 @@ export const dynamic = 'force-dynamic'
 
 export default function NewImmunizationPage() {
   return (
-    <PageShell sidebarItems={patientNavItems} headerTitle="Scrypto">
+    <DetailPageLayout sidebarItems={patientNavItems} headerTitle="New Immunization">
       <ImmunizationCreateFeature />
-    </PageShell>
+    </DetailPageLayout>
   )
 }

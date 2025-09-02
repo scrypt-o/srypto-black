@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getServerClient } from '@/lib/supabase-server'
-import PageShell from '@/components/layouts/PageShell'
+import DetailPageLayout from '@/components/layouts/DetailPageLayout'
 import { patientNavItems } from '@/config/patientNav'
 import ImmunizationDetailFeature from '@/components/features/patient/medhist/ImmunizationDetailFeature'
 
@@ -21,8 +21,8 @@ export default async function ViewImmunizationPage({ params }: { params: Promise
   }
 
   return (
-    <PageShell sidebarItems={patientNavItems} headerTitle="Scrypto">
+    <DetailPageLayout sidebarItems={patientNavItems} headerTitle={data.vaccine_name || 'Immunization'}>
       <ImmunizationDetailFeature immunization={data} />
-    </PageShell>
+    </DetailPageLayout>
   )
 }

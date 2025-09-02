@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerClient } from '@/lib/supabase-server'
 import { patientNavItems } from '@/config/patientNav'
-import PageShell from '@/components/layouts/PageShell'
+import ListPageLayout from '@/components/layouts/ListPageLayout'
 import EmergencyContactsListFeature from '@/components/features/patient/emergency-contacts/EmergencyContactsListFeature'
 
 export const dynamic = 'force-dynamic'
@@ -59,7 +59,7 @@ export default async function EmergencyContactsListPage({ searchParams }: { sear
   const { data, error, count } = await query
 
   return (
-    <PageShell sidebarItems={patientNavItems} headerTitle="Scrypto">
+    <ListPageLayout sidebarItems={patientNavItems} headerTitle="Emergency Contacts">
       <EmergencyContactsListFeature
         initialData={error ? [] : (data || [])}
         total={error ? 0 : (count || 0)}
@@ -73,6 +73,6 @@ export default async function EmergencyContactsListPage({ searchParams }: { sear
           sort_dir: sortDir,
         }}
       />
-    </PageShell>
+    </ListPageLayout>
   )
 }
