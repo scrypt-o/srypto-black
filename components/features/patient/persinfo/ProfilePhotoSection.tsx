@@ -12,7 +12,7 @@ export default function ProfilePhotoSection({ currentPath }: { currentPath?: str
         onImageChange={async (result) => {
           if (!result) return
           try {
-            await fetch('/api/patient/personal-info/profile', {
+            await fetch('/api/patient/persinfo/profile', {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ profile_picture_url: result.path })

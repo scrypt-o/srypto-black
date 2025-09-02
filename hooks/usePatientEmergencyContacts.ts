@@ -40,7 +40,7 @@ export function useEmergencyContactsList(params?: {
   return useQuery<EmergencyContactListResponse>({
     queryKey: EmergencyContactKeys.list(params),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/personal-info/emergency-contacts?${queryString}`, {
+      const response = await fetch(`/api/patient/persinfo/emergency-contacts?${queryString}`, {
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -59,7 +59,7 @@ export function useEmergencyContactById(id: string) {
   return useQuery<EmergencyContactRow>({
     queryKey: EmergencyContactKeys.detail(id),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/personal-info/emergency-contacts/${id}`, {
+      const response = await fetch(`/api/patient/persinfo/emergency-contacts/${id}`, {
         credentials: 'same-origin',
       })
       
@@ -79,7 +79,7 @@ export function useCreateEmergencyContact() {
   
   return useMutation<EmergencyContactRow, Error, EmergencyContactCreateInput>({
     mutationFn: async (data) => {
-      const response = await fetch('/api/patient/personal-info/emergency-contacts', {
+      const response = await fetch('/api/patient/persinfo/emergency-contacts', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -107,7 +107,7 @@ export function useUpdateEmergencyContact() {
   
   return useMutation<EmergencyContactRow, Error, { id: string; data: EmergencyContactUpdateInput }>({
     mutationFn: async ({ id, data }) => {
-      const response = await fetch(`/api/patient/personal-info/emergency-contacts/${id}`, {
+      const response = await fetch(`/api/patient/persinfo/emergency-contacts/${id}`, {
         method: 'PUT',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -138,7 +138,7 @@ export function useDeleteEmergencyContact() {
   
   return useMutation<void, Error, string>({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/patient/personal-info/emergency-contacts/${id}`, {
+      const response = await fetch(`/api/patient/persinfo/emergency-contacts/${id}`, {
         method: 'DELETE',
         credentials: 'same-origin',
       })

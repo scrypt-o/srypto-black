@@ -35,7 +35,7 @@ export const cameraConfig = {
 
 export const aiConfig = {
   // API settings
-  analysisEndpoint: '/api/patient/prescriptions/analyze',
+  analysisEndpoint: '/api/patient/presc/analyze',
   timeout: 30000, // 30 second timeout
   retryAttempts: 3,
   

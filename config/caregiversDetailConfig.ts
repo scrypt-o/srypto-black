@@ -6,7 +6,7 @@ import { useUpdateCaregiver, useDeleteCaregiver } from '@/hooks/usePatientCaregi
 export const caregiversDetailConfig: DetailFeatureConfig<CaregiverRow, CaregiverFormData> = {
   entityName: 'caregiver',
   entityNamePlural: 'caregivers', 
-  listPath: '/patient/care-network/caregivers',
+  listPath: '/patient/carenet/caregivers',
   
   formSchema: caregiverFormSchema,
   

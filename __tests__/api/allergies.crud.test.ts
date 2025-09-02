@@ -6,7 +6,7 @@ describe('Allergies API CRUD', () => {
   let id: string
 
   test('create', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/allergies`, {
+    const res = await fetch(`${base}/api/patient/medhist/allergies`, {
       method: 'POST',
       headers: headersBase,
       body: JSON.stringify({ allergen: 'Peanuts', allergen_type: 'food', severity: 'mild' }),
@@ -18,21 +18,21 @@ describe('Allergies API CRUD', () => {
   })
 
   test('list includes created', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/allergies?page=1&pageSize=5`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/medhist/allergies?page=1&pageSize=5`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(Array.isArray(json.data)).toBe(true)
   })
 
   test('get by id', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/allergies/${id}`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/medhist/allergies/${id}`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(json.allergy_id).toBe(id)
   })
 
   test('update', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/allergies/${id}`, {
+    const res = await fetch(`${base}/api/patient/medhist/allergies/${id}`, {
       method: 'PUT',
       headers: headersBase,
       body: JSON.stringify({ severity: 'moderate' }),
@@ -41,7 +41,7 @@ describe('Allergies API CRUD', () => {
   })
 
   test('delete', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/allergies/${id}`, {
+    const res = await fetch(`${base}/api/patient/medhist/allergies/${id}`, {
       method: 'DELETE',
       headers: headersBase,
     })

@@ -5,7 +5,7 @@ import { ImmunizationUpdateInputSchema } from '@/schemas/immunizations'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
-// GET /api/patient/medical-history/immunizations/[id] - Get single immunization
+// GET /api/patient/medhist/immunizations/[id] - Get single immunization
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await getServerClient()
@@ -40,7 +40,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PUT /api/patient/medical-history/immunizations/[id] - Update immunization
+// PUT /api/patient/medhist/immunizations/[id] - Update immunization
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)
@@ -113,7 +113,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/patient/medical-history/immunizations/[id] - Soft delete immunization
+// DELETE /api/patient/medhist/immunizations/[id] - Soft delete immunization
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)

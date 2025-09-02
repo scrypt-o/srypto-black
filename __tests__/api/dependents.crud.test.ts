@@ -6,7 +6,7 @@ describe('Dependents API CRUD', () => {
   let id: string
 
   test('create', async () => {
-    const res = await fetch(`${base}/api/patient/personal-info/dependents`, {
+    const res = await fetch(`${base}/api/patient/persinfo/dependents`, {
       method: 'POST',
       headers: headersBase,
       body: JSON.stringify({ full_name: 'Test Dependent' }),
@@ -18,21 +18,21 @@ describe('Dependents API CRUD', () => {
   })
 
   test('list includes created', async () => {
-    const res = await fetch(`${base}/api/patient/personal-info/dependents?page=1&pageSize=5`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/persinfo/dependents?page=1&pageSize=5`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(Array.isArray(json.data)).toBe(true)
   })
 
   test('get by id', async () => {
-    const res = await fetch(`${base}/api/patient/personal-info/dependents/${id}`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/persinfo/dependents/${id}`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(json.dependent_id).toBe(id)
   })
 
   test('update', async () => {
-    const res = await fetch(`${base}/api/patient/personal-info/dependents/${id}`, {
+    const res = await fetch(`${base}/api/patient/persinfo/dependents/${id}`, {
       method: 'PUT',
       headers: headersBase,
       body: JSON.stringify({ full_name: 'Updated Dependent' }),
@@ -41,7 +41,7 @@ describe('Dependents API CRUD', () => {
   })
 
   test('delete', async () => {
-    const res = await fetch(`${base}/api/patient/personal-info/dependents/${id}`, {
+    const res = await fetch(`${base}/api/patient/persinfo/dependents/${id}`, {
       method: 'DELETE',
       headers: headersBase,
     })

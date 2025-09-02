@@ -37,7 +37,7 @@ export default function MedicalAidForm({ initial }: { initial?: Partial<MedicalA
   const onSave = async () => {
     setSaving(true); setError(null)
     try {
-      const res = await fetch('/api/patient/personal-info/medical-aid', {
+      const res = await fetch('/api/patient/persinfo/medical-aid', {
         method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form)
       })
       if (!res.ok) throw new Error('Save failed')

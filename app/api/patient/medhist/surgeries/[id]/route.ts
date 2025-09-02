@@ -5,7 +5,7 @@ import { SurgeryUpdateInputSchema } from '@/schemas/surgeries'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
-// GET /api/patient/medical-history/surgeries/[id] - Get single surgery
+// GET /api/patient/medhist/surgeries/[id] - Get single surgery
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await getServerClient()
@@ -40,7 +40,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PUT /api/patient/medical-history/surgeries/[id] - Update surgery
+// PUT /api/patient/medhist/surgeries/[id] - Update surgery
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)
@@ -117,7 +117,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/patient/medical-history/surgeries/[id] - Soft delete surgery
+// DELETE /api/patient/medhist/surgeries/[id] - Soft delete surgery
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)

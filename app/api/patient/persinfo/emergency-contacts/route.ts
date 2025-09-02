@@ -8,7 +8,7 @@ import {
 } from '@/schemas/emergencyContacts'
 import { z } from 'zod'
 
-// GET /api/patient/personal-info/emergency-contacts - List emergency contacts
+// GET /api/patient/persinfo/emergency-contacts - List emergency contacts
 export async function GET(request: NextRequest) {
   try {
     const supabase = await getServerClient()
@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/patient/personal-info/emergency-contacts - Create new emergency contact
+// POST /api/patient/persinfo/emergency-contacts - Create new emergency contact
 export async function POST(request: NextRequest) {
   try {
     const csrf = verifyCsrf(request)

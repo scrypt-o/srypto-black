@@ -5,7 +5,7 @@ const httpFetch: typeof fetch = (global as any).fetch || require('undici').fetch
 
 const routes = [
   // Lists
-  '/patient/care-network/caregivers',
+  '/patient/carenet/caregivers',
   '/patient/persinfo/dependents',
   '/patient/persinfo/emergency-contacts',
   '/patient/medhist/allergies',

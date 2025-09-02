@@ -134,11 +134,11 @@ const styleBase = {
 // Accent hex colors used to lightly tint grid tiles similar to vertical tiles
 const accentHex: Record<string, string> = {
   communications: '#6366f1', // indigo
-  'personal-info': '#10b981', // emerald
+  'persinfo': '#10b981', // emerald
   prescriptions: '#f43f5e', // rose
   medications: '#f59e0b', // amber
   vitality: '#d946ef', // fuchsia
-  'care-network': '#06b6d4', // cyan
+  'carenet': '#06b6d4', // cyan
   medhist: '#3b82f6', // blue
   'lab-results': '#8b5cf6', // purple
   location: '#14b8a6', // teal
@@ -185,11 +185,11 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
   // Match tile icon colors to sidebar group icon colors by id
   const groupIconColors: Record<string, string> = {
     communications: 'text-indigo-600 dark:text-indigo-400',
-    'personal-info': 'text-emerald-600 dark:text-emerald-400',
+    'persinfo': 'text-emerald-600 dark:text-emerald-400',
     prescriptions: 'text-rose-600 dark:text-rose-400',
     medications: 'text-amber-600 dark:text-amber-400',
     vitality: 'text-fuchsia-600 dark:text-fuchsia-400',
-    'care-network': 'text-cyan-600 dark:text-cyan-400',
+    'carenet': 'text-cyan-600 dark:text-cyan-400',
     medhist: 'text-blue-600 dark:text-blue-400',
     'lab-results': 'text-purple-600 dark:text-purple-400',
     location: 'text-teal-600 dark:text-teal-400',
@@ -230,11 +230,11 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
               {...(t.disabled ? { disabled: t.disabled } : {})}
               accent={
                 t.id === 'communications' ? 'indigo' :
-                t.id === 'personal-info' ? 'emerald' :
+                t.id === 'persinfo' ? 'emerald' :
                 t.id === 'prescriptions' ? 'rose' :
                 t.id === 'medications' ? 'amber' :
                 t.id === 'vitality' ? 'fuchsia' :
-                t.id === 'care-network' ? 'cyan' :
+                t.id === 'carenet' ? 'cyan' :
                 t.id === 'medhist' ? 'blue' :
                 t.id === 'lab-results' ? 'purple' :
                 t.id === 'location' ? 'teal' :
@@ -319,7 +319,7 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
               : h.includes('/patient/presc') ? accentByName.rose
               : h.includes('/patient/medications') ? accentByName.amber
               : h.includes('/patient/vitality') ? accentByName.fuchsia
-              : h.includes('/patient/care-network') ? accentByName.cyan
+              : h.includes('/patient/carenet') ? accentByName.cyan
               : h.includes('/patient/labresults') ? accentByName.purple
               : h.includes('/patient/location') ? accentByName.teal
               : h.includes('/patient/deals') ? accentByName.pink

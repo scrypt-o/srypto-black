@@ -5,7 +5,7 @@ import { ConditionUpdateInputSchema } from '@/schemas/conditions'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
-// GET /api/patient/medical-history/conditions/[id] - Get single condition
+// GET /api/patient/medhist/conditions/[id] - Get single condition
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await getServerClient()
@@ -40,7 +40,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PUT /api/patient/medical-history/conditions/[id] - Update condition
+// PUT /api/patient/medhist/conditions/[id] - Update condition
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)
@@ -117,7 +117,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/patient/medical-history/conditions/[id] - Soft delete condition
+// DELETE /api/patient/medhist/conditions/[id] - Soft delete condition
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)

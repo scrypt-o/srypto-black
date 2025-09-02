@@ -8,7 +8,7 @@ import {
 } from '@/schemas/conditions'
 import { z } from 'zod'
 
-// GET /api/patient/medical-history/conditions - List conditions
+// GET /api/patient/medhist/conditions - List conditions
 export async function GET(request: NextRequest) {
   try {
     const supabase = await getServerClient()
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/patient/medical-history/conditions - Create new condition
+// POST /api/patient/medhist/conditions - Create new condition
 export async function POST(request: NextRequest) {
   try {
     const csrf = verifyCsrf(request)

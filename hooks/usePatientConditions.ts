@@ -29,7 +29,7 @@ export function useConditionsList(params?: { page?: number; pageSize?: number; s
       if (params?.severity) searchParams.set('severity', params.severity)
       if (params?.current_status) searchParams.set('current_status', params.current_status)
 
-      const res = await fetch(`/api/patient/medical-history/conditions?${searchParams}`)
+      const res = await fetch(`/api/patient/medhist/conditions?${searchParams}`)
       if (!res.ok) throw await ApiError.fromResponse(res)
       return res.json() as Promise<ConditionListResponse>
     },
@@ -41,7 +41,7 @@ export function useConditionById(id: string) {
   return useQuery({
     queryKey: ConditionKeys.detail(id),
     queryFn: async () => {
-      const res = await fetch(`/api/patient/medical-history/conditions/${id}`)
+      const res = await fetch(`/api/patient/medhist/conditions/${id}`)
       if (!res.ok) throw await ApiError.fromResponse(res)
       return res.json() as Promise<ConditionRow>
     },
@@ -55,7 +55,7 @@ export function useCreateCondition() {
   
   return useMutation({
     mutationFn: async (data: ConditionCreateInput) => {
-      const res = await fetch('/api/patient/medical-history/conditions', {
+      const res = await fetch('/api/patient/medhist/conditions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -75,7 +75,7 @@ export function useUpdateCondition() {
   
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: ConditionUpdateInput }) => {
-      const res = await fetch(`/api/patient/medical-history/conditions/${id}`, {
+      const res = await fetch(`/api/patient/medhist/conditions/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -96,7 +96,7 @@ export function useDeleteCondition() {
   
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/api/patient/medical-history/conditions/${id}`, {
+      const res = await fetch(`/api/patient/medhist/conditions/${id}`, {
         method: 'DELETE',
       })
       if (!res.ok) throw await ApiError.fromResponse(res)

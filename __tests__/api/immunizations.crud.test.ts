@@ -6,7 +6,7 @@ describe('Immunizations API CRUD', () => {
   let id: string
 
   test('create', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/immunizations`, {
+    const res = await fetch(`${base}/api/patient/medhist/immunizations`, {
       method: 'POST',
       headers: headersBase,
       body: JSON.stringify({ vaccine_name: 'MMR', date_given: '2024-01-01' }),
@@ -18,21 +18,21 @@ describe('Immunizations API CRUD', () => {
   })
 
   test('list includes created', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/immunizations?page=1&pageSize=5`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/medhist/immunizations?page=1&pageSize=5`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(Array.isArray(json.data)).toBe(true)
   })
 
   test('get by id', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/immunizations/${id}`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/medhist/immunizations/${id}`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(json.immunization_id).toBe(id)
   })
 
   test('update', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/immunizations/${id}`, {
+    const res = await fetch(`${base}/api/patient/medhist/immunizations/${id}`, {
       method: 'PUT',
       headers: headersBase,
       body: JSON.stringify({ vaccine_name: 'MMR Updated' }),
@@ -41,7 +41,7 @@ describe('Immunizations API CRUD', () => {
   })
 
   test('delete', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/immunizations/${id}`, {
+    const res = await fetch(`${base}/api/patient/medhist/immunizations/${id}`, {
       method: 'DELETE',
       headers: headersBase,
     })

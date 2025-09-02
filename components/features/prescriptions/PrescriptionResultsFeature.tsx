@@ -22,7 +22,7 @@ export default function PrescriptionResultsFeature({
   async function saveDraft() {
     setIsSaving(true)
     try {
-      const res = await fetch('/api/patient/prescriptions/prescriptions', {
+      const res = await fetch('/api/patient/presc/prescriptions', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -51,7 +51,7 @@ export default function PrescriptionResultsFeature({
         await saveDraft()
         return
       }
-      const res = await fetch(`/api/patient/prescriptions/prescriptions/${id}/submit`, {
+      const res = await fetch(`/api/patient/presc/prescriptions/${id}/submit`, {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },

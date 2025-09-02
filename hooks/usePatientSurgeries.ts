@@ -40,7 +40,7 @@ export function useSurgeriesList(params?: {
   return useQuery<SurgeryListResponse>({
     queryKey: SurgeryKeys.list(params),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/medical-history/surgeries?${queryString}`, {
+      const response = await fetch(`/api/patient/medhist/surgeries?${queryString}`, {
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -59,7 +59,7 @@ export function useSurgeryById(id: string) {
   return useQuery<SurgeryRow>({
     queryKey: SurgeryKeys.detail(id),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/medical-history/surgeries/${id}`, {
+      const response = await fetch(`/api/patient/medhist/surgeries/${id}`, {
         credentials: 'same-origin',
       })
       
@@ -79,7 +79,7 @@ export function useCreateSurgery() {
   
   return useMutation<SurgeryRow, Error, SurgeryCreateInput>({
     mutationFn: async (data) => {
-      const response = await fetch('/api/patient/medical-history/surgeries', {
+      const response = await fetch('/api/patient/medhist/surgeries', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -107,7 +107,7 @@ export function useUpdateSurgery() {
   
   return useMutation<SurgeryRow, Error, { id: string; data: SurgeryUpdateInput }>({
     mutationFn: async ({ id, data }) => {
-      const response = await fetch(`/api/patient/medical-history/surgeries/${id}`, {
+      const response = await fetch(`/api/patient/medhist/surgeries/${id}`, {
         method: 'PUT',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -138,7 +138,7 @@ export function useDeleteSurgery() {
   
   return useMutation<void, Error, string>({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/patient/medical-history/surgeries/${id}`, {
+      const response = await fetch(`/api/patient/medhist/surgeries/${id}`, {
         method: 'DELETE',
         credentials: 'same-origin',
       })

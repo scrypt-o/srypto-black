@@ -8,7 +8,7 @@ import {
 } from '@/schemas/family-history'
 import { z } from 'zod'
 
-// GET /api/patient/medical-history/family-history - List family history records
+// GET /api/patient/medhist/family-history - List family history records
 export async function GET(request: NextRequest) {
   try {
     const supabase = await getServerClient()
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/patient/medical-history/family-history - Create new family history record
+// POST /api/patient/medhist/family-history - Create new family history record
 export async function POST(request: NextRequest) {
   try {
     const csrf = verifyCsrf(request)

@@ -6,7 +6,7 @@ describe('Surgeries API CRUD', () => {
   let id: string
 
   test('create', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/surgeries`, {
+    const res = await fetch(`${base}/api/patient/medhist/surgeries`, {
       method: 'POST',
       headers: headersBase,
       body: JSON.stringify({ surgery_name: 'Appendectomy' }),
@@ -18,21 +18,21 @@ describe('Surgeries API CRUD', () => {
   })
 
   test('list includes created', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/surgeries?page=1&pageSize=5`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/medhist/surgeries?page=1&pageSize=5`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(Array.isArray(json.data)).toBe(true)
   })
 
   test('get by id', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/surgeries/${id}`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/medhist/surgeries/${id}`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(json.surgery_id).toBe(id)
   })
 
   test('update', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/surgeries/${id}`, {
+    const res = await fetch(`${base}/api/patient/medhist/surgeries/${id}`, {
       method: 'PUT',
       headers: headersBase,
       body: JSON.stringify({ surgery_name: 'Appendectomy (Updated)' }),
@@ -41,7 +41,7 @@ describe('Surgeries API CRUD', () => {
   })
 
   test('delete', async () => {
-    const res = await fetch(`${base}/api/patient/medical-history/surgeries/${id}`, {
+    const res = await fetch(`${base}/api/patient/medhist/surgeries/${id}`, {
       method: 'DELETE',
       headers: headersBase,
     })

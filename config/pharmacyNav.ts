@@ -12,12 +12,12 @@ export const pharmacyNavItems: NavItem[] = [
     icon: 'FileText',
     type: 'group',
     children: [
-      { id: 'inbox', label: 'Request for Quotes', icon: 'Inbox', href: '/pharmacy/prescriptions/inbox' },
-      { id: 'reviewing', label: 'Reviewing', icon: 'Eye', href: '/pharmacy/prescriptions/reviewing' },
-      { id: 'verified', label: 'Verified', icon: 'CheckCircle', href: '/pharmacy/prescriptions/verified' },
-      { id: 'quoted', label: 'Quoted', icon: 'FileBarChart', href: '/pharmacy/prescriptions/quoted' },
-      { id: 'pending', label: 'Pending Response', icon: 'Clock', href: '/pharmacy/prescriptions/pending' },
-      { id: 'accepted', label: 'Accepted', icon: 'CheckCircle2', href: '/pharmacy/prescriptions/accepted' },
+      { id: 'inbox', label: 'Request for Quotes', icon: 'Inbox', href: '/pharmacy/presc/inbox' },
+      { id: 'reviewing', label: 'Reviewing', icon: 'Eye', href: '/pharmacy/presc/reviewing' },
+      { id: 'verified', label: 'Verified', icon: 'CheckCircle', href: '/pharmacy/presc/verified' },
+      { id: 'quoted', label: 'Quoted', icon: 'FileBarChart', href: '/pharmacy/presc/quoted' },
+      { id: 'pending', label: 'Pending Response', icon: 'Clock', href: '/pharmacy/presc/pending' },
+      { id: 'accepted', label: 'Accepted', icon: 'CheckCircle2', href: '/pharmacy/presc/accepted' },
     ],
   },
 

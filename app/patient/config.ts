@@ -15,7 +15,7 @@ export const PatientHomeConfig = {
       color: 'bg-cyan-50 hover:bg-cyan-100 border-cyan-200'
     },
     {
-      id: 'personal-info',
+      id: 'persinfo',
       title: 'Personal Information',
       description: 'Profile, contacts, documents',
       status: { text: 'Profile 67% complete', tone: 'warning' as const },
@@ -55,12 +55,12 @@ export const PatientHomeConfig = {
       color: 'bg-rose-50 hover:bg-rose-100 border-rose-200'
     },
     {
-      id: 'care-network',
+      id: 'carenet',
       title: 'Care Network',
       description: 'Caregivers and caretakers',
       status: { text: 'Green light — no concerns', tone: 'success' as const },
       icon: 'UsersRound',
-      href: '/patient/care-network',
+      href: '/patient/carenet',
       disabled: true,
       variant: 'subtle' as const
     },

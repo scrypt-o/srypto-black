@@ -8,7 +8,7 @@ import {
 } from '@/schemas/surgeries'
 import { z } from 'zod'
 
-// GET /api/patient/medical-history/surgeries - List surgeries
+// GET /api/patient/medhist/surgeries - List surgeries
 export async function GET(request: NextRequest) {
   try {
     const supabase = await getServerClient()
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/patient/medical-history/surgeries - Create new surgery
+// POST /api/patient/medhist/surgeries - Create new surgery
 export async function POST(request: NextRequest) {
   try {
     const csrf = verifyCsrf(request)

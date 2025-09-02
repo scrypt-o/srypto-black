@@ -15,7 +15,7 @@ export default function DocumentsUploader() {
     const uploaded = await uploadFile(file)
     if (!uploaded) { setError('Upload failed'); return }
     try {
-      const res = await fetch('/api/patient/personal-info/documents', {
+      const res = await fetch('/api/patient/persinfo/documents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

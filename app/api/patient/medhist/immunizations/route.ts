@@ -8,7 +8,7 @@ import {
 } from '@/schemas/immunizations'
 import { z } from 'zod'
 
-// GET /api/patient/medical-history/immunizations - List immunizations
+// GET /api/patient/medhist/immunizations - List immunizations
 export async function GET(request: NextRequest) {
   try {
     const supabase = await getServerClient()
@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/patient/medical-history/immunizations - Create new immunization
+// POST /api/patient/medhist/immunizations - Create new immunization
 export async function POST(request: NextRequest) {
   try {
     const csrf = verifyCsrf(request)

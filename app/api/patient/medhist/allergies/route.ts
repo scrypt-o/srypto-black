@@ -8,7 +8,7 @@ import {
 } from '@/schemas/allergies'
 import { z } from 'zod'
 
-// GET /api/patient/medical-history/allergies - List allergies
+// GET /api/patient/medhist/allergies - List allergies
 export async function GET(request: NextRequest) {
   try {
     const supabase = await getServerClient()
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/patient/medical-history/allergies - Create new allergy
+// POST /api/patient/medhist/allergies - Create new allergy
 export async function POST(request: NextRequest) {
   try {
     const csrf = verifyCsrf(request)

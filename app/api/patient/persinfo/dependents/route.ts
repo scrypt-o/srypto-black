@@ -8,7 +8,7 @@ import {
 } from '@/schemas/dependents'
 import { z } from 'zod'
 
-// GET /api/patient/personal-info/dependents - List dependents
+// GET /api/patient/persinfo/dependents - List dependents
 export async function GET(request: NextRequest) {
   try {
     const supabase = await getServerClient()
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/patient/personal-info/dependents - Create new dependent
+// POST /api/patient/persinfo/dependents - Create new dependent
 export async function POST(request: NextRequest) {
   try {
     const csrf = verifyCsrf(request)

@@ -15,9 +15,9 @@ describe('Allergies API Integration Tests', () => {
   
   let createdAllergyId: string
 
-  describe('POST /api/patient/medical-history/allergies', () => {
+  describe('POST /api/patient/medhist/allergies', () => {
     test('should create allergy with valid data', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/allergies`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/allergies`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ describe('Allergies API Integration Tests', () => {
         allergen_type: 'invalid_type' // Not in DDL enum
       }
       
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/allergies`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/allergies`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ describe('Allergies API Integration Tests', () => {
     })
 
     test('should return 403 for missing CSRF headers', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/allergies`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/allergies`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ describe('Allergies API Integration Tests', () => {
     })
 
     test('should return 401 for unauthenticated request', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/allergies`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/allergies`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,9 +86,9 @@ describe('Allergies API Integration Tests', () => {
     })
   })
 
-  describe('GET /api/patient/medical-history/allergies', () => {
+  describe('GET /api/patient/medhist/allergies', () => {
     test('should return paginated allergy list', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/allergies?page=1&pageSize=20`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/allergies?page=1&pageSize=20`, {
         credentials: 'include'
       })
 
@@ -101,7 +101,7 @@ describe('Allergies API Integration Tests', () => {
     })
 
     test('should filter by allergen_type', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/allergies?allergen_type=medication`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/allergies?allergen_type=medication`, {
         credentials: 'include'
       })
 
@@ -114,11 +114,11 @@ describe('Allergies API Integration Tests', () => {
     })
   })
 
-  describe('PUT /api/patient/medical-history/allergies/[id]', () => {
+  describe('PUT /api/patient/medhist/allergies/[id]', () => {
     test('should update allergy with valid data', async () => {
       if (!createdAllergyId) {
         // Create test allergy first
-        const createResponse = await fetch(`${baseUrl}/api/patient/medical-history/allergies`, {
+        const createResponse = await fetch(`${baseUrl}/api/patient/medhist/allergies`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Origin': baseUrl },
           credentials: 'include',
@@ -133,7 +133,7 @@ describe('Allergies API Integration Tests', () => {
         notes: 'Updated via API test'
       }
 
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/allergies/${createdAllergyId}`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/allergies/${createdAllergyId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -152,7 +152,7 @@ describe('Allergies API Integration Tests', () => {
     test('should return 404 for non-existent allergy', async () => {
       const fakeId = '00000000-0000-0000-0000-000000000000'
       
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/allergies/${fakeId}`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/allergies/${fakeId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -166,11 +166,11 @@ describe('Allergies API Integration Tests', () => {
     })
   })
 
-  describe('DELETE /api/patient/medical-history/allergies/[id]', () => {
+  describe('DELETE /api/patient/medhist/allergies/[id]', () => {
     test('should soft delete allergy', async () => {
       if (!createdAllergyId) return // Skip if no test allergy
 
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/allergies/${createdAllergyId}`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/allergies/${createdAllergyId}`, {
         method: 'DELETE',
         headers: {
           'Origin': baseUrl,

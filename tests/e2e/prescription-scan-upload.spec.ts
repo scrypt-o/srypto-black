@@ -10,7 +10,7 @@ test.describe('Prescription Scan - Upload Fallback E2E', () => {
     await page.waitForURL('**/patient')
 
     // Intercept analyze API and return stubbed success to avoid real AI calls
-    await page.route('**/api/patient/prescriptions/analyze', async (route) => {
+    await page.route('**/api/patient/presc/analyze', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',

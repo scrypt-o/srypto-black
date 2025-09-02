@@ -5,7 +5,7 @@ import { FamilyHistoryUpdateInputSchema } from '@/schemas/family-history'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
-// GET /api/patient/medical-history/family-history/[id] - Get single family history record
+// GET /api/patient/medhist/family-history/[id] - Get single family history record
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await getServerClient()
@@ -40,7 +40,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PUT /api/patient/medical-history/family-history/[id] - Update family history record
+// PUT /api/patient/medhist/family-history/[id] - Update family history record
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)
@@ -111,7 +111,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/patient/medical-history/family-history/[id] - Soft delete family history record
+// DELETE /api/patient/medhist/family-history/[id] - Soft delete family history record
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)

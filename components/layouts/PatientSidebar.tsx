@@ -113,11 +113,11 @@ export default function PatientSidebar({
   // Distinct icon colors for each top-level group (ids from config/patientNav.ts)
   const groupIconColors: Record<string, string> = {
     communications: 'text-indigo-600 dark:text-indigo-400',
-    'personal-info': 'text-emerald-600 dark:text-emerald-400',
+    'persinfo': 'text-emerald-600 dark:text-emerald-400',
     prescriptions: 'text-rose-600 dark:text-rose-400',
     medications: 'text-amber-600 dark:text-amber-400',
     vitality: 'text-fuchsia-600 dark:text-fuchsia-400',
-    'care-network': 'text-cyan-600 dark:text-cyan-400',
+    'carenet': 'text-cyan-600 dark:text-cyan-400',
     medhist: 'text-blue-600 dark:text-blue-400',
     'lab-results': 'text-purple-600 dark:text-purple-400',
     location: 'text-teal-600 dark:text-teal-400',
@@ -128,11 +128,11 @@ export default function PatientSidebar({
   // Subtle tinted backgrounds per group to match Home tiles
   const groupRowTints: Record<string, { active: string; hover: string; ring: string; text: string; iconActive?: string }> = {
     communications: { active: 'bg-indigo-50 dark:bg-indigo-900/25 text-indigo-900 dark:text-indigo-100', hover: 'hover:bg-indigo-50/70 dark:hover:bg-indigo-900/15', ring: 'ring-1 ring-inset ring-indigo-200/70 dark:ring-indigo-800/40', text: 'text-indigo-900 dark:text-indigo-100', iconActive: 'text-indigo-700 dark:text-indigo-200' },
-    'personal-info': { active: 'bg-emerald-50 dark:bg-emerald-900/25 text-emerald-900 dark:text-emerald-100', hover: 'hover:bg-emerald-50/70 dark:hover:bg-emerald-900/15', ring: 'ring-1 ring-inset ring-emerald-200/70 dark:ring-emerald-800/40', text: 'text-emerald-900 dark:text-emerald-100', iconActive: 'text-emerald-700 dark:text-emerald-200' },
+    'persinfo': { active: 'bg-emerald-50 dark:bg-emerald-900/25 text-emerald-900 dark:text-emerald-100', hover: 'hover:bg-emerald-50/70 dark:hover:bg-emerald-900/15', ring: 'ring-1 ring-inset ring-emerald-200/70 dark:ring-emerald-800/40', text: 'text-emerald-900 dark:text-emerald-100', iconActive: 'text-emerald-700 dark:text-emerald-200' },
     prescriptions: { active: 'bg-rose-50 dark:bg-rose-900/25 text-rose-900 dark:text-rose-100', hover: 'hover:bg-rose-50/70 dark:hover:bg-rose-900/15', ring: 'ring-1 ring-inset ring-rose-200/70 dark:ring-rose-800/40', text: 'text-rose-900 dark:text-rose-100', iconActive: 'text-rose-700 dark:text-rose-200' },
     medications: { active: 'bg-amber-50 dark:bg-amber-900/25 text-amber-900 dark:text-amber-100', hover: 'hover:bg-amber-50/70 dark:hover:bg-amber-900/15', ring: 'ring-1 ring-inset ring-amber-200/70 dark:ring-amber-800/40', text: 'text-amber-900 dark:text-amber-100', iconActive: 'text-amber-700 dark:text-amber-200' },
     vitality: { active: 'bg-fuchsia-50 dark:bg-fuchsia-900/25 text-fuchsia-900 dark:text-fuchsia-100', hover: 'hover:bg-fuchsia-50/70 dark:hover:bg-fuchsia-900/15', ring: 'ring-1 ring-inset ring-fuchsia-200/70 dark:ring-fuchsia-800/40', text: 'text-fuchsia-900 dark:text-fuchsia-100', iconActive: 'text-fuchsia-700 dark:text-fuchsia-200' },
-    'care-network': { active: 'bg-cyan-50 dark:bg-cyan-900/25 text-cyan-900 dark:text-cyan-100', hover: 'hover:bg-cyan-50/70 dark:hover:bg-cyan-900/15', ring: 'ring-1 ring-inset ring-cyan-200/70 dark:ring-cyan-800/40', text: 'text-cyan-900 dark:text-cyan-100', iconActive: 'text-cyan-700 dark:text-cyan-200' },
+    'carenet': { active: 'bg-cyan-50 dark:bg-cyan-900/25 text-cyan-900 dark:text-cyan-100', hover: 'hover:bg-cyan-50/70 dark:hover:bg-cyan-900/15', ring: 'ring-1 ring-inset ring-cyan-200/70 dark:ring-cyan-800/40', text: 'text-cyan-900 dark:text-cyan-100', iconActive: 'text-cyan-700 dark:text-cyan-200' },
     medhist: { active: 'bg-blue-50 dark:bg-blue-900/25 text-blue-900 dark:text-blue-100', hover: 'hover:bg-blue-50/70 dark:hover:bg-blue-900/15', ring: 'ring-1 ring-inset ring-blue-200/70 dark:ring-blue-800/40', text: 'text-blue-900 dark:text-blue-100', iconActive: 'text-blue-700 dark:text-blue-200' },
     'lab-results': { active: 'bg-purple-50 dark:bg-purple-900/25 text-purple-900 dark:text-purple-100', hover: 'hover:bg-purple-50/70 dark:hover:bg-purple-900/15', ring: 'ring-1 ring-inset ring-purple-200/70 dark:ring-purple-800/40', text: 'text-purple-900 dark:text-purple-100', iconActive: 'text-purple-700 dark:text-purple-200' },
     location: { active: 'bg-teal-50 dark:bg-teal-900/25 text-teal-900 dark:text-teal-100', hover: 'hover:bg-teal-50/70 dark:hover:bg-teal-900/15', ring: 'ring-1 ring-inset ring-teal-200/70 dark:ring-teal-800/40', text: 'text-teal-900 dark:text-teal-100', iconActive: 'text-teal-700 dark:text-teal-200' },

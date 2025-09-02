@@ -51,7 +51,7 @@ export function useImmunizationsList(params?: {
   return useQuery<ImmunizationListResponse>({
     queryKey: ImmunizationKeys.list(params),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/medical-history/immunizations?${queryString}`, {
+      const response = await fetch(`/api/patient/medhist/immunizations?${queryString}`, {
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -70,7 +70,7 @@ export function useImmunizationById(id: string) {
   return useQuery<ImmunizationRow>({
     queryKey: ImmunizationKeys.detail(id),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/medical-history/immunizations/${id}`, {
+      const response = await fetch(`/api/patient/medhist/immunizations/${id}`, {
         credentials: 'same-origin',
       })
       
@@ -90,7 +90,7 @@ export function useCreateImmunization() {
   
   return useMutation<ImmunizationRow, Error, ImmunizationCreateInput>({
     mutationFn: async (data) => {
-      const response = await fetch('/api/patient/medical-history/immunizations', {
+      const response = await fetch('/api/patient/medhist/immunizations', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -118,7 +118,7 @@ export function useUpdateImmunization() {
   
   return useMutation<ImmunizationRow, Error, { id: string; data: ImmunizationUpdateInput }>({
     mutationFn: async ({ id, data }) => {
-      const response = await fetch(`/api/patient/medical-history/immunizations/${id}`, {
+      const response = await fetch(`/api/patient/medhist/immunizations/${id}`, {
         method: 'PUT',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -149,7 +149,7 @@ export function useDeleteImmunization() {
   
   return useMutation<void, Error, string>({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/patient/medical-history/immunizations/${id}`, {
+      const response = await fetch(`/api/patient/medhist/immunizations/${id}`, {
         method: 'DELETE',
         credentials: 'same-origin',
       })

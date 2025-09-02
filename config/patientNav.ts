@@ -20,7 +20,7 @@ export const patientNavItems: NavItem[] = [
 
   // Personal Information
   {
-    id: 'personal-info',
+    id: 'persinfo',
     label: 'Personal Information',
     icon: 'User',
     type: 'group',
@@ -83,13 +83,13 @@ export const patientNavItems: NavItem[] = [
 
   // Care Network
   {
-    id: 'care-network',
+    id: 'carenet',
     label: 'Care Network',
     icon: 'UsersRound',
     type: 'group',
     // No landing page yet; only children
     children: [
-      { id: 'caregivers', label: 'Caregivers', icon: 'UserCheck', href: '/patient/care-network/caregivers' },
+      { id: 'caregivers', label: 'Caregivers', icon: 'UserCheck', href: '/patient/carenet/caregivers' },
       { id: 'caretakers', label: 'Caretakers', icon: 'User' },
     ],
   },

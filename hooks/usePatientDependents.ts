@@ -40,7 +40,7 @@ export function useDependentsList(params?: {
   return useQuery<DependentListResponse>({
     queryKey: DependentKeys.list(params),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/personal-info/dependents?${queryString}`, {
+      const response = await fetch(`/api/patient/persinfo/dependents?${queryString}`, {
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -59,7 +59,7 @@ export function useDependentById(id: string) {
   return useQuery<DependentRow>({
     queryKey: DependentKeys.detail(id),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/personal-info/dependents/${id}`, {
+      const response = await fetch(`/api/patient/persinfo/dependents/${id}`, {
         credentials: 'same-origin',
       })
       
@@ -79,7 +79,7 @@ export function useCreateDependent() {
   
   return useMutation<DependentRow, Error, DependentCreateInput>({
     mutationFn: async (data) => {
-      const response = await fetch('/api/patient/personal-info/dependents', {
+      const response = await fetch('/api/patient/persinfo/dependents', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -107,7 +107,7 @@ export function useUpdateDependent() {
   
   return useMutation<DependentRow, Error, { id: string; data: DependentUpdateInput }>({
     mutationFn: async ({ id, data }) => {
-      const response = await fetch(`/api/patient/personal-info/dependents/${id}`, {
+      const response = await fetch(`/api/patient/persinfo/dependents/${id}`, {
         method: 'PUT',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -138,7 +138,7 @@ export function useDeleteDependent() {
   
   return useMutation<void, Error, string>({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/patient/personal-info/dependents/${id}`, {
+      const response = await fetch(`/api/patient/persinfo/dependents/${id}`, {
         method: 'DELETE',
         credentials: 'same-origin',
       })

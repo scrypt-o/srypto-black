@@ -38,7 +38,7 @@ export function useFamilyHistoryList(params?: {
   return useQuery<FamilyHistoryListResponse>({
     queryKey: FamilyHistoryKeys.list(params),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/medical-history/family-history?${queryString}`, {
+      const response = await fetch(`/api/patient/medhist/family-history?${queryString}`, {
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -57,7 +57,7 @@ export function useFamilyHistoryById(id: string) {
   return useQuery<FamilyHistoryRow>({
     queryKey: FamilyHistoryKeys.detail(id),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/medical-history/family-history/${id}`, {
+      const response = await fetch(`/api/patient/medhist/family-history/${id}`, {
         credentials: 'same-origin',
       })
       
@@ -77,7 +77,7 @@ export function useCreateFamilyHistory() {
   
   return useMutation<FamilyHistoryRow, Error, FamilyHistoryCreateInput>({
     mutationFn: async (data) => {
-      const response = await fetch('/api/patient/medical-history/family-history', {
+      const response = await fetch('/api/patient/medhist/family-history', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -105,7 +105,7 @@ export function useUpdateFamilyHistory() {
   
   return useMutation<FamilyHistoryRow, Error, { id: string; data: FamilyHistoryUpdateInput }>({
     mutationFn: async ({ id, data }) => {
-      const response = await fetch(`/api/patient/medical-history/family-history/${id}`, {
+      const response = await fetch(`/api/patient/medhist/family-history/${id}`, {
         method: 'PUT',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -136,7 +136,7 @@ export function useDeleteFamilyHistory() {
   
   return useMutation<void, Error, string>({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/patient/medical-history/family-history/${id}`, {
+      const response = await fetch(`/api/patient/medhist/family-history/${id}`, {
         method: 'DELETE',
         credentials: 'same-origin',
       })

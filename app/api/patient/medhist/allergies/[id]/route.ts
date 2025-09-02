@@ -5,7 +5,7 @@ import { AllergyUpdateInputSchema } from '@/schemas/allergies'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
-// GET /api/patient/medical-history/allergies/[id] - Get single allergy
+// GET /api/patient/medhist/allergies/[id] - Get single allergy
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await getServerClient()
@@ -40,7 +40,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PUT /api/patient/medical-history/allergies/[id] - Update allergy
+// PUT /api/patient/medhist/allergies/[id] - Update allergy
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)
@@ -113,7 +113,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/patient/medical-history/allergies/[id] - Soft delete allergy
+// DELETE /api/patient/medhist/allergies/[id] - Soft delete allergy
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)

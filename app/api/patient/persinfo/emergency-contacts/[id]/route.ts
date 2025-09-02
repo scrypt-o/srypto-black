@@ -5,7 +5,7 @@ import { EmergencyContactUpdateInputSchema } from '@/schemas/emergencyContacts'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
-// GET /api/patient/personal-info/emergency-contacts/[id] - Get single emergency contact
+// GET /api/patient/persinfo/emergency-contacts/[id] - Get single emergency contact
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await getServerClient()
@@ -40,7 +40,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PUT /api/patient/personal-info/emergency-contacts/[id] - Update emergency contact
+// PUT /api/patient/persinfo/emergency-contacts/[id] - Update emergency contact
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)
@@ -122,7 +122,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/patient/personal-info/emergency-contacts/[id] - Soft delete emergency contact
+// DELETE /api/patient/persinfo/emergency-contacts/[id] - Soft delete emergency contact
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)

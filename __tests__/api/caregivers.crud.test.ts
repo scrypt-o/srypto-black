@@ -6,7 +6,7 @@ describe('Caregivers API CRUD', () => {
   let id: string
 
   test('create', async () => {
-    const res = await fetch(`${base}/api/patient/care-network/caregivers`, {
+    const res = await fetch(`${base}/api/patient/carenet/caregivers`, {
       method: 'POST',
       headers: headersBase,
       body: JSON.stringify({ full_name: 'Test Caregiver' }),
@@ -18,21 +18,21 @@ describe('Caregivers API CRUD', () => {
   })
 
   test('list includes created', async () => {
-    const res = await fetch(`${base}/api/patient/care-network/caregivers?page=1&pageSize=5`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/carenet/caregivers?page=1&pageSize=5`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(Array.isArray(json.data)).toBe(true)
   })
 
   test('get by id', async () => {
-    const res = await fetch(`${base}/api/patient/care-network/caregivers/${id}`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/carenet/caregivers/${id}`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(json.caregiver_id).toBe(id)
   })
 
   test('update', async () => {
-    const res = await fetch(`${base}/api/patient/care-network/caregivers/${id}`, {
+    const res = await fetch(`${base}/api/patient/carenet/caregivers/${id}`, {
       method: 'PUT',
       headers: headersBase,
       body: JSON.stringify({ full_name: 'Updated Caregiver' }),
@@ -41,7 +41,7 @@ describe('Caregivers API CRUD', () => {
   })
 
   test('delete', async () => {
-    const res = await fetch(`${base}/api/patient/care-network/caregivers/${id}`, {
+    const res = await fetch(`${base}/api/patient/carenet/caregivers/${id}`, {
       method: 'DELETE',
       headers: headersBase,
     })

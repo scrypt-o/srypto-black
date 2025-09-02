@@ -5,7 +5,7 @@ import { DependentUpdateInputSchema } from '@/schemas/dependents'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
-// GET /api/patient/personal-info/dependents/[id] - Get single dependent
+// GET /api/patient/persinfo/dependents/[id] - Get single dependent
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await getServerClient()
@@ -40,7 +40,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PUT /api/patient/personal-info/dependents/[id] - Update dependent
+// PUT /api/patient/persinfo/dependents/[id] - Update dependent
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)
@@ -117,7 +117,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/patient/personal-info/dependents/[id] - Soft delete dependent
+// DELETE /api/patient/persinfo/dependents/[id] - Soft delete dependent
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)

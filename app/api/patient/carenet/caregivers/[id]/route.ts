@@ -5,7 +5,7 @@ import { CaregiverUpdateInputSchema } from '@/schemas/caregivers'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
-// GET /api/patient/care-network/caregivers/[id] - Get single caregiver
+// GET /api/patient/carenet/caregivers/[id] - Get single caregiver
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await getServerClient()
@@ -40,7 +40,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PUT /api/patient/care-network/caregivers/[id] - Update caregiver
+// PUT /api/patient/carenet/caregivers/[id] - Update caregiver
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)
@@ -119,7 +119,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/patient/care-network/caregivers/[id] - Soft delete caregiver
+// DELETE /api/patient/carenet/caregivers/[id] - Soft delete caregiver
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const csrf = verifyCsrf(request)

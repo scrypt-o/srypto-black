@@ -29,7 +29,7 @@ export default function PrescriptionAnalysisFeature({
         setProgress(prev => Math.min(prev + 10, 90))
       }, 200)
 
-      const response = await fetch('/api/patient/prescriptions/analyze', {
+      const response = await fetch('/api/patient/presc/analyze', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {

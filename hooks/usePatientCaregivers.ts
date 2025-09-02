@@ -7,7 +7,7 @@ export function useCaregivers() {
   return useQuery<CaregiverRow[], Error>({
     queryKey: ['caregivers'],
     queryFn: async () => {
-      const response = await fetch('/api/patient/care-network/caregivers', {
+      const response = await fetch('/api/patient/carenet/caregivers', {
         credentials: 'same-origin',
       })
       
@@ -27,7 +27,7 @@ export function useCaregiver(id: string | null) {
     queryFn: async () => {
       if (!id) throw new Error('Caregiver ID is required')
       
-      const response = await fetch(`/api/patient/care-network/caregivers/${id}`, {
+      const response = await fetch(`/api/patient/carenet/caregivers/${id}`, {
         credentials: 'same-origin',
       })
       
@@ -47,7 +47,7 @@ export function useCreateCaregiver() {
   
   return useMutation<CaregiverRow, Error, CaregiverCreateInput>({
     mutationFn: async (data: CaregiverCreateInput) => {
-      const response = await fetch('/api/patient/care-network/caregivers', {
+      const response = await fetch('/api/patient/carenet/caregivers', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -75,7 +75,7 @@ export function useUpdateCaregiver() {
   
   return useMutation<CaregiverRow, Error, { id: string; data: CaregiverUpdateInput }>({
     mutationFn: async ({ id, data }) => {
-      const response = await fetch(`/api/patient/care-network/caregivers/${id}`, {
+      const response = await fetch(`/api/patient/carenet/caregivers/${id}`, {
         method: 'PUT',
         credentials: 'same-origin',
         headers: {
@@ -104,7 +104,7 @@ export function useDeleteCaregiver() {
   
   return useMutation<void, Error, string>({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/patient/care-network/caregivers/${id}`, {
+      const response = await fetch(`/api/patient/carenet/caregivers/${id}`, {
         method: 'DELETE',
         credentials: 'same-origin',
       })
@@ -128,7 +128,7 @@ export function useDeleteMultipleCaregivers() {
     mutationFn: async (ids: string[]) => {
       // Delete each caregiver individually
       const promises = ids.map(id =>
-        fetch(`/api/patient/care-network/caregivers/${id}`, {
+        fetch(`/api/patient/carenet/caregivers/${id}`, {
           method: 'DELETE',
           credentials: 'same-origin',
         })

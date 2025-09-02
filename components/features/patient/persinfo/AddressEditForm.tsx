@@ -74,7 +74,7 @@ export default function AddressEditForm({
         payload.latitude = coords.lat
         payload.longitude = coords.lng
       }
-      const res = await fetch('/api/patient/personal-info/address', {
+      const res = await fetch('/api/patient/persinfo/address', {
         method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
       })
       if (!res.ok) throw new Error('Save failed')

@@ -15,9 +15,9 @@ describe('Family History API Integration Tests', () => {
   
   let createdFamilyHistoryId: string
 
-  describe('POST /api/patient/medical-history/family-history', () => {
+  describe('POST /api/patient/medhist/family-history', () => {
     test('should create family history record with valid data', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ describe('Family History API Integration Tests', () => {
         relationship: 'mother'
       }
       
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ describe('Family History API Integration Tests', () => {
         relationship: 'friend' // Not in DDL enum
       }
       
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ describe('Family History API Integration Tests', () => {
         // Missing condition and relationship
       }
       
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ describe('Family History API Integration Tests', () => {
     })
 
     test('should return 403 for missing CSRF headers', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ describe('Family History API Integration Tests', () => {
     })
 
     test('should return 401 for unauthenticated request', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,9 +128,9 @@ describe('Family History API Integration Tests', () => {
     })
   })
 
-  describe('GET /api/patient/medical-history/family-history', () => {
+  describe('GET /api/patient/medhist/family-history', () => {
     test('should return paginated family history list', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history?page=1&pageSize=20`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history?page=1&pageSize=20`, {
         credentials: 'include'
       })
 
@@ -143,7 +143,7 @@ describe('Family History API Integration Tests', () => {
     })
 
     test('should filter by relationship', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history?relationship=parent`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history?relationship=parent`, {
         credentials: 'include'
       })
 
@@ -156,7 +156,7 @@ describe('Family History API Integration Tests', () => {
     })
 
     test('should search by condition and relative', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history?search=diabetes`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history?search=diabetes`, {
         credentials: 'include'
       })
 
@@ -166,7 +166,7 @@ describe('Family History API Integration Tests', () => {
     })
 
     test('should sort by different fields', async () => {
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history?sort_by=condition&sort_dir=asc`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history?sort_by=condition&sort_dir=asc`, {
         credentials: 'include'
       })
 
@@ -176,11 +176,11 @@ describe('Family History API Integration Tests', () => {
     })
   })
 
-  describe('GET /api/patient/medical-history/family-history/[id]', () => {
+  describe('GET /api/patient/medhist/family-history/[id]', () => {
     test('should return single family history record', async () => {
       if (!createdFamilyHistoryId) {
         // Create test record first
-        const createResponse = await fetch(`${baseUrl}/api/patient/medical-history/family-history`, {
+        const createResponse = await fetch(`${baseUrl}/api/patient/medhist/family-history`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Origin': baseUrl },
           credentials: 'include',
@@ -190,7 +190,7 @@ describe('Family History API Integration Tests', () => {
         createdFamilyHistoryId = created.family_history_id
       }
 
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history/${createdFamilyHistoryId}`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history/${createdFamilyHistoryId}`, {
         credentials: 'include'
       })
 
@@ -204,7 +204,7 @@ describe('Family History API Integration Tests', () => {
     test('should return 404 for non-existent record', async () => {
       const fakeId = '00000000-0000-0000-0000-000000000000'
       
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history/${fakeId}`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history/${fakeId}`, {
         credentials: 'include'
       })
 
@@ -212,11 +212,11 @@ describe('Family History API Integration Tests', () => {
     })
   })
 
-  describe('PUT /api/patient/medical-history/family-history/[id]', () => {
+  describe('PUT /api/patient/medhist/family-history/[id]', () => {
     test('should update family history record with valid data', async () => {
       if (!createdFamilyHistoryId) {
         // Create test record first
-        const createResponse = await fetch(`${baseUrl}/api/patient/medical-history/family-history`, {
+        const createResponse = await fetch(`${baseUrl}/api/patient/medhist/family-history`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Origin': baseUrl },
           credentials: 'include',
@@ -232,7 +232,7 @@ describe('Family History API Integration Tests', () => {
         notes: 'Updated via API test'
       }
 
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history/${createdFamilyHistoryId}`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history/${createdFamilyHistoryId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -252,7 +252,7 @@ describe('Family History API Integration Tests', () => {
     test('should return 404 for non-existent record', async () => {
       const fakeId = '00000000-0000-0000-0000-000000000000'
       
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history/${fakeId}`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history/${fakeId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -272,7 +272,7 @@ describe('Family History API Integration Tests', () => {
         age_at_onset: 200 // Over DDL limit of 150
       }
 
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history/${createdFamilyHistoryId}`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history/${createdFamilyHistoryId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -286,11 +286,11 @@ describe('Family History API Integration Tests', () => {
     })
   })
 
-  describe('DELETE /api/patient/medical-history/family-history/[id]', () => {
+  describe('DELETE /api/patient/medhist/family-history/[id]', () => {
     test('should soft delete family history record', async () => {
       if (!createdFamilyHistoryId) return // Skip if no test record
 
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history/${createdFamilyHistoryId}`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history/${createdFamilyHistoryId}`, {
         method: 'DELETE',
         headers: {
           'Origin': baseUrl,
@@ -306,7 +306,7 @@ describe('Family History API Integration Tests', () => {
     test('should return 404 for non-existent record', async () => {
       const fakeId = '00000000-0000-0000-0000-000000000000'
       
-      const response = await fetch(`${baseUrl}/api/patient/medical-history/family-history/${fakeId}`, {
+      const response = await fetch(`${baseUrl}/api/patient/medhist/family-history/${fakeId}`, {
         method: 'DELETE',
         headers: {
           'Origin': baseUrl,

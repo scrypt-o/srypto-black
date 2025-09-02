@@ -6,7 +6,7 @@ describe('Emergency Contacts API CRUD', () => {
   let id: string
 
   test('create', async () => {
-    const res = await fetch(`${base}/api/patient/personal-info/emergency-contacts`, {
+    const res = await fetch(`${base}/api/patient/persinfo/emergency-contacts`, {
       method: 'POST',
       headers: headersBase,
       body: JSON.stringify({ name: 'Test Contact', phone: '555-0101', relationship: 'friend' }),
@@ -18,21 +18,21 @@ describe('Emergency Contacts API CRUD', () => {
   })
 
   test('list includes created', async () => {
-    const res = await fetch(`${base}/api/patient/personal-info/emergency-contacts?page=1&pageSize=5`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/persinfo/emergency-contacts?page=1&pageSize=5`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(Array.isArray(json.data)).toBe(true)
   })
 
   test('get by id', async () => {
-    const res = await fetch(`${base}/api/patient/personal-info/emergency-contacts/${id}`, { headers: authHeaders() })
+    const res = await fetch(`${base}/api/patient/persinfo/emergency-contacts/${id}`, { headers: authHeaders() })
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(json.contact_id).toBe(id)
   })
 
   test('update', async () => {
-    const res = await fetch(`${base}/api/patient/personal-info/emergency-contacts/${id}`, {
+    const res = await fetch(`${base}/api/patient/persinfo/emergency-contacts/${id}`, {
       method: 'PUT',
       headers: headersBase,
       body: JSON.stringify({ phone: '555-0102' }),
@@ -41,7 +41,7 @@ describe('Emergency Contacts API CRUD', () => {
   })
 
   test('delete', async () => {
-    const res = await fetch(`${base}/api/patient/personal-info/emergency-contacts/${id}`, {
+    const res = await fetch(`${base}/api/patient/persinfo/emergency-contacts/${id}`, {
       method: 'DELETE',
       headers: headersBase,
     })

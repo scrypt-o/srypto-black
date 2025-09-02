@@ -6,7 +6,7 @@ import { useDeleteCaregiver } from '@/hooks/usePatientCaregivers'
 export const caregiversListConfig: ListFeatureConfig<CaregiverRow, CaregiverItem> = {
   entityName: 'caregiver',
   entityNamePlural: 'caregivers',
-  basePath: '/patient/care-network/caregivers',
+  basePath: '/patient/carenet/caregivers',
   
   transformRowToItem: (row: CaregiverRow): CaregiverItem => {
     // Create full name from available parts

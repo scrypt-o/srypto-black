@@ -40,7 +40,7 @@ export function useAllergiesList(params?: {
   return useQuery<AllergyListResponse>({
     queryKey: AllergyKeys.list(params),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/medical-history/allergies?${queryString}`, {
+      const response = await fetch(`/api/patient/medhist/allergies?${queryString}`, {
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -59,7 +59,7 @@ export function useAllergyById(id: string) {
   return useQuery<AllergyRow>({
     queryKey: AllergyKeys.detail(id),
     queryFn: async () => {
-      const response = await fetch(`/api/patient/medical-history/allergies/${id}`, {
+      const response = await fetch(`/api/patient/medhist/allergies/${id}`, {
         credentials: 'same-origin',
       })
       
@@ -79,7 +79,7 @@ export function useCreateAllergy() {
   
   return useMutation<AllergyRow, Error, AllergyCreateInput>({
     mutationFn: async (data) => {
-      const response = await fetch('/api/patient/medical-history/allergies', {
+      const response = await fetch('/api/patient/medhist/allergies', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -107,7 +107,7 @@ export function useUpdateAllergy() {
   
   return useMutation<AllergyRow, Error, { id: string; data: AllergyUpdateInput }>({
     mutationFn: async ({ id, data }) => {
-      const response = await fetch(`/api/patient/medical-history/allergies/${id}`, {
+      const response = await fetch(`/api/patient/medhist/allergies/${id}`, {
         method: 'PUT',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -138,7 +138,7 @@ export function useDeleteAllergy() {
   
   return useMutation<void, Error, string>({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/patient/medical-history/allergies/${id}`, {
+      const response = await fetch(`/api/patient/medhist/allergies/${id}`, {
         method: 'DELETE',
         credentials: 'same-origin',
       })

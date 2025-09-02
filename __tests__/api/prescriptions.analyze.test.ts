@@ -1,5 +1,5 @@
 /** @jest-environment node */
-import { POST as analyze } from '@/app/api/patient/prescriptions/analyze/route'
+import { POST as analyze } from '@/app/api/patient/presc/analyze/route'
 
 jest.mock('@/lib/supabase-server', () => ({
   getServerClient: async () => ({
@@ -42,7 +42,7 @@ function makeReq(body: any) {
   } as any
 }
 
-describe('POST /api/patient/prescriptions/analyze', () => {
+describe('POST /api/patient/presc/analyze', () => {
   it('returns 422 on invalid input', async () => {
     const res = await analyze(makeReq({}))
     expect(res.status).toBe(422)

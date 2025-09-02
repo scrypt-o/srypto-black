@@ -8,7 +8,7 @@ import {
 } from '@/schemas/caregivers'
 import { z } from 'zod'
 
-// GET /api/patient/care-network/caregivers - List caregivers
+// GET /api/patient/carenet/caregivers - List caregivers
 export async function GET(request: NextRequest) {
   try {
     const supabase = await getServerClient()
@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/patient/care-network/caregivers - Create new caregiver
+// POST /api/patient/carenet/caregivers - Create new caregiver
 export async function POST(request: NextRequest) {
   try {
     const csrf = verifyCsrf(request)
