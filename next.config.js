@@ -7,9 +7,16 @@ const nextConfig = {
     buildActivityPosition: 'bottom-right'
   },
   
-  // TypeScript strict mode - fail build on any TypeScript errors
+  // TypeScript check behavior during builds
+  // By default, fail the build on TS errors. Set IGNORE_TS_ERRORS=true to bypass locally.
   typescript: {
-    ignoreBuildErrors: false
+    ignoreBuildErrors: process.env.IGNORE_TS_ERRORS === 'true'
+  },
+
+  // ESLint behavior during builds
+  // By default, run ESLint and fail on errors. Set IGNORE_ESLINT=true to bypass locally.
+  eslint: {
+    ignoreDuringBuilds: process.env.IGNORE_ESLINT === 'true'
   },
   
   // Image configuration for Supabase storage

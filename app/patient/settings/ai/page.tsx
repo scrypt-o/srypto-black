@@ -10,7 +10,7 @@ export default async function AISettingsPage() {
   
   // Get user's AI configuration for prescription analysis
   const { data, error } = await supabase
-    .from('ai_setup')
+    .from('v_ai_setup')
     .select('*')
     .eq('ai_type', 'prescription_analysis')
     .eq('is_active', true)

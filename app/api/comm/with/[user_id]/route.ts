@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerClient, getUser } from '@/lib/supabase-server'
 
-export async function GET(_req: NextRequest, { params }: { params: { user_id: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ user_id: string }> }) {
   const user = await getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const otherId = params.user_id
+  const { user_id } = await params
+  const otherId = user_id
   const supabase = await getServerClient()
   const { data, error } = await supabase
     .from('comm__communications')

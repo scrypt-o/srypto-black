@@ -4,7 +4,7 @@ import ScanOrchestrator from '@/components/features/prescriptions/ScanOrchestrat
 
 export const dynamic = 'force-dynamic'
 
-export default async function PrescriptionScanPage() {
+export default function PrescriptionScanPage() {
   return (
     <PrescScanPageLayout sidebarItems={patientNavItems} headerTitle="Scan Prescription">
       <ScanOrchestrator />

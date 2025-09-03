@@ -129,9 +129,9 @@ export const patientNavItems: NavItem[] = [
     icon: 'Map',
     type: 'group',
     children: [
-      { id: 'healthcare-map', label: 'Healthcare Map', icon: 'MapPinned' },
-      { id: 'nearest-services', label: 'Nearest Services', icon: 'Navigation' },
-      { id: 'find-loved-ones', label: 'Find Loved Ones', icon: 'LocateFixed' },
+      { id: 'healthcare-map', label: 'Healthcare Map', icon: 'MapPinned', href: '/patient/location/healthcare-map' },
+      { id: 'nearest-services', label: 'Nearest Services', icon: 'Navigation', href: '/patient/location/nearest-services' },
+      { id: 'find-loved-ones', label: 'Find Loved Ones', icon: 'LocateFixed', href: '/patient/location/find-loved-ones' },
     ],
   },
 

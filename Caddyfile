@@ -1,0 +1,36 @@
+# Caddy configuration for Scrypto
+# This proxies https://scrypto.online to the local development server
+
+scrypto.online {
+    # Reverse proxy to the local Next.js development server
+    reverse_proxy localhost:4560 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+    }
+    
+    # Enable compression
+    encode gzip
+    
+    # Add security headers
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+}
+
+# QA environment configuration
+qa.scrypto.online {
+    reverse_proxy localhost:4569 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+    }
+    
+    encode gzip
+    
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+}

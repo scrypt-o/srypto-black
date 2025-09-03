@@ -16,19 +16,19 @@ type MedicalAidForm = {
 }
 
 export default function MedicalAidForm({ initial }: { initial?: Partial<MedicalAidForm> }) {
-  const [form, setForm] = React.useState<MedicalAidForm>({
+  const [form, setForm] = React.useState<MedicalAidForm>(() => ({
     medical_aid_name: initial?.medical_aid_name || '',
     member_number: initial?.member_number || '',
-    plan_type: initial?.plan_type,
     is_primary_member: initial?.is_primary_member ?? true,
-    policy_holder_first_name: initial?.policy_holder_first_name,
-    policy_holder_last_name: initial?.policy_holder_last_name,
-    policy_holder_email: initial?.policy_holder_email,
-    policy_holder_phone: initial?.policy_holder_phone,
-    policy_holder_id: initial?.policy_holder_id,
-    dependent_code: initial?.dependent_code,
-    number_of_dependents: initial?.number_of_dependents,
-  })
+    ...(initial?.plan_type ? { plan_type: initial.plan_type } : {}),
+    ...(initial?.policy_holder_first_name ? { policy_holder_first_name: initial.policy_holder_first_name } : {}),
+    ...(initial?.policy_holder_last_name ? { policy_holder_last_name: initial.policy_holder_last_name } : {}),
+    ...(initial?.policy_holder_email ? { policy_holder_email: initial.policy_holder_email } : {}),
+    ...(initial?.policy_holder_phone ? { policy_holder_phone: initial.policy_holder_phone } : {}),
+    ...(initial?.policy_holder_id ? { policy_holder_id: initial.policy_holder_id } : {}),
+    ...(initial?.dependent_code ? { dependent_code: initial.dependent_code } : {}),
+    ...(typeof initial?.number_of_dependents === 'number' ? { number_of_dependents: initial.number_of_dependents } : {}),
+  }))
   const [saving, setSaving] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
 
@@ -80,4 +80,3 @@ function Field({ label, value, onChange, type, required }: { label: string; valu
     </label>
   )
 }
-

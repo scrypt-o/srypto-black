@@ -3,7 +3,7 @@ import { pharmacyNavItems } from '@/config/pharmacyNav'
 
 export const dynamic = 'force-dynamic'
 
-export default async function PharmacySettingsProfilePage() {
+export default function PharmacySettingsProfilePage() {
   return (
     <PageShell sidebarItems={pharmacyNavItems} headerTitle="Settings" headerSubtitle="Pharmacy Profile">
       <div className="p-6">
@@ -15,4 +15,3 @@ export default async function PharmacySettingsProfilePage() {
     </PageShell>
   )
 }
-

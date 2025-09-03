@@ -101,7 +101,7 @@ export default function PrescriptionDetailFeature({ prescription }: Prescription
       )}
 
       {/* Doctor Information */}
-      {(prescription.dr_name || prescription.practice_number) && (
+      {(prescription.dr_name || (prescription as any).practice_number) && (
         <div className="bg-purple-50 rounded-lg p-6">
           <h2 className="text-lg font-semibold text-purple-800 mb-4 flex items-center gap-2">
             <Stethoscope className="w-5 h-5" />

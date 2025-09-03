@@ -4,7 +4,7 @@ import LocationServicesFeature from '@/components/features/location/LocationServ
 
 export const dynamic = 'force-dynamic'
 
-export default async function NearestServicesPage() {
+export default function NearestServicesPage() {
   return (
     <DetailPageLayout sidebarItems={patientNavItems} headerTitle="Location">
       <div className="h-[calc(100vh-12rem)]">

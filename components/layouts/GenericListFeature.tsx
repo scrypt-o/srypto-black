@@ -229,7 +229,7 @@ export default function GenericListFeature<TRow = any, TItem extends ListItem = 
         loading={loading || deleteHook.isPending}
         onItemClick={handleItemClick}
         onEditClick={handleEditClick}
-        onDelete={config.allowDelete === false ? undefined : handleDelete}
+        {...(config.allowDelete === false ? {} : { onDelete: handleDelete })}
         onExport={handleExport}
         onSearch={handleSearch}
         onFilter={handleFilter}

@@ -159,4 +159,10 @@ export default [
     files: ['**/*.{test,spec}.{ts,tsx}'],
     rules: { '@typescript-eslint/no-explicit-any': 'off' },
   },
+  {
+    files: ['**/*.{test,spec}.{js,ts,tsx}'],
+    rules: {
+      require-await: 'off',
+    },
+  },
 ]

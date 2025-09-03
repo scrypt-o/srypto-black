@@ -329,7 +329,7 @@ export default function TileGridLayout(props: TileGridLayoutProps & { config?: T
           }
           if (!hex) {
             const cycle: Array<keyof typeof accentByName> = ['indigo','emerald','rose','amber','blue','purple','teal']
-            const picked = cycle[index % cycle.length]
+            const picked = cycle[index % cycle.length] as keyof typeof accentByName
             hex = accentByName[picked]
           }
           const iconWrapStyle: React.CSSProperties = {

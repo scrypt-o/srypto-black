@@ -330,7 +330,7 @@ export default function PatientSidebar({
                   <Link
                     href="/pharmacy"
                     className="w-full inline-flex items-center gap-3 rounded-lg px-3 py-2.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-white/10"
-                    onClick={onClose}
+                    {...(onClose ? { onClick: onClose } : {})}
                   >
                     <Icons.Building2 className="h-5 w-5" />
                     <span className="text-sm font-medium">Switch to Pharmacy App</span>

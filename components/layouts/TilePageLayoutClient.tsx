@@ -13,6 +13,7 @@ import TileGridLayout, { type TileGridLayoutProps } from './TileGridLayout'
 import MobileFooter from './MobileFooter'
 import PharmacyMobileFooter from './PharmacyMobileFooter'
 import ChatDock from '@/components/patterns/ChatDock'
+import HeroTilesHeader from '@/components/ui/HeroTilesHeader'
 
 export type TilePageLayoutClientProps = {
   // Navigation props
@@ -195,6 +196,20 @@ export default function TilePageLayoutClient(props: TilePageLayoutClientProps) {
         {/* Content Area */}
         <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 md:p-6 pb-20 md:pb-6">
           <div className="w-full max-w-7xl mx-auto">
+            {/* Optional hero header (query: ?tiles=hero or props.tileComposition='hero') */}
+            {(heroTilesQP || props.tileComposition === 'hero') && (
+              <HeroTilesHeader
+                title={contentHeading || headerTitle || 'Welcome'}
+                {...((contentSubheading || headerSubtitle) ? { subtitle: contentSubheading || headerSubtitle || '' } : {})}
+                {...(contentNote ? { note: contentNote } : {})}
+                metrics={[
+                  { id: 'active', label: 'Active Tasks', value: 8 },
+                  { id: 'alerts', label: 'Alerts', value: 2 },
+                  { id: 'lastLogin', label: 'Last Login', value: 'Today' },
+                  { id: 'status', label: 'Status', value: 'Healthy' },
+                ]}
+              />
+            )}
             {/* Inline heading below AppHeader */}
             {(contentHeading || contentSubheading) && (
               <div className="mb-5 md:mb-7">

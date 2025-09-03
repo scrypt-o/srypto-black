@@ -6,7 +6,7 @@ export default function ThemeBootstrapper() {
   useEffect(() => {
     try {
       const match = document.cookie.match(/(?:^|; )theme=([^;]+)/)
-      const cookieTheme = match ? decodeURIComponent(match[1]) : null
+      const cookieTheme = match ? decodeURIComponent(match[1] || '') : null
       const lsTheme = localStorage.getItem('theme')
       const theme = (cookieTheme || lsTheme || 'light').toString()
       if (theme !== lsTheme) localStorage.setItem('theme', theme)
@@ -17,4 +17,3 @@ export default function ThemeBootstrapper() {
   }, [])
   return null
 }
-

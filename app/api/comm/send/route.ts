@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { getServerClient, getUser, getServiceRoleClient } from '@/lib/supabase-server'
+import { getAuthenticatedApiClient } from '@/lib/supabase-api'
+import { getServiceRoleClient } from '@/lib/supabase-server'
 import { verifyCsrf } from '@/lib/api-helpers'
 
 const SendSchema = z.object({
@@ -12,13 +13,12 @@ const SendSchema = z.object({
   context_id: z.string().optional(),
 })
 
-export async function POST(req: NextRequest) {
-  const csrf = verifyCsrf(req); if (csrf) return csrf
-  const user = await getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export async function POST(request: NextRequest) {
+  const csrf = verifyCsrf(request); if (csrf) return csrf
+  const { supabase, user } = await getAuthenticatedApiClient()
 
   let payload: unknown
-  try { payload = await req.json() } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }) }
+  try { payload = await request.json() } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
   const p = SendSchema.safeParse(payload)
   if (!p.success) return NextResponse.json({ error: 'Validation', details: p.error.flatten() }, { status: 422 })
@@ -42,7 +42,6 @@ export async function POST(req: NextRequest) {
   }
   if (!userTo) return NextResponse.json({ error: 'Recipient not found' }, { status: 404 })
 
-  const supabase = await getServerClient()
   const meta = (context_type && context_id) ? { context_type, context_id } : null
   const { data, error } = await supabase
     .from('comm__communications')

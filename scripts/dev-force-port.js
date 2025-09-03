@@ -8,7 +8,7 @@ const path = require('path');
 const execAsync = util.promisify(exec);
 
 // Scrypto always runs on this port
-const SCRYPTO_PORT = 4569;
+const SCRYPTO_PORT = 4560;
 
 // Setup logging
 const LOG_DIR = path.join(__dirname, '..', 'logs');
@@ -85,7 +85,7 @@ async function killPortProcess() {
 /**
  * Start Scrypto development server
  */
-async function startScrypto() {
+function startScrypto() {
   logMessage(`🚀 Starting Scrypto on http://localhost:${SCRYPTO_PORT}`);
   
   // Start Next.js dev server with Turbopack (76% faster)
@@ -120,7 +120,7 @@ async function startScrypto() {
 async function main() {
   try {
     await killPortProcess();
-    await startScrypto();
+    startScrypto();
   } catch (error) {
     logMessage(`❌ Error starting Scrypto: ${error.message}`);
     logStream.end();

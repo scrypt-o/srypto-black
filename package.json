@@ -11,7 +11,7 @@
     "dev:status": "pm2 status",
     "build": "next build",
     "start": "next start",
-    "start:4569": "next start -p 4569",
+    "start:4560": "next start -p 4560",
     "start:4570": "next start -p 4570",
     "start:4571": "next start -p 4571",
     "start:4572": "next start -p 4572",

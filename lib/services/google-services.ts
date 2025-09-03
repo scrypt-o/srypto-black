@@ -163,13 +163,16 @@ export class GoogleServicesProvider {
       return new Promise((resolve, reject) => {
         const service = new google.maps.places.PlacesService(map)
         
+        const opts: google.maps.places.PlaceSearchRequest = {
+          location: center,
+          radius,
+          type: type as any,
+        }
+        if (keyword && keyword.trim().length > 0) {
+          (opts as any).keyword = keyword.trim()
+        }
         service.nearbySearch(
-          {
-            location: center,
-            radius,
-            type: type as any,
-            keyword: keyword && keyword.trim().length > 0 ? keyword.trim() : undefined,
-          },
+          opts,
           (results, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK && results) {
               resolve(results)

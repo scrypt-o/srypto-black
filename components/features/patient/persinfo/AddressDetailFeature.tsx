@@ -39,12 +39,12 @@ export default function AddressDetailFeature({ title, record }: { title: string;
 
       {/* Read-only details */}
       <div className="bg-white border rounded p-4 text-sm grid grid-cols-1 md:grid-cols-2 gap-3">
-        <Detail label="Line 1" value={record?.line1} />
-        <Detail label="Line 2" value={record?.line2} />
-        <Detail label="City" value={record?.city} />
-        <Detail label="Region" value={record?.region} />
-        <Detail label="Postal Code" value={record?.postal_code} />
-        <Detail label="Country" value={record?.country} />
+        <Detail label="Line 1" value={record?.line1 ?? null} />
+        <Detail label="Line 2" value={record?.line2 ?? null} />
+        <Detail label="City" value={record?.city ?? null} />
+        <Detail label="Region" value={record?.region ?? null} />
+        <Detail label="Postal Code" value={record?.postal_code ?? null} />
+        <Detail label="Country" value={record?.country ?? null} />
       </div>
     </div>
   )
@@ -58,4 +58,3 @@ function Detail({ label, value }: { label: string; value?: string | null }) {
     </div>
   )
 }
-

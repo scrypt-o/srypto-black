@@ -17,17 +17,7 @@ export default async function ConversationPage({ params }: { params: Promise<{ w
     .or(`user_from.eq.${withId},user_to.eq.${withId}`)
     .order('created_at', { ascending: false })
     .limit(200)
-  let rows = data || []
-  if (error) {
-    const { data: legacy, error: legacyError } = await supabase
-      .from('comm__communications')
-      .select('*')
-      .eq('comm_type', 'message')
-      .or(`and(user_from.eq.${user?.id},user_to.eq.${withId}),and(user_from.eq.${withId},user_to.eq.${user?.id})`)
-      .order('created_at', { ascending: false })
-      .limit(200)
-    rows = legacyError ? [] : (legacy || [])
-  }
+  const rows = error ? [] : (data || [])
 
   const items: ListItem[] = rows.map((row: any) => ({
     id: row.comm_id,

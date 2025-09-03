@@ -6,9 +6,8 @@ import ProfileImage from '@/components/features/patient/persinfo/ProfileImage'
 export default function ProfilePhotoSection({ currentPath }: { currentPath?: string | null }) {
   return (
     <div className="flex items-center gap-4">
-      <ProfileImage path={currentPath || undefined} size={96} />
+      <ProfileImage path={currentPath ?? null} size={96} />
       <ProfilePictureUpload
-        currentImageUrl={undefined}
         onImageChange={async (result) => {
           if (!result) return
           try {
@@ -25,4 +24,3 @@ export default function ProfilePhotoSection({ currentPath }: { currentPath?: str
     </div>
   )
 }
-

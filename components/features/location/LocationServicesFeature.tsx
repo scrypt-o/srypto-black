@@ -13,7 +13,6 @@ import {
   formatDistance 
 } from '@/lib/google-maps'
 import { googleServices } from '@/lib/services/google-services'
-import { isFeatureEnabled } from '@/lib/utils/feature-flags'
 import { useGeolocation } from '@/hooks/useGeolocation'
 
 interface Place extends google.maps.places.PlaceResult {
@@ -22,7 +21,8 @@ interface Place extends google.maps.places.PlaceResult {
 
 export default function LocationServicesFeature() {
   // Feature gating (env + API key)
-  const mapsEnabled = !!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY && (isFeatureEnabled as any)?.('googleMaps') !== false
+  // For now, only check for the API key and Places flag since feature flags don't work in client components
+  const mapsEnabled = !!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
   const placesEnabled = (process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_ENABLED !== 'false')
   if (!mapsEnabled || !placesEnabled) {
     return (
@@ -55,15 +55,7 @@ export default function LocationServicesFeature() {
   const [showList, setShowList] = useState(false)
   const [radiusKm, setRadiusKm] = useState<number>(10)
 
-  // Auto-request location if configured
-  React.useEffect(() => {
-    try {
-      if ((featureFlags as any)?.locationAutoRequest && !position) {
-        getCurrentPosition().catch(() => {/* ignore */})
-      }
-    } catch {/* ignore */}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // Auto-request location: rely on user interaction (no implicit request)
 
   // Update center when user location is available
   React.useEffect(() => {

@@ -12,7 +12,7 @@ export default async function PharmacyConversationPage({ params }: { params: Pro
   const { with: withId } = await params
 
   const { data, error } = await supabase
-    .from('comm__communications')
+    .from('v_comm__communications')
     .select('*')
     .eq('comm_type', 'message')
     .or(`and(user_from.eq.${user?.id},user_to.eq.${withId}),and(user_from.eq.${withId},user_to.eq.${user?.id})`)
@@ -46,4 +46,3 @@ export default async function PharmacyConversationPage({ params }: { params: Pro
     </PageShell>
   )
 }
-

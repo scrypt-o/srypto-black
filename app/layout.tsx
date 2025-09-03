@@ -4,17 +4,30 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { ToastProvider } from '@/components/patterns/Toast'
 import QueryProvider from '@/components/providers/QueryProvider'
+import PWAProvider from '@/components/providers/PWAProvider'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import ThemeBootstrapper from '@/components/patterns/ThemeBootstrapper'
 
 export const metadata: Metadata = {
   title: 'Scrypto Medical Portal',
   description: 'Medical portal application',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Scrypto',
+  },
+  formatDetection: {
+    telephone: false,
+  },
 }
 
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
+  minimumScale: 1,
+  shrinkToFit: 'no',
+  viewportFit: 'cover',
 }
 
 const inter = Inter({ subsets: ['latin'] })
@@ -36,15 +49,19 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning className={isDark ? 'dark' : undefined}>
       <head>
         <meta name="color-scheme" content="light dark" />
+        <meta name="theme-color" content="#0066cc" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body className={`${inter.className} h-screen overflow-hidden antialiased text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-950`}>
         <ErrorBoundary>
-          <QueryProvider>
-            <ToastProvider>
-              <ThemeBootstrapper />
-              {children}
-            </ToastProvider>
-          </QueryProvider>
+          <PWAProvider>
+            <QueryProvider>
+              <ToastProvider>
+                <ThemeBootstrapper />
+                {children}
+              </ToastProvider>
+            </QueryProvider>
+          </PWAProvider>
         </ErrorBoundary>
       </body>
     </html>

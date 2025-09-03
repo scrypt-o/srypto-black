@@ -3,7 +3,7 @@ import { patientNavItems } from '@/config/patientNav'
 
 export const dynamic = 'force-dynamic'
 
-export default async function AddressesTilesPage() {
+export default function AddressesTilesPage() {
   const tiles = {
     title: 'Addresses',
     subtitle: 'Manage your home, postal and delivery addresses',

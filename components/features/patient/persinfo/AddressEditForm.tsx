@@ -45,23 +45,23 @@ export default function AddressEditForm({
     const short = (type: string) => comps.find(c => c.types.includes(type))?.short_name || undefined
     const next: FormState = {
       // populate sensible defaults
-      address1: [get('street_number'), get('route')].filter(Boolean).join(' ') || form.address1,
-      address2: form.address2,
-      street_no: get('street_number') || form.street_no,
-      street_name: get('route') || form.street_name,
+      address1: [get('street_number'), get('route')].filter(Boolean).join(' ') || form.address1 || '',
+      address2: form.address2 || '',
+      street_no: get('street_number') || form.street_no || '',
+      street_name: get('route') || form.street_name || '',
       // Prefer South African sublocality level with safe fallbacks
-      suburb: get('sublocality_level_1') || get('sublocality') || get('neighborhood') || form.suburb,
-      city: get('locality') || get('postal_town') || form.city,
-      province: get('administrative_area_level_1') || form.province,
-      postal_code: get('postal_code') || form.postal_code,
-      country: short('country') || form.country,
+      suburb: get('sublocality_level_1') || get('sublocality') || get('neighborhood') || form.suburb || '',
+      city: get('locality') || get('postal_town') || form.city || '',
+      province: get('administrative_area_level_1') || form.province || '',
+      postal_code: get('postal_code') || form.postal_code || '',
+      country: short('country') || form.country || '',
     }
     setForm(next)
     const loc = place.geometry?.location
     if (loc) setCoords({ lat: loc.lat(), lng: loc.lng() })
   }
 
-  const onChange = (k: keyof FormState, v: string) => setForm(prev => ({ ...prev, [k]: v }))
+  const onChange = (k: keyof FormState, v: string | boolean) => setForm(prev => ({ ...prev, [k]: v as any }))
 
   const onSave = async () => {
     setSaving(true); setError(null)

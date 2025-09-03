@@ -150,7 +150,7 @@ export default function PharmacySidebar({
                         hasActiveChild && accentColors[accent]
                       )}
                     >
-                      <IconByName name={item.icon} className="w-5 h-5 flex-shrink-0" />
+                      <IconByName {...(item.icon ? { name: item.icon } : {})} className="w-5 h-5 flex-shrink-0" />
                       {!isCollapsed && (
                         <>
                           <span className="flex-1 text-left">{item.label}</span>
@@ -177,9 +177,9 @@ export default function PharmacySidebar({
                                 ? accentColors[accent]
                                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
                             )}
-                            onClick={isMobile ? onClose : undefined}
+                            {...(isMobile && onClose ? { onClick: onClose } : {})}
                           >
-                            <IconByName name={child.icon} className="w-4 h-4 flex-shrink-0" />
+                            <IconByName {...(child.icon ? { name: child.icon } : {})} className="w-4 h-4 flex-shrink-0" />
                             <span>{child.label}</span>
                             {child.badge && (
                               <span className="ml-auto bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 text-xs px-2 py-0.5 rounded-full ring-1 ring-rose-200/70 dark:ring-rose-800/50">
@@ -205,9 +205,9 @@ export default function PharmacySidebar({
                       ? accentColors[accent]
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                   )}
-                  onClick={isMobile ? onClose : undefined}
+                  {...(isMobile && onClose ? { onClick: onClose } : {})}
                 >
-                  <IconByName name={item.icon} className="w-5 h-5 flex-shrink-0" />
+                  <IconByName {...(item.icon ? { name: item.icon } : {})} className="w-5 h-5 flex-shrink-0" />
                   {!isCollapsed && <span>{item.label}</span>}
                   {!isCollapsed && item.badge && (
                     <span className="ml-auto bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 text-xs px-2 py-0.5 rounded-full ring-1 ring-rose-200/70 dark:ring-rose-800/50">
@@ -226,7 +226,7 @@ export default function PharmacySidebar({
           <Link
             href="/patient"
             className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-            onClick={isMobile ? onClose : undefined}
+            {...(isMobile && onClose ? { onClick: onClose } : {})}
           >
             <Icons.UserCircle2 className="w-4 h-4 flex-shrink-0" />
             {!isCollapsed && <span>Switch to Patient App</span>}

@@ -19,22 +19,22 @@ type ProfileForm = {
 }
 
 export default function ProfileEditForm({ initial, formId }: { initial: Partial<ProfileForm> & { first_name?: string; last_name?: string }; formId?: string }) {
-  const [form, setForm] = React.useState<ProfileForm>({
+  const [form, setForm] = React.useState<ProfileForm>(() => ({
     first_name: initial.first_name || '',
     last_name: initial.last_name || '',
-    title: initial.title,
-    middle_name: initial.middle_name,
-    nick_name: initial.nick_name,
-    id_number: initial.id_number,
-    passport_number: initial.passport_number,
-    citizenship: initial.citizenship,
-    date_of_birth: initial.date_of_birth,
-    gender: initial.gender,
-    marital_status: initial.marital_status,
-    phone: initial.phone,
-    email: initial.email,
-    primary_language: initial.primary_language,
-  })
+    ...(initial.title ? { title: initial.title } : {}),
+    ...(initial.middle_name ? { middle_name: initial.middle_name } : {}),
+    ...(initial.nick_name ? { nick_name: initial.nick_name } : {}),
+    ...(initial.id_number ? { id_number: initial.id_number } : {}),
+    ...(initial.passport_number ? { passport_number: initial.passport_number } : {}),
+    ...(initial.citizenship ? { citizenship: initial.citizenship } : {}),
+    ...(initial.date_of_birth ? { date_of_birth: initial.date_of_birth } : {}),
+    ...(initial.gender ? { gender: initial.gender } : {}),
+    ...(initial.marital_status ? { marital_status: initial.marital_status } : {}),
+    ...(initial.phone ? { phone: initial.phone } : {}),
+    ...(initial.email ? { email: initial.email } : {}),
+    ...(initial.primary_language ? { primary_language: initial.primary_language } : {}),
+  }))
   const [saving, setSaving] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
 

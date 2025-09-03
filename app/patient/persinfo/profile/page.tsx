@@ -15,25 +15,7 @@ export default async function ProfilePage() {
     .select('*')
     .single()
 
-  // If no profile row exists for this user yet, create a minimal one so the page always works
-  if (!data) {
-    const { data: userData } = await supabase.auth.getUser()
-    const uid = userData?.user?.id
-    if (uid) {
-      // best-effort upsert (ignore errors silently to avoid breaking SSR render)
-      await supabase
-        .from('patient__persinfo__profile')
-        .upsert({ user_id: uid, first_name: (userData.user.user_metadata as any)?.given_name || '', last_name: (userData.user.user_metadata as any)?.family_name || '' }, { onConflict: 'user_id' })
-        .select('*')
-        .single()
-      // Re-read from view
-      const reread = await supabase
-        .from('v_patient__persinfo__profile')
-        .select('*')
-        .single()
-      ;(reread.error) ? null : (Object.assign((data as any ?? {}), reread.data))
-    }
-  }
+  // SSR pages must not write; if no profile exists, render empty state and let the form/API create it
 
   const formId = 'profile-edit-form'
   const sections: DetailViewLayoutProps['sections'] = [
