@@ -1,39 +1,33 @@
-import { chromium } from '@playwright/test'
-import fs from 'fs'
-import path from 'path'
+import { chromium, type FullConfig } from '@playwright/test'
 
-// Build storageState from cookies.txt (Netscape) so we can reuse auth in E2E
-export default async function globalSetup() {
-  const storagePath = path.join(process.cwd(), 'tests/e2e/storageState.json')
-  const cookiesTxt = path.join(process.cwd(), 'cookies.txt')
-  const baseURL = process.env.BASE_URL || 'http://localhost:4569'
-  const url = new URL(baseURL)
+// Programmatic auth: performs a UI login once and saves storageState for reuse.
+// Requires TEST_EMAIL and TEST_PASSWORD in env (or uses basic defaults for dev).
 
-  if (!fs.existsSync(cookiesTxt)) {
-    // Create empty storage state if no cookies
-    fs.writeFileSync(storagePath, JSON.stringify({ cookies: [], origins: [] }, null, 2))
-    return
+export default async function globalSetup(config: FullConfig) {
+  const baseURL = config.projects[0].use?.baseURL as string | undefined
+  const email = process.env.TEST_EMAIL || 't@t.com'
+  const password = process.env.TEST_PASSWORD || 't12345'
+
+  const browser = await chromium.launch()
+  const context = await browser.newContext()
+  const page = await context.newPage()
+  try {
+    await page.goto(`${baseURL || 'http://localhost:4560'}/login`)
+    // Fill login form (uses accessible names as in existing tests)
+    await page.getByRole('textbox', { name: 'email@example.com' }).fill(email)
+    await page.getByRole('textbox', { name: '••••••••' }).fill(password)
+    await page.getByRole('button', { name: 'Continue', exact: true }).click()
+
+    // Wait for redirect into app (patient area)
+    await page.waitForURL('**/patient', { timeout: 15000 })
+
+    // Persist session cookies for reuse across tests
+    await context.storageState({ path: 'tests/e2e/storageState.json' })
+  } catch (e) {
+    // Save state anyway for diagnostics; tests may still override login per-spec
+    await context.storageState({ path: 'tests/e2e/storageState.json' })
+  } finally {
+    await browser.close()
   }
-
-  const lines = fs.readFileSync(cookiesTxt, 'utf8').split(/\r?\n/)
-  const cookies: any[] = []
-  for (const line of lines) {
-    if (!line || line.startsWith('#')) continue
-    const parts = line.split('\t')
-    const name = parts[5]
-    const value = parts[6]
-    if (name && value) {
-      cookies.push({
-        name,
-        value,
-        domain: url.hostname,
-        path: '/',
-        httpOnly: true,
-        secure: false,
-        sameSite: 'Lax' as const,
-      })
-    }
-  }
-
-  fs.writeFileSync(storagePath, JSON.stringify({ cookies, origins: [] }, null, 2))
 }
+

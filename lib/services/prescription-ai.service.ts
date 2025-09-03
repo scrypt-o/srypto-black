@@ -74,7 +74,12 @@ export class ModernPrescriptionAIService {
         model: data.ai_model || 'gpt-4o',
         temperature: data.ai_temperature || 0.1,
         maxTokens: data.ai_max_tokens || 2000,
-        systemInstructions: data.ai_system_instructions || 'You are a medical prescription analyzer. Extract structured data from prescription images with high accuracy.',
+        systemInstructions:
+          data.ai_system_instructions ||
+          (
+            'You are a medical prescription analyzer. Extract only structured prescription data when the image is a prescription. ' +
+            'If the image is not a prescription (e.g., a pet, document, scenery), respond with isPrescription=false and do not include any other content or descriptions.'
+          ),
         configuration: data.configuration || {}
       }
 
@@ -126,7 +131,7 @@ export class ModernPrescriptionAIService {
             content: [
               {
                 type: 'text',
-                text: 'Analyze this medical prescription image and extract structured data.'
+                text: 'Analyze this image. If it is a medical prescription, extract structured prescription data. '
               },
               {
                 type: 'image',
@@ -164,6 +169,7 @@ export class ModernPrescriptionAIService {
       return {
         success: true,
         isPrescription: result.object.isPrescription,
+        // Strict policy: do not return any additional details if not a prescription
         data: result.object.isPrescription ? result.object : undefined,
         reason: !result.object.isPrescription ? 'Could not identify as prescription' : undefined,
         uploadedPath,

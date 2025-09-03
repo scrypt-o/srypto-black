@@ -3,7 +3,7 @@ import { getServerClient } from '@/lib/supabase-server'
 import { z } from 'zod'
 import { verifyCsrf } from '@/lib/api-helpers'
 import { ModernPrescriptionAIService } from '@/lib/services/prescription-ai.service'
-import { AICostControlService } from '@/lib/services/ai-cost-control.service'
+// import { AICostControlService } from '@/lib/services/ai-cost-control.service'
 
 // Input validation schema
 const AnalyzeInputSchema = z.object({
@@ -43,7 +43,28 @@ export async function POST(request: NextRequest) {
       }, { status: 422 })
     }
 
-    const { imageBase64, fileName } = validatedInput.data
+    const { imageBase64, fileName, fileType } = validatedInput.data
+
+    // Basic MIME and size checks (defense in depth, no rate limit)
+    // Accept only data URLs that match declared fileType and <= ~6MB payload
+    const dataUrlMatch = /^data:(image\/(?:jpeg|png));base64,(.+)$/i.exec(imageBase64)
+    if (!dataUrlMatch) {
+      return NextResponse.json({ error: 'Unsupported image format' }, { status: 415 })
+    }
+    const mimeFromDataUrl = dataUrlMatch[1].toLowerCase()
+    if (mimeFromDataUrl !== fileType.toLowerCase()) {
+      return NextResponse.json({ error: 'MIME type mismatch' }, { status: 400 })
+    }
+    const b64Payload = dataUrlMatch[2]
+    try {
+      const raw = Buffer.from(b64Payload, 'base64')
+      const maxBytes = 6 * 1024 * 1024 // 6MB
+      if (raw.length > maxBytes) {
+        return NextResponse.json({ error: 'Image too large (max 6MB)' }, { status: 413 })
+      }
+    } catch {
+      return NextResponse.json({ error: 'Invalid image payload' }, { status: 400 })
+    }
 
     // Removed usage limits blocking - let users scan prescriptions freely
 
