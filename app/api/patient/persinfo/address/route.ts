@@ -6,7 +6,7 @@ import { verifyCsrf } from '@/lib/api-helpers'
 // Normalized address fields for a given type (home|postal|delivery)
 // Addresses audit finding: "Missing fields: No live_in_complex/complex_no/complex_name"
 const baseFields = {
-  address1: z.string().min(1).max(200).optional(),
+  address1: z.string().max(200).optional(),
   address2: z.string().max(200).optional(),
   street_no: z.string().max(50).optional(),
   street_name: z.string().max(200).optional(),
@@ -51,13 +51,16 @@ const UpdateSchema = z.object({
   if (typeof data.province === 'string' && data.province.trim()) {
     const ok = SA_PROVINCES.some(p => p.toLowerCase() === data.province!.toLowerCase())
     if (!ok) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['province'], message: 'Invalid South African province' })
+      // Allow any province for international addresses - only warn for invalid SA provinces
+      console.warn('Non-SA province provided:', data.province)
     }
   }
-  // South African postal code validation when provided (4 digits)
+  // Postal code validation - allow various formats for international addresses
   if (typeof data.postal_code === 'string' && data.postal_code.trim()) {
-    if (!/^\d{4}$/.test(data.postal_code)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['postal_code'], message: 'Invalid postal code (expect 4 digits)' })
+    // Only enforce SA format if province is clearly South African
+    const isSAProvince = typeof data.province === 'string' && SA_PROVINCES.some(p => p.toLowerCase() === data.province!.toLowerCase())
+    if (isSAProvince && !/^\d{4}$/.test(data.postal_code)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['postal_code'], message: 'Invalid postal code (expect 4 digits for SA)' })
     }
   }
 })

@@ -66,7 +66,15 @@ export default function AddressEditForm({
   const onSave = async () => {
     setSaving(true); setError(null)
     try {
-      const payload: any = { type, ...form }
+      // Filter out empty string fields to prevent validation errors
+      const cleanForm = Object.entries(form).reduce((acc, [key, value]) => {
+        if (value !== '' && value !== undefined && value !== null) {
+          acc[key] = value
+        }
+        return acc
+      }, {} as any)
+      
+      const payload: any = { type, ...cleanForm }
       if (type === 'postal') payload.postal_same_as_home = postalSame
       if (type === 'delivery') payload.delivery_same_as_home = deliverySame
       // Include coordinates if available
@@ -74,14 +82,20 @@ export default function AddressEditForm({
         payload.latitude = coords.lat
         payload.longitude = coords.lng
       }
+      
       const res = await fetch('/api/patient/persinfo/address', {
         method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
       })
-      if (!res.ok) throw new Error('Save failed')
+      if (!res.ok) {
+        const errorData = await res.json()
+        console.error('Save failed:', errorData)
+        throw new Error(`Save failed: ${errorData.error || 'Unknown error'}`)
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(window as any).location?.reload()
     } catch (e) {
       setError('Failed to save address')
+      console.error('Address save error:', e)
     } finally { setSaving(false) }
   }
 
