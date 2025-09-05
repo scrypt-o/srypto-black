@@ -4,8 +4,11 @@ import { verifyCsrf } from '@/lib/api-helpers'
 import { ProfileUpdateSchema } from '@/schemas/profile'
 import { getServerClient } from '@/lib/supabase-server'
 
-const UpdateSchema = ProfileUpdateSchema.extend({
+// Accept partial updates so photo-only or single-field edits succeed.
+// UI enforces required pairs like first_name/last_name.
+const UpdateSchema = ProfileUpdateSchema.partial().extend({
   profile_picture_url: z.string().min(1).optional(),
+  is_active: z.boolean().optional(),
 })
 
 export async function PUT(request: NextRequest) {
@@ -21,8 +24,8 @@ export async function PUT(request: NextRequest) {
 
   const updates: Record<string, any> = {}
   Object.entries(parsed.data).forEach(([k, v]) => {
-    // Only include non-undefined, non-null, non-empty string values
-    if (v !== undefined && v !== null && v !== '') {
+    // Include all values except undefined (allow null and empty string to clear fields)
+    if (v !== undefined) {
       updates[k] = v
     }
   })
