@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyCsrf } from '@/lib/api-helpers'
-import { getAuthenticatedApiClient } from '@/lib/supabase-api'
+import { getServerClient } from '@/lib/supabase-server'
 
 // Magic bytes validation for medical security compliance
 function validateImageMagicBytes(buffer: Buffer, mimeType: string): boolean {
@@ -28,9 +28,9 @@ export async function POST(request: NextRequest) {
     const csrf = verifyCsrf(request)
     if (csrf) return csrf
     // Authentication required
-    const { supabase, user } = await getAuthenticatedApiClient()
-    
-    if (!user) {
+    const supabase = await getServerClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

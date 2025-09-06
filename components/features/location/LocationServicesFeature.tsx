@@ -202,7 +202,7 @@ export default function LocationServicesFeature() {
 
         {/* Place Type Selector */}
         <div className="flex gap-2 overflow-x-auto items-center">
-          {(['hospital','doctor','pharmacy'] as MedicalPlaceType[]).map(type => (
+          {(['hospital','doctor','pharmacy','dentist'] as MedicalPlaceType[]).map(type => (
             <button
               key={type}
               onClick={() => handlePlaceTypeChange(type)}
